@@ -1,7 +1,10 @@
+import AppRouter from './router';
+import './global.css';
+
 function App() {
   return (
     <>
-      <p>Hello World</p>
+      <AppRouter />
     </>
   );
 }
