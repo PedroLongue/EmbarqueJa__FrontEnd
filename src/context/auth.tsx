@@ -78,6 +78,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       if (response.data.error) {
         console.log(response.data.error);
       } else {
+        setAuthError('');
         navigate('/login');
       }
     } catch (error) {
@@ -97,6 +98,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           `Bearer ${response.data.token}`;
 
         localStorage.setItem('@Auth:token', response.data.token);
+        setAuthError('');
         getCurrentUser();
       }
     } catch (error) {

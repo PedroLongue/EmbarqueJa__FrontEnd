@@ -1,15 +1,16 @@
-import { Container, Typography, Box, Link, Alert } from '@mui/material';
+import { Container, Typography, Box, Link } from '@mui/material';
 import Button from '../../components/Button';
 import Input from '../../components/Input';
 import { useContext, useState } from 'react';
 import { AuthContext } from '../../context/auth';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const { signIn, signed, authError, currentUser } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -77,6 +78,7 @@ const Login = () => {
               {'Ainda não tem uma conta?'}
             </Link>
             <Button
+              onClick={() => navigate('/register')}
               children="Cadastre-se"
               variant="outlined"
               sx={{ textTransform: 'none' }}

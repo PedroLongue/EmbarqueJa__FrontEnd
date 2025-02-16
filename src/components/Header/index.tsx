@@ -38,7 +38,13 @@ const Header = () => {
               <Avatar
                 alt={currentUser.name}
                 src={''}
-                sx={{ marginRight: '10px', bgcolor: '#fff', color: '#1976d2' }}
+                sx={{
+                  marginRight: '10px',
+                  bgcolor: '#1976d2',
+                  color: '#fff',
+                  fontSize: '12px',
+                  fontWeight: 'bold',
+                }}
               >
                 {currentUser.name
                   .split(' ')
