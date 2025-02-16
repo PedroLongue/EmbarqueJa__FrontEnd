@@ -1,10 +1,13 @@
 import AppRouter from './router';
 import './global.css';
+import { AuthProvider } from './context/auth';
 
 function App() {
   return (
     <>
-      <AppRouter />
+      <AuthProvider>
+        <AppRouter />
+      </AuthProvider>
     </>
   );
 }
