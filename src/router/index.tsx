@@ -5,9 +5,10 @@ import Register from '../pages/Register';
 import Header from '../components/Header';
 import { useContext } from 'react';
 import { AuthContext } from '../context/auth';
+import Admin from '../pages/Admin';
 
 const AppRouter = () => {
-  const { signed } = useContext(AuthContext);
+  const { signed, currentUser } = useContext(AuthContext);
 
   return (
     <>
@@ -19,6 +20,10 @@ const AppRouter = () => {
         />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route
+          path="/admin"
+          element={currentUser?.isAdmin ? <Admin /> : <Navigate to="/" />}
+        />
       </Routes>
     </>
   );

@@ -1,21 +1,41 @@
 import { Container, Typography, Box, Link } from '@mui/material';
 import Button from '../../components/Button';
 import Input from '../../components/Input';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../../context/auth';
 import { Navigate, useNavigate } from 'react-router-dom';
+import CustomSnackbar from '../../components/CustomSnackbar';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState<any>('error');
+
   const { signIn, signed, authError, currentUser } = useContext(AuthContext);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (authError) {
+      setSnackbarMessage(authError);
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
+    }
+  }, [authError]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log(email, password);
     await signIn(email, password);
+
+    if (authError) {
+      setSnackbarMessage(authError);
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
+      ('');
+    }
   };
 
   console.log(currentUser);
@@ -35,6 +55,7 @@ const Login = () => {
             flexDirection: 'column',
             alignItems: 'center',
             gap: '20px',
+            width: '100%',
           }}
         >
           <Typography variant="h3" align="center" fontWeight={'bold'}>
@@ -45,7 +66,12 @@ const Login = () => {
           </Typography>
           <form
             onSubmit={handleSubmit}
-            style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '10px',
+              width: '100%',
+            }}
           >
             <Input
               id="outlined-basic"
@@ -83,13 +109,15 @@ const Login = () => {
               variant="outlined"
               sx={{ textTransform: 'none' }}
             />
-            {authError && (
-              <Typography variant="body1" align="center" color="#d34e4a">
-                {authError}
-              </Typography>
-            )}
           </form>
         </Box>
+        <CustomSnackbar
+          open={snackbarOpen}
+          onClose={() => setSnackbarOpen(false)}
+          message={snackbarMessage}
+          severity={snackbarSeverity}
+          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        />
       </Container>
     );
   } else {
