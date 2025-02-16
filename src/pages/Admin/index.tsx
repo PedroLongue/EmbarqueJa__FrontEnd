@@ -10,10 +10,10 @@ import {
   Chip,
   Button,
 } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Input from '../../components/Input';
 import useTickets from '../../hooks/useTickets';
-import CustomSnackbar from '../../components/CustomSnackbar'; // Importe o componente
+import CustomSnackbar from '../../components/CustomSnackbar';
 
 const amenitiesOptions = [
   'Wi-Fi',
@@ -43,6 +43,14 @@ const Admin = () => {
 
   const { createTicket, loading, error } = useTickets();
 
+  useEffect(() => {
+    if (error) {
+      setSnackbarMessage(error);
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
+    }
+  }, [error]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -64,7 +72,7 @@ const Admin = () => {
       setSnackbarMessage('Passagem criada com sucesso!');
       setSnackbarSeverity('success');
       setSnackbarOpen(true);
-      // Limpar o formulário após o envio
+
       setOrigin('');
       setDestination('');
       setDate('');

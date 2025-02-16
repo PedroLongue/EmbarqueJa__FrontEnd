@@ -44,8 +44,14 @@ const Login = () => {
       <Container
         sx={{
           display: 'flex',
-          justifyContent: 'center',
+          flexDirection: 'column',
           alignItems: 'center',
+          gap: '40px',
+          boxShadow: 3,
+          padding: '20px',
+          borderRadius: '8px',
+          backgroundColor: '#fff',
+          maxWidth: 'sm',
         }}
         maxWidth="sm"
       >
