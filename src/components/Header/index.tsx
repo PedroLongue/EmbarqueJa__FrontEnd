@@ -24,7 +24,12 @@ const Header = () => {
         }}
         maxWidth="xl"
       >
-        <img src={Logo} alt="Logo" style={{ height: '100%', width: 'auto' }} />
+        <img
+          src={Logo}
+          alt="Logo"
+          style={{ height: '100%', width: 'auto', cursor: 'pointer' }}
+          onClick={() => navigate('/')}
+        />
         <Typography variant="body1" fontWeight={'bold'}>
           EmbarqueJa
         </Typography>
