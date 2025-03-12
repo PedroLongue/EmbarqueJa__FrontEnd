@@ -1,17 +1,23 @@
 import { Avatar, Box, Container, Divider, Typography } from '@mui/material';
 import Logo from '../../assets/imgs/Header-logo.svg';
-import { AuthContext } from '../../context/auth';
-import { useContext } from 'react';
+import { RootState } from '../../redux/store';
 import Button from '../Button';
 import { useNavigate } from 'react-router-dom';
+import { useAppDispatch } from '../../hooks/useAppDispatch';
+import { useSelector } from 'react-redux';
+import { signOut } from '../../redux/features/authSlice';
 
 const Header = () => {
-  const { signed, currentUser, singOut } = useContext(AuthContext);
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const { signed, currentUser } = useSelector((state: RootState) => state.auth);
+
+  console.log({ currentUser });
 
   const handleLogout = () => {
-    singOut();
+    dispatch(signOut());
   };
+
   return (
     <>
       <Container

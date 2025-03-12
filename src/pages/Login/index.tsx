@@ -1,10 +1,13 @@
 import { Container, Typography, Box, Link } from '@mui/material';
 import Button from '../../components/Button';
 import Input from '../../components/Input';
-import { useContext, useEffect, useState } from 'react';
-import { AuthContext } from '../../context/auth';
+import { useSelector } from 'react-redux';
+import { signIn } from '../../redux/features/authSlice';
+import { RootState } from '../../redux/store';
 import { Navigate, useNavigate } from 'react-router-dom';
 import CustomSnackbar from '../../components/CustomSnackbar';
+import { useEffect, useState } from 'react';
+import { useAppDispatch } from '../../hooks/useAppDispatch';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -14,7 +17,8 @@ const Login = () => {
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState<any>('error');
 
-  const { signIn, signed, authError, currentUser } = useContext(AuthContext);
+  const { signed, authError } = useSelector((state: RootState) => state.auth);
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -27,8 +31,11 @@ const Login = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(email, password);
-    await signIn(email, password);
+    const user = {
+      email,
+      password,
+    };
+    dispatch(signIn(user));
 
     if (authError) {
       setSnackbarMessage(authError);
@@ -37,8 +44,6 @@ const Login = () => {
       ('');
     }
   };
-
-  console.log(currentUser);
   if (!signed) {
     return (
       <Container
