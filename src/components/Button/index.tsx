@@ -8,6 +8,7 @@ interface IButtonProps {
   sx?: SxProps<Theme>;
   type?: 'button' | 'reset' | 'submit';
   onClick?: () => void;
+  disabled?: boolean;
 }
 
 const CustomButton = ({
@@ -15,6 +16,7 @@ const CustomButton = ({
   variant,
   sx,
   type,
+  disabled,
   ...props
 }: IButtonProps) => {
   return (

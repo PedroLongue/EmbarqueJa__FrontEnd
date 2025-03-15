@@ -6,39 +6,47 @@ import {
   MenuItem,
   Select,
   Stack,
-  TextField,
 } from '@mui/material';
-import Input from '../Input';
 import SyncAltIcon from '@mui/icons-material/SyncAlt';
 import Button from '../Button';
 import useCities from '../../hooks/useCities';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState, AppDispatch } from '../../redux/store';
+import {
+  setOrigin,
+  setDestination,
+  setDepartureDate,
+  fetchTickets,
+} from '../../redux/features/searchSlice';
+import Input from '../Input';
 import { useState } from 'react';
+import CustomSnackbar from '../CustomSnackbar';
 
 const MAX_PASSENGERS = [1, 2, 3, 4, 5];
 
 const SeachForm = () => {
-  const [origin, setOrigin] = useState<string>('');
-  const [destination, setDestination] = useState<string>('');
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState<any>('error');
+
+  const dispatch = useDispatch<AppDispatch>();
+  const { origin, destination, departureDate, loading, error } = useSelector(
+    (state: RootState) => state.search,
+  );
   const cities = useCities();
 
   const filteredOriginCities = cities.filter((city) => city !== destination);
   const filteredDestinationCities = cities.filter((city) => city !== origin);
 
-  const handleOriginChange = (event: React.SyntheticEvent, value: string) => {
-    setOrigin(value);
-    if (value === destination) {
-      setDestination('');
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!origin || !destination || !departureDate) {
+      setSnackbarMessage('Por favor, preencha todos os campos');
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
+      return;
     }
-  };
-
-  const handleDestinationChange = (
-    event: React.SyntheticEvent,
-    value: string,
-  ) => {
-    setDestination(value);
-    if (value === origin) {
-      setOrigin('');
-    }
+    dispatch(fetchTickets());
   };
 
   return (
@@ -49,7 +57,10 @@ const SeachForm = () => {
       padding={2}
       borderRadius={2}
     >
-      <form style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+      <form
+        onSubmit={handleSubmit}
+        style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}
+      >
         <Stack
           direction="row"
           spacing={2}
@@ -63,7 +74,7 @@ const SeachForm = () => {
             disablePortal
             options={filteredOriginCities}
             value={origin}
-            onInputChange={handleOriginChange}
+            onInputChange={(_, value) => dispatch(setOrigin(value))}
             renderInput={(params) => (
               <Input {...params} label="Origem" variant="standard" />
             )}
@@ -74,7 +85,7 @@ const SeachForm = () => {
             disablePortal
             options={filteredDestinationCities}
             value={destination}
-            onInputChange={handleDestinationChange}
+            onInputChange={(_, value) => dispatch(setDestination(value))}
             renderInput={(params) => (
               <Input {...params} label="Destino" variant="standard" />
             )}
@@ -87,7 +98,8 @@ const SeachForm = () => {
             label="Data ida"
             variant="standard"
             type="date"
-            onChange={(e) => console.log(e)}
+            value={departureDate}
+            onChange={(e) => dispatch(setDepartureDate(e.target.value))}
             InputLabelProps={{
               shrink: true,
             }}
@@ -120,13 +132,22 @@ const SeachForm = () => {
         </Stack>
         <Stack width={'100%'} alignItems={'flex-end'}>
           <Button
-            onClick={() => console.log('Clicou no botão')}
-            children="Buscar"
+            type="submit"
+            children={loading ? 'Buscando...' : 'Buscar'}
             variant="contained"
             sx={{ textTransform: 'none', width: '100px' }}
+            disabled={loading}
           />
         </Stack>
+        {error && <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>}
       </form>
+      <CustomSnackbar
+        open={snackbarOpen}
+        onClose={() => setSnackbarOpen(false)}
+        message={snackbarMessage}
+        severity={snackbarSeverity}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      />
     </Box>
   );
 };
