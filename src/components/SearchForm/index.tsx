@@ -50,105 +50,109 @@ const SeachForm = () => {
   };
 
   return (
-    <Box
-      sx={{ background: '#EDEDED' }}
-      position={'absolute'}
-      bottom={'-50px'}
-      padding={2}
-      borderRadius={2}
-    >
-      <form
-        onSubmit={handleSubmit}
-        style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}
+    <>
+      <Box
+        sx={{ background: '#EDEDED' }}
+        position={'absolute'}
+        bottom={'-100px'}
+        padding={2}
+        borderRadius={2}
       >
-        <Stack
-          direction="row"
-          spacing={2}
-          width={500}
-          alignItems={'center'}
-          sx={{
-            margin: '0 auto',
-          }}
+        <form
+          onSubmit={handleSubmit}
+          style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}
         >
-          <Autocomplete
-            disablePortal
-            options={filteredOriginCities}
-            value={origin}
-            onInputChange={(_, value) => dispatch(setOrigin(value))}
-            renderInput={(params) => (
-              <Input {...params} label="Origem" variant="standard" />
-            )}
-            sx={{ width: '100%' }}
-          />
-          <SyncAltIcon />
-          <Autocomplete
-            disablePortal
-            options={filteredDestinationCities}
-            value={destination}
-            onInputChange={(_, value) => dispatch(setDestination(value))}
-            renderInput={(params) => (
-              <Input {...params} label="Destino" variant="standard" />
-            )}
-            sx={{ width: '100%' }}
-          />
-        </Stack>
-        <Stack direction="row" spacing={2}>
-          <Input
-            id="date"
-            label="Data ida"
-            variant="standard"
-            type="date"
-            value={departureDate}
-            onChange={(e) => dispatch(setDepartureDate(e.target.value))}
-            InputLabelProps={{
-              shrink: true,
+          <Stack
+            direction="row"
+            spacing={2}
+            width={500}
+            alignItems={'center'}
+            sx={{
+              margin: '0 auto',
             }}
-            fullWidth
-          />
-          <FormControl variant="standard" fullWidth>
-            <InputLabel id="passengers-label">Passageiros</InputLabel>
-            <Select
-              labelId="passengers-label"
-              id="passengers"
-              label="Passageiros"
-              onChange={(e) => console.log(e)}
-              MenuProps={{
-                PaperProps: {
-                  style: {
-                    width: '100%',
-                    maxWidth: '0',
-                  },
-                },
+          >
+            <Autocomplete
+              disablePortal
+              options={filteredOriginCities}
+              value={origin}
+              onInputChange={(_, value) => dispatch(setOrigin(value))}
+              renderInput={(params) => (
+                <Input {...params} label="Origem" variant="standard" />
+              )}
+              sx={{ width: '100%' }}
+            />
+            <SyncAltIcon />
+            <Autocomplete
+              disablePortal
+              options={filteredDestinationCities}
+              value={destination}
+              onInputChange={(_, value) => dispatch(setDestination(value))}
+              renderInput={(params) => (
+                <Input {...params} label="Destino" variant="standard" />
+              )}
+              sx={{ width: '100%' }}
+            />
+          </Stack>
+          <Stack direction="row" spacing={2}>
+            <Input
+              id="date"
+              label="Data ida"
+              variant="standard"
+              type="date"
+              value={departureDate}
+              onChange={(e) => dispatch(setDepartureDate(e.target.value))}
+              InputLabelProps={{
+                shrink: true,
               }}
               fullWidth
-            >
-              {MAX_PASSENGERS.map((element) => (
-                <MenuItem key={element} value={element}>
-                  {element}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </Stack>
-        <Stack width={'100%'} alignItems={'flex-end'}>
-          <Button
-            type="submit"
-            children={loading ? 'Buscando...' : 'Buscar'}
-            variant="contained"
-            sx={{ textTransform: 'none', width: '100px' }}
-            disabled={loading}
-          />
-        </Stack>
-        {error && <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>}
-      </form>
-      <CustomSnackbar
-        open={snackbarOpen}
-        onClose={() => setSnackbarOpen(false)}
-        message={snackbarMessage}
-        severity={snackbarSeverity}
-        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-      />
-    </Box>
+            />
+            <FormControl variant="standard" fullWidth>
+              <InputLabel id="passengers-label">Passageiros</InputLabel>
+              <Select
+                labelId="passengers-label"
+                id="passengers"
+                label="Passageiros"
+                onChange={(e) => console.log(e)}
+                MenuProps={{
+                  PaperProps: {
+                    style: {
+                      width: '100%',
+                      maxWidth: '0',
+                    },
+                  },
+                }}
+                fullWidth
+              >
+                {MAX_PASSENGERS.map((element) => (
+                  <MenuItem key={element} value={element}>
+                    {element}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Stack>
+          <Stack width={'100%'} alignItems={'flex-end'}>
+            <Button
+              type="submit"
+              children={loading ? 'Buscando...' : 'Buscar'}
+              variant="contained"
+              sx={{ textTransform: 'none', width: '100px' }}
+              disabled={loading}
+            />
+          </Stack>
+          {error && (
+            <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>
+          )}
+        </form>
+        <CustomSnackbar
+          open={snackbarOpen}
+          onClose={() => setSnackbarOpen(false)}
+          message={snackbarMessage}
+          severity={snackbarSeverity}
+          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        />
+      </Box>
+    </>
   );
 };
 

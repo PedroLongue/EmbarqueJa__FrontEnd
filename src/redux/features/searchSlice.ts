@@ -1,11 +1,25 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import api from '../../services/api';
 
+export interface Ticket {
+  id: string;
+  origin: string;
+  destination: string;
+  departureDate: string;
+  price: number;
+  arrivalTime: string;
+  departureTime: string;
+  type: string;
+  amenities: string[];
+  company: string;
+  companyLogo: string;
+}
+
 interface SearchState {
   origin: string;
   destination: string;
   departureDate: string;
-  results: any[];
+  tickets: Ticket[];
   loading: boolean;
   error: string | null;
 }
@@ -15,7 +29,7 @@ const initialState: SearchState = {
   origin: '',
   destination: '',
   departureDate: '',
-  results: [],
+  tickets: [],
   loading: false,
   error: null,
 };
@@ -62,7 +76,7 @@ const searchSlice = createSlice({
       })
       .addCase(fetchTickets.fulfilled, (state, action) => {
         state.loading = false;
-        state.results = action.payload;
+        state.tickets = action.payload;
       })
       .addCase(fetchTickets.rejected, (state, action) => {
         state.loading = false;
