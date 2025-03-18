@@ -10,6 +10,8 @@ import { useAppDispatch } from '../hooks/useAppDispatch';
 import { useEffect } from 'react';
 import { getCurrentUser } from '../redux/features/authSlice';
 import api from '../services/api';
+import Footer from '../components/Footer';
+import ChangePass from '../pages/ChangePass';
 
 const AppRouter = () => {
   const { signed, currentUser } = useSelector((state: RootState) => state.auth);
@@ -36,6 +38,10 @@ const AppRouter = () => {
           path="/"
           element={signed ? <Home /> : <Navigate to="/login" />}
         />
+        <Route
+          path="/change-pass"
+          element={signed ? <ChangePass /> : <Navigate to="/" />}
+        />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route
@@ -43,6 +49,7 @@ const AppRouter = () => {
           element={currentUser?.isAdmin ? <Admin /> : <Navigate to="/" />}
         />
       </Routes>
+      <Footer />
     </>
   );
 };

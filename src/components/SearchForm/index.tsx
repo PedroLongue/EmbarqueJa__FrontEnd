@@ -30,7 +30,7 @@ const SeachForm = () => {
   const [snackbarSeverity, setSnackbarSeverity] = useState<any>('error');
 
   const dispatch = useDispatch<AppDispatch>();
-  const { origin, destination, departureDate, loading, error } = useSelector(
+  const { origin, destination, departureDate, loading } = useSelector(
     (state: RootState) => state.search,
   );
   const cities = useCities();
@@ -140,9 +140,6 @@ const SeachForm = () => {
               disabled={loading}
             />
           </Stack>
-          {error && (
-            <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>
-          )}
         </form>
         <CustomSnackbar
           open={snackbarOpen}

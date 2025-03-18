@@ -130,10 +130,6 @@ const RenderTickets = () => {
           ))}
         </>
       )}
-
-      {!loading && !error && tickets.length === 0 && (
-        <Typography variant="h5">Nenhuma passagem encontrada.</Typography>
-      )}
     </Container>
   );
 };

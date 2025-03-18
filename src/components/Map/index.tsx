@@ -24,8 +24,8 @@ const Map = ({ origin, destination }: MapProps) => {
   return (
     <GoogleMap
       mapContainerStyle={{
-        width: '300px',
-        height: '200px',
+        width: '400px',
+        height: '150px',
         borderRadius: '12px',
       }}
       center={originCoords || { lat: -22.9068, lng: -43.1729 }}

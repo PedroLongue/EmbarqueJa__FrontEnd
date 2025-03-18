@@ -1,4 +1,12 @@
-import { Avatar, Box, Container, Divider, Typography } from '@mui/material';
+import {
+  Avatar,
+  Box,
+  Container,
+  Divider,
+  Menu,
+  MenuItem,
+  Typography,
+} from '@mui/material';
 import Logo from '../../assets/imgs/Header-logo.svg';
 import { RootState } from '../../redux/store';
 import Button from '../Button';
@@ -6,6 +14,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { useSelector } from 'react-redux';
 import { signOut } from '../../redux/features/authSlice';
+import { useState } from 'react';
 
 const Header = () => {
   const dispatch = useAppDispatch();
@@ -16,6 +25,15 @@ const Header = () => {
 
   const handleLogout = () => {
     dispatch(signOut());
+  };
+
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
   };
 
   return (
@@ -48,22 +66,84 @@ const Header = () => {
                 justifyContent: 'flex-end',
               }}
             >
-              <Avatar
-                alt={currentUser.name}
-                src={''}
+              <Button
+                id="demo-positioned-button"
+                aria-controls={open ? 'demo-positioned-menu' : undefined}
+                aria-haspopup="true"
+                aria-expanded={open ? 'true' : undefined}
+                onClick={handleClick}
+              >
+                <Avatar
+                  alt={currentUser.name}
+                  src={''}
+                  sx={{
+                    marginRight: '10px',
+                    bgcolor: '#1976d2',
+                    color: '#fff',
+                    fontSize: '12px',
+                    fontWeight: 'bold',
+                  }}
+                >
+                  {currentUser.name
+                    .split(' ')
+                    .map((n) => n[0]?.toUpperCase())
+                    .join('')}
+                </Avatar>
+              </Button>
+              <Menu
+                id="demo-positioned-menu"
+                aria-labelledby="demo-positioned-button"
+                anchorEl={anchorEl}
+                open={open}
+                onClose={handleClose}
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'center',
+                }}
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'center',
+                }}
                 sx={{
-                  marginRight: '10px',
-                  bgcolor: '#1976d2',
-                  color: '#fff',
-                  fontSize: '12px',
-                  fontWeight: 'bold',
+                  width: '200px',
                 }}
               >
-                {currentUser.name
-                  .split(' ')
-                  .map((n) => n[0]?.toUpperCase())
-                  .join('')}
-              </Avatar>
+                <MenuItem
+                  onClick={() => {
+                    handleClose();
+                    navigate('/change-pass');
+                  }}
+                  sx={{ display: 'flex', justifyContent: 'center' }}
+                >
+                  Alterar senha
+                </MenuItem>
+                <Divider />
+                <MenuItem
+                  onClick={handleClose}
+                  sx={{ display: 'flex', justifyContent: 'center' }}
+                >
+                  Meu perfil
+                </MenuItem>
+                <Divider />
+                <MenuItem
+                  onClick={handleClose}
+                  sx={{ display: 'flex', justifyContent: 'center' }}
+                >
+                  Minhas compras
+                </MenuItem>
+                <Divider />
+                <MenuItem
+                  onClick={handleClose}
+                  sx={{ display: 'flex', justifyContent: 'center' }}
+                >
+                  <Button
+                    children="SAIR"
+                    onClick={handleLogout}
+                    variant="contained"
+                    sx={{ width: '90px' }}
+                  />
+                </MenuItem>
+              </Menu>
               <Typography variant="body1" sx={{ width: '120px' }}>
                 Olá, {currentUser.name.split(' ').shift()}
               </Typography>
@@ -76,12 +156,6 @@ const Header = () => {
                   sx={{ width: '150px', marginRight: '10px' }}
                 />
               )}
-              <Button
-                children="SAIR"
-                onClick={handleLogout}
-                variant="contained"
-                sx={{ width: '90px' }}
-              />
             </Box>
           )}
         </Container>
