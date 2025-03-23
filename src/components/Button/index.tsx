@@ -22,7 +22,13 @@ const CustomButton = ({
   ...props
 }: IButtonProps) => {
   return (
-    <Button variant={variant} sx={sx} {...props} type={type}>
+    <Button
+      {...props}
+      variant={variant}
+      sx={sx}
+      type={type}
+      disabled={disabled}
+    >
       {children}
     </Button>
   );

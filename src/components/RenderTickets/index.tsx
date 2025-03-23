@@ -11,6 +11,8 @@ import Icon from '../../assets/Icons';
 import TicketTime from '../TicketTime';
 import Button from '../Button';
 import Map from '../Map';
+import { useState } from 'react';
+import SeatModal from './components/SeatModal';
 
 export const amenityToIcon: Record<
   string,
@@ -30,6 +32,11 @@ const RenderTickets = () => {
   const { tickets, loading, error, origin, destination } = useSelector(
     (state: RootState) => state.search,
   );
+
+  const [openSeatModal, setOpenSeatModal] = useState(false);
+
+  const handleOpenSeatModal = () => setOpenSeatModal(true);
+  const handleCloseSeatModal = () => setOpenSeatModal(false);
 
   return (
     <Container sx={{ marginTop: '152px' }} maxWidth="xl">
@@ -123,9 +130,16 @@ const RenderTickets = () => {
                   type="submit"
                   children={'Selecionar'}
                   variant="contained"
+                  onClick={handleOpenSeatModal}
                   sx={{ textTransform: 'none', width: '150px' }}
                 />
               </Stack>
+              <SeatModal
+                open={openSeatModal}
+                onClose={handleCloseSeatModal}
+                origin={ticket.origin}
+                destination={ticket.destination}
+              />
             </Box>
           ))}
         </>

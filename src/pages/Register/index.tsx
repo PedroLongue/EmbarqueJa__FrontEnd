@@ -54,92 +54,99 @@ const Login = () => {
     return (
       <Container
         sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: '40px',
-          boxShadow: 3,
-          padding: '20px',
-          borderRadius: '8px',
-          backgroundColor: '#fff',
-          maxWidth: 'sm',
+          flex: '1',
         }}
-        maxWidth="sm"
       >
         <Box
           sx={{
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            gap: '20px',
-            width: '100%',
+            gap: '40px',
+            boxShadow: 3,
+            padding: '20px',
+            borderRadius: '8px',
+            backgroundColor: '#fff',
+            maxWidth: 'sm',
+            margin: '0 auto',
           }}
+          maxWidth="sm"
         >
-          <Typography variant="h3" align="center" fontWeight={'bold'}>
-            Seja bem-vindo
-          </Typography>
-          <Typography variant="subtitle1" align="center">
-            Faça seu cadastro e escolha seu próximo destino!
-          </Typography>
-          <form
-            onSubmit={handleSubmit}
-            style={{
+          <Box
+            sx={{
               display: 'flex',
               flexDirection: 'column',
-              gap: '10px',
+              alignItems: 'center',
+              gap: '20px',
               width: '100%',
             }}
           >
-            <Input
-              id="outlined-basic"
-              label="Nome Completo"
-              variant="outlined"
-              onChange={(e) => setName(e.target.value)}
-            />
-            <Input
-              id="outlined-basic"
-              label="E-mail"
-              variant="outlined"
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <Input
-              id="outlined-basic"
-              label="Senha"
-              variant="outlined"
-              type="password"
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <Input
-              id="outlined-basic"
-              label="Confirmar Senha"
-              variant="outlined"
-              type="password"
-              onChange={(e) => setConfirmPassword(e.target.value)}
-            />
-            <Button
-              children="Cadastrar"
-              variant="contained"
-              sx={{ textTransform: 'none', fontWeight: 'bold' }}
-              type="submit"
-            />
-            <Link href="#" variant="body2" align="center" underline="none">
-              {'Já tem uma conta?'}
-            </Link>
-            <Button
-              onClick={() => navigate('/login')}
-              children="Acesse sua conta"
-              variant="outlined"
-              sx={{ textTransform: 'none' }}
-            />
-          </form>
+            <Typography variant="h3" align="center" fontWeight={'bold'}>
+              Seja bem-vindo
+            </Typography>
+            <Typography variant="subtitle1" align="center">
+              Faça seu cadastro e escolha seu próximo destino!
+            </Typography>
+            <form
+              onSubmit={handleSubmit}
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '10px',
+                width: '100%',
+              }}
+            >
+              <Input
+                id="outlined-basic"
+                label="Nome Completo"
+                variant="outlined"
+                onChange={(e) => setName(e.target.value)}
+              />
+              <Input
+                id="outlined-basic"
+                label="E-mail"
+                variant="outlined"
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              <Input
+                id="outlined-basic"
+                label="Senha"
+                variant="outlined"
+                type="password"
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <Input
+                id="outlined-basic"
+                label="Confirmar Senha"
+                variant="outlined"
+                type="password"
+                onChange={(e) => setConfirmPassword(e.target.value)}
+              />
+              <Button
+                children="Cadastrar"
+                variant="contained"
+                sx={{ textTransform: 'none', fontWeight: 'bold' }}
+                type="submit"
+              />
+              <Link href="#" variant="body2" align="center" underline="none">
+                {'Já tem uma conta?'}
+              </Link>
+              <Button
+                onClick={() => navigate('/login')}
+                children="Acesse sua conta"
+                variant="outlined"
+                sx={{ textTransform: 'none' }}
+              />
+            </form>
+          </Box>
+          <CustomSnackbar
+            open={snackbarOpen}
+            onClose={() => setSnackbarOpen(false)}
+            message={snackbarMessage}
+            severity={snackbarSeverity}
+            anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+          />
         </Box>
-        <CustomSnackbar
-          open={snackbarOpen}
-          onClose={() => setSnackbarOpen(false)}
-          message={snackbarMessage}
-          severity={snackbarSeverity}
-          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-        />
       </Container>
     );
   } else {
