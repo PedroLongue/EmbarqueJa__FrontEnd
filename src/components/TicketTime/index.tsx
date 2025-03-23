@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
-import Icon from '../../utils/Icons';
+import Icon from '../../assets/Icons';
 import { Typography } from '@mui/material';
 
 dayjs.extend(duration);

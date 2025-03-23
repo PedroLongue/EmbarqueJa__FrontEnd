@@ -1,4 +1,4 @@
-import { Container, Typography } from '@mui/material';
+import { Box, Container, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
@@ -16,7 +16,6 @@ const ChangePass = () => {
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState<any>('success');
 
-  // Exibe o erro no Snackbar se houver
   useEffect(() => {
     if (error) {
       setSnackbarMessage(error);
@@ -35,20 +34,16 @@ const ChangePass = () => {
     };
 
     try {
-      // Faz a requisição para alterar a senha
       await changePassword(newsPass);
 
-      // Limpa os campos apenas se a requisição for bem-sucedida
       setPassword('');
       setNewPassword('');
       setConfirmNewPassword('');
 
-      // Exibe mensagem de sucesso
       setSnackbarMessage('Senha alterada com sucesso!');
       setSnackbarSeverity('success');
       setSnackbarOpen(true);
     } catch (err) {
-      // Em caso de erro, exibe a mensagem de erro no Snackbar
       setSnackbarMessage(error || 'Erro ao alterar senha.');
       setSnackbarSeverity('error');
       setSnackbarOpen(true);
@@ -62,64 +57,71 @@ const ChangePass = () => {
   return (
     <Container
       sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        gap: '40px',
-        boxShadow: 3,
-        padding: '20px',
-        borderRadius: '8px',
-        backgroundColor: '#fff',
-        maxWidth: 'sm',
+        flex: '1',
       }}
-      maxWidth="sm"
     >
-      <Typography variant="h4" align="center" fontWeight={'bold'}>
-        Alterar Senha
-      </Typography>
-      <form
-        style={{
+      <Box
+        sx={{
           display: 'flex',
           flexDirection: 'column',
-          gap: '20px',
-          width: '100%',
+          alignItems: 'center',
+          gap: '40px',
+          boxShadow: 3,
+          padding: '20px',
+          borderRadius: '8px',
+          backgroundColor: '#fff',
+          maxWidth: 'sm',
+          margin: '0 auto',
         }}
-        onSubmit={handlePasswordChange}
+        maxWidth="sm"
       >
-        <Input
-          label="Senha Atual"
-          type="password"
-          value={password} // Adiciona o valor do estado
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <Input
-          label="Nova Senha"
-          type="password"
-          value={newPassword} // Adiciona o valor do estado
-          onChange={(e) => setNewPassword(e.target.value)}
-        />
-        <Input
-          label="Repetir Nova Senha"
-          type="password"
-          value={confirmNewPassword} // Adiciona o valor do estado
-          onChange={(e) => setConfirmNewPassword(e.target.value)}
-        />
-        <Button
-          children="Salvar"
-          variant="contained"
-          sx={{ textTransform: 'none' }}
-          type="submit"
-          disabled={loading} // Desabilita o botão durante o carregamento
-        />
-      </form>
+        <Typography variant="h4" align="center" fontWeight={'bold'}>
+          Alterar Senha
+        </Typography>
+        <form
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '20px',
+            width: '100%',
+          }}
+          onSubmit={handlePasswordChange}
+        >
+          <Input
+            label="Senha Atual"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <Input
+            label="Nova Senha"
+            type="password"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+          />
+          <Input
+            label="Repetir Nova Senha"
+            type="password"
+            value={confirmNewPassword}
+            onChange={(e) => setConfirmNewPassword(e.target.value)}
+          />
+          <Button
+            children="Salvar"
+            variant="contained"
+            sx={{ textTransform: 'none' }}
+            type="submit"
+            disabled={loading}
+          />
+        </form>
 
-      <CustomSnackbar
-        open={snackbarOpen}
-        onClose={handleSnackbarClose}
-        message={snackbarMessage}
-        severity={snackbarSeverity}
-        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-      />
+        <CustomSnackbar
+          open={snackbarOpen}
+          onClose={handleSnackbarClose}
+          message={snackbarMessage}
+          severity={snackbarSeverity}
+          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        />
+      </Box>
     </Container>
   );
 };

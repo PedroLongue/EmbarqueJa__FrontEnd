@@ -7,7 +7,7 @@ import {
 } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
-import Icon from '../../utils/Icons';
+import Icon from '../../assets/Icons';
 import TicketTime from '../TicketTime';
 import Button from '../Button';
 import Map from '../Map';
