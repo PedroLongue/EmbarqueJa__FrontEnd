@@ -1,14 +1,18 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Grid, Typography, Modal, Box, Stack } from '@mui/material';
 import Icon from '../../../../assets/Icons';
 import steeringwheel from '../../../../assets/Icons/steeringwheel.png';
 import Button from '../../../Button';
+import useTicketReservation from '../../../../hooks/useTicketReservation';
+import useGetTicket from '../../../../hooks/useGetTicket';
 
 interface SeatModalProps {
   open: boolean;
   onClose: () => void;
   origin: string;
   destination: string;
+  passengers: number;
+  idTicket: string;
 }
 
 const rows: number = 10;
@@ -19,16 +23,55 @@ const SeatModal: React.FC<SeatModalProps> = ({
   onClose,
   origin,
   destination,
+  passengers,
+  idTicket,
 }) => {
+  const { reserveSeats, loading, error, success } = useTicketReservation();
+  const { ticket } = useGetTicket();
+
   const [selectedSeats, setSelectedSeats] = useState<number[]>([]);
+  const [reservedSeats, setReservedSeats] = useState<number[]>([]);
+
+  useEffect(() => {
+    const fetchReservedSeats = async () => {
+      if (idTicket) {
+        const data = await ticket(idTicket);
+        setReservedSeats(data?.reservedSeats || []);
+      }
+    };
+
+    if (open) {
+      fetchReservedSeats();
+    }
+  }, [open, idTicket]);
+
+  const handleReserveSeats = async () => {
+    if (!idTicket) return;
+    await reserveSeats(idTicket, selectedSeats);
+
+    if (success) {
+      setSelectedSeats([]);
+      onClose();
+    }
+  };
 
   const handleSelectSeat = (seat: number) => {
-    setSelectedSeats((prev) =>
-      prev.includes(seat) ? prev.filter((s) => s !== seat) : [...prev, seat],
-    );
+    if (reservedSeats.includes(seat)) return;
+
+    setSelectedSeats((prev) => {
+      if (prev.includes(seat)) {
+        return prev.filter((s) => s !== seat);
+      }
+      if (prev.length < passengers) {
+        return [...prev, seat];
+      }
+      return prev;
+    });
   };
 
   const isSelected = (seat: number): boolean => selectedSeats.includes(seat);
+
+  const isReserved = (seat: number): boolean => reservedSeats.includes(seat);
 
   return (
     <Modal open={open} onClose={onClose}>
@@ -60,6 +103,7 @@ const SeatModal: React.FC<SeatModalProps> = ({
         >
           <Icon name="location" /> {origin} <Icon name="arrow" /> {destination}
         </Typography>
+
         <Grid
           container
           spacing={2}
@@ -75,6 +119,7 @@ const SeatModal: React.FC<SeatModalProps> = ({
           <Box sx={{ textAlign: 'center', mt: 2, mb: 2 }}>
             <img src={steeringwheel} />
           </Box>
+
           {[...Array(rows)].map((_, rowIndex) => (
             <Grid
               key={rowIndex}
@@ -85,6 +130,8 @@ const SeatModal: React.FC<SeatModalProps> = ({
             >
               {[...Array(seatsPerRow)].map((_, seatIndex) => {
                 const seatNumber = rowIndex * seatsPerRow + seatIndex + 1;
+                const disabled = isReserved(seatNumber);
+
                 return (
                   <>
                     <Grid
@@ -99,8 +146,15 @@ const SeatModal: React.FC<SeatModalProps> = ({
                         variant={
                           isSelected(seatNumber) ? 'contained' : 'outlined'
                         }
-                        color={isSelected(seatNumber) ? 'primary' : 'default'}
+                        color={
+                          isReserved(seatNumber)
+                            ? 'error'
+                            : isSelected(seatNumber)
+                              ? 'primary'
+                              : 'default'
+                        }
                         onClick={() => handleSelectSeat(seatNumber)}
+                        disabled={disabled}
                       >
                         <Icon name="seat" /> <small>{seatNumber}</small>
                       </Button>
@@ -118,15 +172,18 @@ const SeatModal: React.FC<SeatModalProps> = ({
             </Grid>
           ))}
         </Grid>
+
         <Typography variant="body1" marginTop={2} align="center">
           Assentos Selecionados: {selectedSeats.join(', ') || 'Nenhum'}
         </Typography>
+
         <Stack>
           <Button
             children={'Confirmar'}
             variant="contained"
             sx={{ margin: '10px auto 0px' }}
             disabled={selectedSeats.length === 0}
+            onClick={handleReserveSeats}
           />
         </Stack>
       </Box>

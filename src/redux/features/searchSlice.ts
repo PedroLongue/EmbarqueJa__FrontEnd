@@ -3,6 +3,7 @@ import api from '../../services/api';
 
 export interface Ticket {
   id: string;
+  _id: string;
   origin: string;
   destination: string;
   departureDate: string;
@@ -20,6 +21,7 @@ interface SearchState {
   destination: string;
   departureDate: string;
   tickets: Ticket[];
+  passengers: number;
   loading: boolean;
   error: string | null;
 }
@@ -30,6 +32,7 @@ const initialState: SearchState = {
   destination: '',
   departureDate: '',
   tickets: [],
+  passengers: 5,
   loading: false,
   error: null,
 };
@@ -67,6 +70,9 @@ const searchSlice = createSlice({
     setDepartureDate: (state, action: PayloadAction<string>) => {
       state.departureDate = action.payload;
     },
+    setPassengers: (state, action: PayloadAction<number>) => {
+      state.passengers = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -85,6 +91,6 @@ const searchSlice = createSlice({
   },
 });
 
-export const { setOrigin, setDestination, setDepartureDate } =
+export const { setOrigin, setDestination, setDepartureDate, setPassengers } =
   searchSlice.actions;
 export default searchSlice.reducer;

@@ -17,6 +17,7 @@ import {
   setDestination,
   setDepartureDate,
   fetchTickets,
+  setPassengers,
 } from '../../redux/features/searchSlice';
 import Input from '../Input';
 import { useState } from 'react';
@@ -112,7 +113,9 @@ const SeachForm = () => {
                 labelId="passengers-label"
                 id="passengers"
                 label="Passageiros"
-                onChange={(e) => console.log(e)}
+                onChange={(e) =>
+                  dispatch(setPassengers(Number(e.target.value)))
+                }
                 MenuProps={{
                   PaperProps: {
                     style: {

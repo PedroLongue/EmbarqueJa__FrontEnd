@@ -34,10 +34,22 @@ const RenderTickets = () => {
   );
 
   const [openSeatModal, setOpenSeatModal] = useState(false);
+  const [selectedTicketId, setSelectedTicketId] = useState<string | null>(null);
 
-  const handleOpenSeatModal = () => setOpenSeatModal(true);
-  const handleCloseSeatModal = () => setOpenSeatModal(false);
+  const handleOpenSeatModal = (id: string) => {
+    setOpenSeatModal(true);
+    setSelectedTicketId(id);
+  };
+  const handleCloseSeatModal = () => {
+    setOpenSeatModal(false);
+    setSelectedTicketId(null);
+  };
 
+  console.log({ selectedTicketId });
+
+  const passengers = useSelector((state: RootState) => state.search.passengers);
+
+  console.log({ tickets });
   return (
     <Container sx={{ marginTop: '152px' }} maxWidth="xl">
       {loading && (
@@ -130,7 +142,7 @@ const RenderTickets = () => {
                   type="submit"
                   children={'Selecionar'}
                   variant="contained"
-                  onClick={handleOpenSeatModal}
+                  onClick={() => handleOpenSeatModal(ticket._id)}
                   sx={{ textTransform: 'none', width: '150px' }}
                 />
               </Stack>
@@ -139,6 +151,8 @@ const RenderTickets = () => {
                 onClose={handleCloseSeatModal}
                 origin={ticket.origin}
                 destination={ticket.destination}
+                passengers={passengers}
+                idTicket={selectedTicketId}
               />
             </Box>
           ))}

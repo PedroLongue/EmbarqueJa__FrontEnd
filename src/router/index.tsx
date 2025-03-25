@@ -12,6 +12,7 @@ import { getCurrentUser } from '../redux/features/authSlice';
 import api from '../services/api';
 import Footer from '../components/Footer';
 import ChangePass from '../pages/ChangePass';
+import PreviewTicket from '../pages/PreviewTicket';
 
 const AppRouter = () => {
   const { signed, currentUser } = useSelector((state: RootState) => state.auth);
@@ -48,6 +49,7 @@ const AppRouter = () => {
           path="/admin"
           element={currentUser?.isAdmin ? <Admin /> : <Navigate to="/" />}
         />
+        <Route path="/preview-ticket" element={<PreviewTicket />} />
       </Routes>
       <Footer />
     </>

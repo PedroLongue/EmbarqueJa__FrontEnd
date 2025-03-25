@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import axios from 'axios'; // Importe o Axios
+import axios from 'axios';
 import api from '../services/api';
 
 interface ITicketData {
