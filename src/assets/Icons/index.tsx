@@ -9,20 +9,26 @@ import LocalDrinkIcon from '@mui/icons-material/LocalDrink';
 import FastfoodIcon from '@mui/icons-material/Fastfood';
 import TvIcon from '@mui/icons-material/Tv';
 import BedIcon from '@mui/icons-material/Bed';
+import PersonIcon from '@mui/icons-material/Person';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+
+type IconName =
+  | 'location'
+  | 'arrow'
+  | 'time'
+  | 'seat'
+  | 'air'
+  | 'wc'
+  | 'usb'
+  | 'water'
+  | 'snack'
+  | 'tv'
+  | 'bed'
+  | 'person'
+  | 'calendar';
 
 interface IconProps {
-  name:
-    | 'location'
-    | 'arrow'
-    | 'time'
-    | 'seat'
-    | 'air'
-    | 'wc'
-    | 'usb'
-    | 'water'
-    | 'snack'
-    | 'tv'
-    | 'bed';
+  name: IconName;
 }
 
 const Icon = ({ name }: IconProps) => {
@@ -38,6 +44,8 @@ const Icon = ({ name }: IconProps) => {
     snack: <FastfoodIcon />,
     tv: <TvIcon />,
     bed: <BedIcon />,
+    person: <PersonIcon />,
+    calendar: <CalendarTodayIcon />,
   };
 
   return icons[name] || null;

@@ -10,6 +10,8 @@ interface IButtonProps {
   onClick?: (() => void | undefined) | undefined;
   disabled?: boolean;
   id?: string;
+  fullWidth?: boolean;
+  color?: 'primary' | 'secondary' | 'default' | 'inherit' | 'error';
 }
 
 const CustomButton = ({
@@ -19,6 +21,8 @@ const CustomButton = ({
   type,
   disabled,
   id,
+  fullWidth,
+  color,
   ...props
 }: IButtonProps) => {
   return (

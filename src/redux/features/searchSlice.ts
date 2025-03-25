@@ -22,8 +22,10 @@ interface SearchState {
   departureDate: string;
   tickets: Ticket[];
   passengers: number;
+  seats: number[];
   loading: boolean;
   error: string | null;
+  ticketId: string;
 }
 
 // Estado inicial
@@ -33,8 +35,10 @@ const initialState: SearchState = {
   departureDate: '',
   tickets: [],
   passengers: 5,
+  ticketId: '',
   loading: false,
   error: null,
+  seats: [],
 };
 
 // Thunk para buscar as passagens
@@ -73,6 +77,13 @@ const searchSlice = createSlice({
     setPassengers: (state, action: PayloadAction<number>) => {
       state.passengers = action.payload;
     },
+    setTicketId: (state, action: PayloadAction<string>) => {
+      console.log(action.payload);
+      state.ticketId = action.payload;
+    },
+    setSeats: (state, action: PayloadAction<number[]>) => {
+      state.seats = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -91,6 +102,12 @@ const searchSlice = createSlice({
   },
 });
 
-export const { setOrigin, setDestination, setDepartureDate, setPassengers } =
-  searchSlice.actions;
+export const {
+  setOrigin,
+  setDestination,
+  setDepartureDate,
+  setPassengers,
+  setTicketId,
+  setSeats,
+} = searchSlice.actions;
 export default searchSlice.reducer;

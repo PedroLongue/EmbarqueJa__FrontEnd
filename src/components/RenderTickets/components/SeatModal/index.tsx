@@ -5,6 +5,9 @@ import steeringwheel from '../../../../assets/Icons/steeringwheel.png';
 import Button from '../../../Button';
 import useTicketReservation from '../../../../hooks/useTicketReservation';
 import useGetTicket from '../../../../hooks/useGetTicket';
+import { useNavigate } from 'react-router';
+import { useAppDispatch } from '../../../../hooks/useAppDispatch';
+import { setSeats, setTicketId } from '../../../../redux/features/searchSlice';
 
 interface SeatModalProps {
   open: boolean;
@@ -12,7 +15,7 @@ interface SeatModalProps {
   origin: string;
   destination: string;
   passengers: number;
-  idTicket: string;
+  idTicket: string | null;
 }
 
 const rows: number = 10;
@@ -26,8 +29,11 @@ const SeatModal: React.FC<SeatModalProps> = ({
   passengers,
   idTicket,
 }) => {
-  const { reserveSeats, loading, error, success } = useTicketReservation();
+  const navigate = useNavigate();
   const { ticket } = useGetTicket();
+  const dispatch = useAppDispatch();
+
+  const { reserveSeats, loading, error, success } = useTicketReservation();
 
   const [selectedSeats, setSelectedSeats] = useState<number[]>([]);
   const [reservedSeats, setReservedSeats] = useState<number[]>([]);
@@ -35,6 +41,7 @@ const SeatModal: React.FC<SeatModalProps> = ({
   useEffect(() => {
     const fetchReservedSeats = async () => {
       if (idTicket) {
+        dispatch(setTicketId(idTicket));
         const data = await ticket(idTicket);
         setReservedSeats(data?.reservedSeats || []);
       }
@@ -51,6 +58,8 @@ const SeatModal: React.FC<SeatModalProps> = ({
 
     if (success) {
       setSelectedSeats([]);
+      dispatch(setSeats(selectedSeats));
+      navigate('/preview-ticket');
       onClose();
     }
   };
