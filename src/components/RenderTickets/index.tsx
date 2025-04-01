@@ -45,9 +45,21 @@ const RenderTickets = () => {
     setSelectedTicketId(null);
   };
 
-  console.log({ selectedTicketId });
-
   const passengers = useSelector((state: RootState) => state.search.passengers);
+
+  const now = new Date();
+
+  const parseTime = (timeString: string) => {
+    const [hours, minutes] = timeString.split(':').map(Number);
+    const date = new Date();
+    date.setHours(hours, minutes, 0, 0);
+    return date;
+  };
+
+  const validTickets = tickets.filter((ticket) => {
+    const departureTime = parseTime(ticket.departureTime);
+    return departureTime >= now;
+  });
 
   console.log({ tickets });
   return (
@@ -63,17 +75,17 @@ const RenderTickets = () => {
         </Typography>
       )}
 
-      {!loading && !error && tickets.length > 0 && (
+      {!loading && !error && validTickets.length > 0 && (
         <>
           <Typography
             variant="h5"
             gutterBottom
             sx={{ display: 'flex', alignItems: 'center' }}
           >
-            {tickets.length} resultados para {origin} <Icon name="arrow" />{' '}
+            {validTickets.length} resultados para {origin} <Icon name="arrow" />{' '}
             {destination}
           </Typography>
-          {tickets.map((ticket) => (
+          {validTickets.map((ticket) => (
             <Box
               key={ticket.id}
               sx={{
