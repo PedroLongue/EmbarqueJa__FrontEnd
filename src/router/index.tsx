@@ -35,19 +35,16 @@ const AppRouter = () => {
     <>
       <Header />
       <Routes>
-        <Route
-          path="/"
-          element={signed ? <Home /> : <Navigate to="/login" />}
-        />
+        <Route path="/" element={<Home />} />
         <Route
           path="/change-pass"
-          element={signed ? <ChangePass /> : <Navigate to="/" />}
+          element={signed ? <ChangePass /> : <Navigate to="/login" />}
         />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route
           path="/admin"
-          element={currentUser?.isAdmin ? <Admin /> : <Navigate to="/" />}
+          element={currentUser?.isAdmin ? <Admin /> : <Navigate to="/login" />}
         />
         <Route path="/preview-ticket" element={<PreviewTicket />} />
       </Routes>

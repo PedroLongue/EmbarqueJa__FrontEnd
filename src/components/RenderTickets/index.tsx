@@ -13,6 +13,7 @@ import Button from '../Button';
 import Map from '../Map';
 import { useState } from 'react';
 import SeatModal from './components/SeatModal';
+import { useNavigate } from 'react-router';
 
 export const amenityToIcon: Record<
   string,
@@ -29,6 +30,8 @@ export const amenityToIcon: Record<
 };
 
 const RenderTickets = () => {
+  const navigate = useNavigate();
+  const { signed, currentUser } = useSelector((state: RootState) => state.auth);
   const { tickets, loading, error, origin, destination } = useSelector(
     (state: RootState) => state.search,
   );
@@ -37,6 +40,10 @@ const RenderTickets = () => {
   const [selectedTicketId, setSelectedTicketId] = useState<string | null>(null);
 
   const handleOpenSeatModal = (id: string) => {
+    if (!signed) {
+      navigate('/login');
+      return;
+    }
     setOpenSeatModal(true);
     setSelectedTicketId(id);
   };
