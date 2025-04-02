@@ -13,6 +13,7 @@ const Input = ({ label, type = 'text', ...props }: IInputProps) => {
       variant="outlined"
       type={type}
       fullWidth
+      InputLabelProps={{ shrink: !!props.value }}
       {...props}
     />
   );

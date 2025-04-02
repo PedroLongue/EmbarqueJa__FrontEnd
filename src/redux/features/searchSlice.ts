@@ -34,7 +34,7 @@ const initialState: SearchState = {
   destination: '',
   departureDate: '',
   tickets: [],
-  passengers: 5,
+  passengers: 1,
   ticketId: '',
   loading: false,
   error: null,

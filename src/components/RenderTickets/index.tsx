@@ -31,7 +31,7 @@ export const amenityToIcon: Record<
 
 const RenderTickets = () => {
   const navigate = useNavigate();
-  const { signed, currentUser } = useSelector((state: RootState) => state.auth);
+  const { signed } = useSelector((state: RootState) => state.auth);
   const { tickets, loading, error, origin, destination } = useSelector(
     (state: RootState) => state.search,
   );

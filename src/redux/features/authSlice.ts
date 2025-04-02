@@ -6,6 +6,8 @@ interface CurrentUser {
   name: string;
   email: string;
   isAdmin: boolean;
+  cpf: string;
+  birthDate: string;
   __v: number;
 }
 
