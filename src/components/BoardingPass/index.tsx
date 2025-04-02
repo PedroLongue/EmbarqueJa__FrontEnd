@@ -11,6 +11,7 @@ import Icon from '../../assets/Icons';
 import Button from '../Button';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
+import { formatDateToDDMMYYYY } from '../../utils/formatDate';
 interface ITicket {
   ticket: {
     _id: string;
@@ -28,11 +29,6 @@ interface ITicket {
     reservedSeats: number[];
   };
 }
-
-const formatDate = (isoDate: string) => {
-  const [year, month, day] = isoDate.split('T')[0].split('-');
-  return `${day}/${month}/${year}`;
-};
 
 const BoardingPass = ({ ticket }: ITicket) => {
   const passengerSeats = useSelector((state: RootState) => state.search.seats);
@@ -57,7 +53,8 @@ const BoardingPass = ({ ticket }: ITicket) => {
               alignItems={'center'}
             >
               <Icon name="calendar" />{' '}
-              {ticket?.departureDate && formatDate(ticket.departureDate)}
+              {ticket?.departureDate &&
+                formatDateToDDMMYYYY(ticket.departureDate)}
             </Typography>
           </Stack>
           <Divider

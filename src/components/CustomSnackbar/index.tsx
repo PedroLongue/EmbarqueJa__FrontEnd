@@ -1,6 +1,4 @@
 import { Snackbar, Alert, AlertColor } from '@mui/material';
-import { useState } from 'react';
-
 interface CustomSnackbarProps {
   message: string;
   severity: AlertColor;
