@@ -11,7 +11,14 @@ interface IButtonProps {
   disabled?: boolean;
   id?: string;
   fullWidth?: boolean;
-  color?: 'primary' | 'secondary' | 'default' | 'inherit' | 'error';
+  color?:
+    | 'primary'
+    | 'secondary'
+    | 'inherit'
+    | 'error'
+    | 'success'
+    | 'info'
+    | 'warning';
 }
 
 const CustomButton = ({
@@ -32,6 +39,7 @@ const CustomButton = ({
       sx={sx}
       type={type}
       disabled={disabled}
+      color={color}
     >
       {children}
     </Button>

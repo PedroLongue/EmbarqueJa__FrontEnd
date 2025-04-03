@@ -8,6 +8,9 @@ import useGetTicket from '../../../../hooks/useGetTicket';
 import { useNavigate } from 'react-router';
 import { useAppDispatch } from '../../../../hooks/useAppDispatch';
 import { setSeats, setTicketId } from '../../../../redux/features/searchSlice';
+import useReservations from '../../../../hooks/useReservation';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../../redux/store';
 
 interface SeatModalProps {
   open: boolean;
@@ -32,8 +35,10 @@ const SeatModal: React.FC<SeatModalProps> = ({
   const navigate = useNavigate();
   const { ticket } = useGetTicket();
   const dispatch = useAppDispatch();
+  const { createReservation, error } = useReservations();
+  const { currentUser } = useSelector((state: RootState) => state.auth);
 
-  const { reserveSeats, loading, error, success } = useTicketReservation();
+  const { reserveSeats, success } = useTicketReservation();
 
   const [selectedSeats, setSelectedSeats] = useState<number[]>([]);
   const [reservedSeats, setReservedSeats] = useState<number[]>([]);
@@ -59,6 +64,10 @@ const SeatModal: React.FC<SeatModalProps> = ({
     if (success) {
       setSelectedSeats([]);
       dispatch(setSeats(selectedSeats));
+      if (currentUser) {
+        createReservation(currentUser._id, idTicket);
+      }
+      if (error) return;
       navigate('/preview-ticket');
       onClose();
     }

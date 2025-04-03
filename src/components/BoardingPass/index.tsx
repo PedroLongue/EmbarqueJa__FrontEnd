@@ -12,6 +12,7 @@ import Button from '../Button';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { formatDateToDDMMYYYY } from '../../utils/formatDate';
+import { on } from 'events';
 interface ITicket {
   ticket: {
     _id: string;
@@ -28,12 +29,14 @@ interface ITicket {
     __v: number;
     reservedSeats: number[];
   };
+  onCancel: () => void;
 }
 
-const BoardingPass = ({ ticket }: ITicket) => {
+const BoardingPass = ({ ticket, onCancel }: ITicket) => {
   const passengerSeats = useSelector((state: RootState) => state.search.seats);
   const passengers = useSelector((state: RootState) => state.search.passengers);
 
+  console.log({ ticket });
   return (
     <Grid item xs={12} md={5}>
       <Card sx={{ borderRadius: 2, boxShadow: 3 }}>
@@ -67,7 +70,7 @@ const BoardingPass = ({ ticket }: ITicket) => {
           <Box display="flex" alignItems="center" mb={1}>
             <Icon name="location" />
             <Typography fontWeight="bold" ml={1} display={'flex'}>
-              Nova Friburgo <Icon name="arrow" /> Rio de Janeiro
+              {ticket.origin} <Icon name="arrow" /> {ticket.destination}
             </Typography>
           </Box>
           <Box display="flex" alignItems="center" mb={1}>
@@ -104,9 +107,17 @@ const BoardingPass = ({ ticket }: ITicket) => {
         </CardContent>
       </Card>
 
-      <Button variant="contained" fullWidth sx={{ mt: 3 }}>
-        Ir para o pagamento
-      </Button>
+      <Stack gap={2}>
+        <Button variant="contained" fullWidth sx={{ mt: 3 }}>
+          Ir para o pagamento
+        </Button>
+        <Button
+          variant="contained"
+          onClick={onCancel}
+          color="error"
+          children="Cancelar reserva"
+        />
+      </Stack>
     </Grid>
   );
 };

@@ -1,10 +1,14 @@
 import { useEffect, useState } from 'react';
-import { Container, Grid } from '@mui/material';
+import { Container, Grid, Typography, Box, Tooltip } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import useGetTicket from '../../hooks/useGetTicket';
+import useReservations from '../../hooks/useReservation';
 import BoardingPass from '../../components/BoardingPass';
 import CheckoutForm from '../../components/CheckoutForm';
+import { useNavigate } from 'react-router';
+import Icon from '../../assets/Icons';
+import Timer from '../../components/Timer';
 
 interface ITicket {
   _id: string;
@@ -23,26 +27,57 @@ interface ITicket {
 }
 
 const PreviewTicket = () => {
+  const navigate = useNavigate();
   const { ticket } = useGetTicket();
+  const { getPendingReservation, cancelReservation } = useReservations();
+  const { currentUser } = useSelector((state: RootState) => state.auth);
 
-  const ticketId = useSelector((state: RootState) => state.search.ticketId);
-
-  const [userTicket, setUserTicket] = useState<ITicket | null>();
-
-  const getTicket = async () => {
-    const data = await ticket(ticketId);
-    setUserTicket(data);
-  };
+  const [userTicket, setUserTicket] = useState<ITicket | null>(null);
+  const [reservationId, setReservationId] = useState<string | null>(null);
 
   useEffect(() => {
-    getTicket();
-  }, []);
+    const fetchReservation = async () => {
+      if (!currentUser?._id) return;
+
+      try {
+        const reservation = await getPendingReservation(currentUser._id);
+        if (reservation) {
+          setReservationId(reservation._id);
+          const ticketData = await ticket(reservation.ticketId);
+          setUserTicket(ticketData);
+        }
+      } catch (error) {
+        console.error('Erro ao buscar reserva:', error);
+      }
+    };
+
+    fetchReservation();
+  }, [currentUser]);
+
+  const handleCancelReservation = async () => {
+    if (!reservationId) return;
+
+    try {
+      await cancelReservation(reservationId);
+      setUserTicket(null);
+      setReservationId(null);
+      navigate('/');
+    } catch (error) {
+      console.error('Erro ao cancelar reserva:', error);
+    }
+  };
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4, flex: 1 }}>
+      <Timer onCancel={handleCancelReservation} />
       <Grid container spacing={4}>
         <CheckoutForm />
-        {userTicket && <BoardingPass ticket={userTicket} />}
+        {userTicket && (
+          <BoardingPass
+            ticket={userTicket}
+            onCancel={handleCancelReservation}
+          />
+        )}
       </Grid>
     </Container>
   );
