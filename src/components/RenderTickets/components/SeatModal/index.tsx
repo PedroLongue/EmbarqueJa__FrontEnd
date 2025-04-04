@@ -3,7 +3,6 @@ import { Grid, Typography, Modal, Box, Stack } from '@mui/material';
 import Icon from '../../../../assets/Icons';
 import steeringwheel from '../../../../assets/Icons/steeringwheel.png';
 import Button from '../../../Button';
-import useTicketReservation from '../../../../hooks/useTicketReservation';
 import useGetTicket from '../../../../hooks/useGetTicket';
 import { useNavigate } from 'react-router';
 import { useAppDispatch } from '../../../../hooks/useAppDispatch';
@@ -38,8 +37,6 @@ const SeatModal: React.FC<SeatModalProps> = ({
   const { createReservation, error } = useReservations();
   const { currentUser } = useSelector((state: RootState) => state.auth);
 
-  const { reserveSeats, success } = useTicketReservation();
-
   const [selectedSeats, setSelectedSeats] = useState<number[]>([]);
   const [reservedSeats, setReservedSeats] = useState<number[]>([]);
 
@@ -59,17 +56,23 @@ const SeatModal: React.FC<SeatModalProps> = ({
 
   const handleReserveSeats = async () => {
     if (!idTicket) return;
-    await reserveSeats(idTicket, selectedSeats);
 
-    if (success) {
+    try {
+      // const reservationSuccess = await reserveSeats(idTicket, selectedSeats);
+
       setSelectedSeats([]);
       dispatch(setSeats(selectedSeats));
+
       if (currentUser) {
-        createReservation(currentUser._id, idTicket);
+        await createReservation(currentUser._id, idTicket, selectedSeats);
       }
-      if (error) return;
-      navigate('/preview-ticket');
-      onClose();
+
+      if (!error) {
+        navigate('/preview-ticket');
+        onClose();
+      }
+    } catch (err) {
+      console.error('Error during reservation:', err);
     }
   };
 

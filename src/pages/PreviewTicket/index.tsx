@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Container, Grid, Typography, Box, Tooltip } from '@mui/material';
+import { Container, Grid } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import useGetTicket from '../../hooks/useGetTicket';
@@ -7,7 +7,6 @@ import useReservations from '../../hooks/useReservation';
 import BoardingPass from '../../components/BoardingPass';
 import CheckoutForm from '../../components/CheckoutForm';
 import { useNavigate } from 'react-router';
-import Icon from '../../assets/Icons';
 import Timer from '../../components/Timer';
 
 interface ITicket {
@@ -31,7 +30,6 @@ const PreviewTicket = () => {
   const { ticket } = useGetTicket();
   const { getPendingReservation, cancelReservation } = useReservations();
   const { currentUser } = useSelector((state: RootState) => state.auth);
-
   const [userTicket, setUserTicket] = useState<ITicket | null>(null);
   const [reservationId, setReservationId] = useState<string | null>(null);
 

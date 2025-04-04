@@ -12,7 +12,6 @@ import Button from '../Button';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { formatDateToDDMMYYYY } from '../../utils/formatDate';
-import { on } from 'events';
 interface ITicket {
   ticket: {
     _id: string;
@@ -36,7 +35,6 @@ const BoardingPass = ({ ticket, onCancel }: ITicket) => {
   const passengerSeats = useSelector((state: RootState) => state.search.seats);
   const passengers = useSelector((state: RootState) => state.search.passengers);
 
-  console.log({ ticket });
   return (
     <Grid item xs={12} md={5}>
       <Card sx={{ borderRadius: 2, boxShadow: 3 }}>

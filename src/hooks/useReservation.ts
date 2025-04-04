@@ -13,7 +13,11 @@ const useReservations = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const createReservation = async (userId: string, ticketId: string) => {
+  const createReservation = async (
+    userId: string,
+    ticketId: string,
+    seats: number[],
+  ) => {
     setLoading(true);
     setError(null);
 
@@ -21,6 +25,7 @@ const useReservations = () => {
       const response = await api.post<IReservation>('/tickets/reservations', {
         userId,
         ticketId,
+        seats,
       });
       setLoading(false);
       return response.data;

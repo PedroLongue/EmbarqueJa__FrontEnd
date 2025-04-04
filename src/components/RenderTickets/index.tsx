@@ -17,7 +17,7 @@ import { useNavigate } from 'react-router';
 
 export const amenityToIcon: Record<
   string,
-  'wc' | 'air' | 'seat' | 'usb' | 'water' | 'snack' | 'tv' | 'bed'
+  'wc' | 'air' | 'seat' | 'usb' | 'water' | 'snack' | 'tv' | 'bed' | 'wifi'
 > = {
   'Banheiro': 'wc',
   'Ar condicionado': 'air',
@@ -27,6 +27,7 @@ export const amenityToIcon: Record<
   'Lanches': 'snack',
   'TV': 'tv',
   'Cobertor e travesseiro': 'bed',
+  'Wi-Fi': 'wifi',
 };
 
 const RenderTickets = () => {
@@ -56,16 +57,10 @@ const RenderTickets = () => {
 
   const now = new Date();
 
-  const parseTime = (timeString: string) => {
-    const [hours, minutes] = timeString.split(':').map(Number);
-    const date = new Date();
-    date.setHours(hours, minutes, 0, 0);
-    return date;
-  };
-
   const validTickets = tickets.filter((ticket) => {
-    const departureTime = parseTime(ticket.departureTime);
-    return departureTime >= now;
+    const ticketDate = new Date(ticket.departureDate);
+    ticketDate.setHours(ticketDate.getHours() + 3);
+    return ticketDate >= now;
   });
 
   console.log({ tickets });
