@@ -65,9 +65,13 @@ const useReservations = () => {
     setLoading(true);
     setError(null);
 
+    console.log(
+      'Fazendo PATCH para:',
+      `/tickets/reservations/${reservationId}/confirm`,
+    );
     try {
       const response = await api.patch<IReservation>(
-        `/reservations/${reservationId}/confirm`,
+        `/tickets/reservations/${reservationId}/confirm`,
       );
       setLoading(false);
       return response.data;

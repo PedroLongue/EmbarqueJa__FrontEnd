@@ -15,10 +15,20 @@ import TabPanel from '@mui/lab/TabPanel';
 import CreditCardPayment from '../../components/CreditCardPayment';
 import PixPayment from '../../components/PixPayment';
 import { useForm, FormProvider } from 'react-hook-form';
+import useUserTickets from '../../hooks/useUserTickets';
+import useReservations from '../../hooks/useReservation';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../redux/store';
+import { useNavigate } from 'react-router';
 
 const Checkout = () => {
+  const navigate = useNavigate();
+  const { currentUser } = useSelector((state: RootState) => state.auth);
+  const { getPendingReservation, confirmReservation } = useReservations();
   const [value, setValue] = useState('1');
   const [acceptedTerms, setAcceptedTerms] = useState(false);
+
+  const { createUserTicket, success } = useUserTickets();
 
   const methods = useForm({
     mode: 'onBlur',
@@ -33,9 +43,33 @@ const Checkout = () => {
     setValue(newValue);
   };
 
-  const onSubmit = (data: any) => {
-    console.log('Formulário enviado com sucesso:', data);
-    console.log({ data });
+  console.log(currentUser?._id);
+
+  const onSubmit = async (data: any) => {
+    if (!currentUser?._id) return;
+
+    const paymentMethod = value === '1' ? 'credit-card' : 'pix';
+    const fullData = {
+      ...data,
+      paymentMethod,
+    };
+
+    try {
+      const reservation = await getPendingReservation(currentUser._id);
+      if (reservation) {
+        // await confirmReservation(reservation._id);
+        await createUserTicket(
+          reservation.ticketId,
+          paymentMethod,
+          currentUser._id,
+        );
+      }
+      if (success) navigate('/');
+    } catch (error) {
+      console.log(error);
+    }
+
+    console.log(fullData);
   };
 
   return (
