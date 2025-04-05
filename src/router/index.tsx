@@ -13,6 +13,7 @@ import api from '../services/api';
 import Footer from '../components/Footer';
 import ChangePass from '../pages/ChangePass';
 import PreviewTicket from '../pages/PreviewTicket';
+import Checkout from '../pages/Checkout';
 
 const AppRouter = () => {
   const { signed, currentUser } = useSelector((state: RootState) => state.auth);
@@ -46,7 +47,14 @@ const AppRouter = () => {
           path="/admin"
           element={currentUser?.isAdmin ? <Admin /> : <Navigate to="/login" />}
         />
-        <Route path="/preview-ticket" element={<PreviewTicket />} />
+        <Route
+          path="/preview-ticket"
+          element={signed ? <PreviewTicket /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/checkout"
+          element={signed ? <Checkout /> : <Navigate to="/login" />}
+        />
       </Routes>
       <Footer />
     </>

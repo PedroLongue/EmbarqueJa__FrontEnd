@@ -12,6 +12,7 @@ import Button from '../Button';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { formatDateToDDMMYYYY } from '../../utils/formatDate';
+import { useNavigate } from 'react-router';
 interface ITicket {
   ticket: {
     _id: string;
@@ -29,11 +30,14 @@ interface ITicket {
     reservedSeats: number[];
   };
   onCancel: () => void;
+  isFormValid: boolean;
 }
 
-const BoardingPass = ({ ticket, onCancel }: ITicket) => {
+const BoardingPass = ({ ticket, onCancel, isFormValid }: ITicket) => {
   const passengerSeats = useSelector((state: RootState) => state.search.seats);
   const passengers = useSelector((state: RootState) => state.search.passengers);
+
+  const navigate = useNavigate();
 
   return (
     <Grid item xs={12} md={5}>
@@ -106,7 +110,13 @@ const BoardingPass = ({ ticket, onCancel }: ITicket) => {
       </Card>
 
       <Stack gap={2}>
-        <Button variant="contained" fullWidth sx={{ mt: 3 }}>
+        <Button
+          variant="contained"
+          fullWidth
+          sx={{ mt: 3 }}
+          onClick={() => navigate('/checkout')}
+          disabled={!isFormValid}
+        >
           Ir para o pagamento
         </Button>
         <Button

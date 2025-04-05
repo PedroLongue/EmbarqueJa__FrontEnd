@@ -1,53 +1,67 @@
+// CheckoutForm.tsx
 import { Box, Checkbox, FormControlLabel, Grid } from '@mui/material';
 import Input from '../Input';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { formatDateToDDMMYYYY } from '../../utils/formatDate';
+import { useForm, Controller, useFormContext } from 'react-hook-form';
 
-const CheckoutForm = () => {
+type PassengerInfo = {
+  name: string;
+  cpf: string;
+  birthDate: string;
+};
+
+interface CheckoutFormProps {
+  onFormChange: (isValid: boolean) => void;
+}
+
+const CheckoutForm = ({ onFormChange }: CheckoutFormProps) => {
   const passengers = useSelector((state: RootState) => state.search.passengers);
   const { currentUser } = useSelector((state: RootState) => state.auth);
 
-  console.log(currentUser);
-
   const [useBuyerInfo, setUseBuyerInfo] = useState(false);
-  const [passengerInfo, setPassengerInfo] = useState(
-    Array.from({ length: passengers }).map((_, index) => ({
-      name: '',
-      cpf: '',
-      birthDate: '',
-    })),
-  );
+
+  const {
+    control,
+    setValue,
+    getValues,
+    trigger,
+    formState: { isValid },
+  } = useForm<{ passengers: PassengerInfo[] }>({
+    mode: 'onChange',
+    defaultValues: {
+      passengers: Array.from({ length: passengers }).map(() => ({
+        name: '',
+        cpf: '',
+        birthDate: '',
+      })),
+    },
+  });
+
+  useEffect(() => {
+    onFormChange(isValid);
+  }, [isValid, onFormChange]);
 
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUseBuyerInfo(event.target.checked);
 
     if (event.target.checked && currentUser) {
-      setPassengerInfo((prev) => {
-        const updated = [...prev];
-        updated[0] = {
-          name: currentUser.name || '',
-          cpf: currentUser.cpf || '',
-          birthDate: formatDateToDDMMYYYY(currentUser.birthDate) || '',
-        };
-        return updated;
+      setValue(`passengers.0`, {
+        name: currentUser.name || '',
+        cpf: currentUser.cpf || '',
+        birthDate: formatDateToDDMMYYYY(currentUser.birthDate) || '',
       });
     } else {
-      setPassengerInfo((prev) => {
-        const updated = [...prev];
-        updated[0] = { name: '', cpf: '', birthDate: '' };
-        return updated;
+      setValue(`passengers.0`, {
+        name: '',
+        cpf: '',
+        birthDate: '',
       });
     }
-  };
 
-  const handleInputChange = (index: number, field: string, value: string) => {
-    setPassengerInfo((prev) => {
-      const updated = [...prev];
-      updated[index] = { ...updated[index], [field]: value };
-      return updated;
-    });
+    trigger();
   };
 
   return (
@@ -76,36 +90,51 @@ const CheckoutForm = () => {
           )}
           <Grid container spacing={2} mt={1}>
             <Grid item xs={12}>
-              <Input
-                fullWidth
-                label="Nome do passageiro"
-                variant="outlined"
-                value={passengerInfo[index].name}
-                onChange={(e) =>
-                  handleInputChange(index, 'name', e.target.value)
-                }
+              <Controller
+                name={`passengers.${index}.name`}
+                control={control}
+                rules={{ required: true }}
+                render={({ field }) => (
+                  <Input
+                    shrink={useBuyerInfo}
+                    fullWidth
+                    label="Nome do passageiro"
+                    variant="outlined"
+                    {...field}
+                  />
+                )}
               />
             </Grid>
             <Grid item xs={6}>
-              <Input
-                fullWidth
-                label="CPF"
-                variant="outlined"
-                value={passengerInfo[index].cpf}
-                onChange={(e) =>
-                  handleInputChange(index, 'cpf', e.target.value)
-                }
+              <Controller
+                name={`passengers.${index}.cpf`}
+                control={control}
+                rules={{ required: true }}
+                render={({ field }) => (
+                  <Input
+                    shrink={useBuyerInfo}
+                    fullWidth
+                    label="CPF"
+                    variant="outlined"
+                    {...field}
+                  />
+                )}
               />
             </Grid>
             <Grid item xs={6}>
-              <Input
-                fullWidth
-                label="Data de nascimento"
-                variant="outlined"
-                value={passengerInfo[index].birthDate}
-                onChange={(e) =>
-                  handleInputChange(index, 'birthDate', e.target.value)
-                }
+              <Controller
+                name={`passengers.${index}.birthDate`}
+                control={control}
+                rules={{ required: true }}
+                render={({ field }) => (
+                  <Input
+                    shrink={useBuyerInfo}
+                    fullWidth
+                    label="Data de nascimento"
+                    variant="outlined"
+                    {...field}
+                  />
+                )}
               />
             </Grid>
           </Grid>

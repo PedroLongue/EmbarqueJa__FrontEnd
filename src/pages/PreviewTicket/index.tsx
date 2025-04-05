@@ -32,6 +32,7 @@ const PreviewTicket = () => {
   const { currentUser } = useSelector((state: RootState) => state.auth);
   const [userTicket, setUserTicket] = useState<ITicket | null>(null);
   const [reservationId, setReservationId] = useState<string | null>(null);
+  const [formValid, setFormValid] = useState(false);
 
   useEffect(() => {
     const fetchReservation = async () => {
@@ -69,11 +70,12 @@ const PreviewTicket = () => {
     <Container maxWidth="lg" sx={{ mt: 4, flex: 1 }}>
       <Timer onCancel={handleCancelReservation} />
       <Grid container spacing={4}>
-        <CheckoutForm />
+        <CheckoutForm onFormChange={setFormValid} />
         {userTicket && (
           <BoardingPass
             ticket={userTicket}
             onCancel={handleCancelReservation}
+            isFormValid={formValid}
           />
         )}
       </Grid>
