@@ -5,6 +5,7 @@ import api from '../services/api';
 interface IUserTicketData {
   ticketId: string;
   paymentMethod: 'credit-card' | 'pix';
+  userSeats: number[];
   userId: string;
 }
 
@@ -16,6 +17,7 @@ const useUserTickets = () => {
   const createUserTicket = async (
     ticketId: string,
     paymentMethod: 'credit-card' | 'pix',
+    userSeats: number[],
     userId: string,
   ) => {
     setLoading(true);
@@ -28,6 +30,7 @@ const useUserTickets = () => {
         {
           ticketId,
           paymentMethod,
+          userSeats,
         },
       );
 

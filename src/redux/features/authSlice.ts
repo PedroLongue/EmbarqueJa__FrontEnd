@@ -1,6 +1,11 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import api from '../../services/api';
 
+interface userTrips {
+  ticketId: string;
+  paymentMethod: string;
+  _id: string;
+}
 interface CurrentUser {
   _id: string;
   name: string;
@@ -8,6 +13,7 @@ interface CurrentUser {
   isAdmin: boolean;
   cpf: string;
   birthDate: string;
+  userTickets: userTrips[];
   __v: number;
 }
 

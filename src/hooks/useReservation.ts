@@ -9,6 +9,12 @@ interface IReservation {
   status: string;
 }
 
+interface IConfirmReservation {
+  _id: string;
+  status: string;
+  seats: number[];
+}
+
 const useReservations = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -65,12 +71,8 @@ const useReservations = () => {
     setLoading(true);
     setError(null);
 
-    console.log(
-      'Fazendo PATCH para:',
-      `/tickets/reservations/${reservationId}/confirm`,
-    );
     try {
-      const response = await api.patch<IReservation>(
+      const response = await api.patch<IConfirmReservation>(
         `/tickets/reservations/${reservationId}/confirm`,
       );
       setLoading(false);

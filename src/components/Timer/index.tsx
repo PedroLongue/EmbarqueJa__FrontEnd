@@ -7,7 +7,7 @@ interface ITimerProps {
 }
 
 const Timer = ({ onCancel }: ITimerProps) => {
-  const [timeLeft, setTimeLeft] = useState(6000);
+  const [timeLeft, setTimeLeft] = useState(600);
 
   useEffect(() => {
     if (timeLeft <= 0) {

@@ -57,17 +57,20 @@ const Checkout = () => {
     try {
       const reservation = await getPendingReservation(currentUser._id);
       if (reservation) {
-        // await confirmReservation(reservation._id);
+        const confirmedReservation = await confirmReservation(reservation._id);
+        console.log(confirmedReservation.seats);
         await createUserTicket(
           reservation.ticketId,
           paymentMethod,
+          confirmedReservation.seats,
           currentUser._id,
         );
       }
-      if (success) navigate('/');
+      navigate('/my-purchases');
     } catch (error) {
       console.log(error);
     }
+    console.log({ success });
 
     console.log(fullData);
   };

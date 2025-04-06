@@ -78,7 +78,7 @@ const BoardingPass = ({ ticket, onCancel, isFormValid }: ITicket) => {
           <Box display="flex" alignItems="center" mb={1}>
             <Icon name="time" />
             <Typography ml={1} display={'flex'}>
-              10:00 <Icon name="arrow" /> 13:00
+              {ticket.departureTime} <Icon name="arrow" /> {ticket.arrivalTime}
             </Typography>
           </Box>
           <Box display="flex" alignItems="center" mb={1}>
@@ -103,7 +103,7 @@ const BoardingPass = ({ ticket, onCancel, isFormValid }: ITicket) => {
               style={{ height: 40 }}
             />
             <Typography variant="h5" fontWeight="bold">
-              R$ 52,02
+              R$ {ticket.price}
             </Typography>
           </Box>
         </CardContent>

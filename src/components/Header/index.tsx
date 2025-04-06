@@ -126,7 +126,10 @@ const Header = () => {
                 </MenuItem>
                 <Divider />
                 <MenuItem
-                  onClick={handleClose}
+                  onClick={() => {
+                    handleClose();
+                    navigate('/my-purchases');
+                  }}
                   sx={{ display: 'flex', justifyContent: 'center' }}
                 >
                   Minhas compras
