@@ -59,8 +59,10 @@ const MyPurchases = () => {
       }
     };
 
-    fetchTickets();
-  }, [currentUser]);
+    setTimeout(() => {
+      fetchTickets();
+    }, 2000);
+  }, [currentUser?.userTickets]);
 
   return (
     <Container

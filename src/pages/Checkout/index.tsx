@@ -20,8 +20,11 @@ import useReservations from '../../hooks/useReservation';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { useNavigate } from 'react-router';
+import { getCurrentUser } from '../../redux/features/authSlice';
+import { useAppDispatch } from '../../hooks/useAppDispatch';
 
 const Checkout = () => {
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { currentUser } = useSelector((state: RootState) => state.auth);
   const { getPendingReservation, confirmReservation } = useReservations();
@@ -66,6 +69,7 @@ const Checkout = () => {
           currentUser._id,
         );
       }
+      await dispatch(getCurrentUser());
       navigate('/my-purchases');
     } catch (error) {
       console.log(error);
