@@ -6,6 +6,7 @@ import {
   Box,
   Stack,
   Divider,
+  Pagination,
 } from '@mui/material';
 import { Container } from '@mui/material';
 import { useSelector } from 'react-redux';
@@ -38,6 +39,18 @@ const MyPurchases = () => {
 
   const [ticketsData, setTicketsData] = useState<Ticket[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const [page, setPage] = useState(1);
+  const ticketsPerPage = 4;
+
+  const startIndex = (page - 1) * ticketsPerPage;
+  const endIndex = startIndex + ticketsPerPage;
+  const currentTickets = ticketsData.slice(startIndex, endIndex);
+  const totalPages = Math.ceil(ticketsData.length / ticketsPerPage);
+
+  const handlePageChange = (_: React.ChangeEvent<unknown>, value: number) => {
+    setPage(value);
+  };
 
   useEffect(() => {
     const fetchTickets = async () => {
@@ -86,7 +99,7 @@ const MyPurchases = () => {
             <EmptyStatePurchases />
           ) : (
             <>
-              {ticketsData.map((ticket) => (
+              {currentTickets.map((ticket) => (
                 <Card sx={{ borderRadius: 2, boxShadow: 3, marginBottom: 2 }}>
                   <CardContent>
                     <Stack
@@ -171,6 +184,15 @@ const MyPurchases = () => {
               ))}
             </>
           )}
+          <Box display="flex" justifyContent="center" mt={4}>
+            <Pagination
+              count={totalPages}
+              page={page}
+              onChange={handlePageChange}
+              color="primary"
+              shape="rounded"
+            />
+          </Box>
         </>
       )}
     </Container>

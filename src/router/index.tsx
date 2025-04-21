@@ -15,6 +15,7 @@ import ChangePass from '../pages/ChangePass';
 import PreviewTicket from '../pages/PreviewTicket';
 import Checkout from '../pages/Checkout';
 import MyPurchases from '../pages/MyPurchases';
+import UserProfile from '../pages/UserProfile';
 
 const AppRouter = () => {
   const { signed, currentUser } = useSelector((state: RootState) => state.auth);
@@ -59,6 +60,10 @@ const AppRouter = () => {
         <Route
           path="/my-purchases"
           element={signed ? <MyPurchases /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/my-profile"
+          element={signed ? <UserProfile /> : <Navigate to="/login" />}
         />
       </Routes>
       <Footer />

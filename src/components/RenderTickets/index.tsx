@@ -10,7 +10,6 @@ import { RootState } from '../../redux/store';
 import Icon from '../../assets/Icons';
 import TicketTime from '../TicketTime';
 import Button from '../Button';
-import Map from '../Map';
 import { useState } from 'react';
 import SeatModal from './components/SeatModal';
 import { useNavigate } from 'react-router';
@@ -65,7 +64,7 @@ const RenderTickets = () => {
 
   console.log({ tickets });
   return (
-    <Container sx={{ marginTop: '152px' }} maxWidth="xl">
+    <Container sx={{ marginTop: '152px' }} maxWidth="md">
       {loading && (
         <Typography variant="h5">
           Buscando passagens <CircularProgress />
@@ -100,9 +99,6 @@ const RenderTickets = () => {
               borderRadius={2}
               marginBottom={5}
             >
-              <Stack spacing={2}>
-                <Map origin={ticket.origin} destination={ticket.destination} />
-              </Stack>
               <Stack spacing={2}>
                 {' '}
                 <Typography
