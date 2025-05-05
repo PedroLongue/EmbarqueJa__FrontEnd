@@ -62,7 +62,6 @@ const RenderTickets = () => {
     return ticketDate >= now;
   });
 
-  console.log({ tickets });
   return (
     <Container sx={{ marginTop: '152px' }} maxWidth="md">
       {loading && (

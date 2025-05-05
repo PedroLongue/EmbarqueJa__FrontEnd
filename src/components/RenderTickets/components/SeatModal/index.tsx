@@ -10,6 +10,7 @@ import { setSeats, setTicketId } from '../../../../redux/features/searchSlice';
 import useReservations from '../../../../hooks/useReservation';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../../redux/store';
+import socket from '../../../../services/socket';
 
 interface SeatModalProps {
   open: boolean;
@@ -39,33 +40,56 @@ const SeatModal: React.FC<SeatModalProps> = ({
 
   const [selectedSeats, setSelectedSeats] = useState<number[]>([]);
   const [reservedSeats, setReservedSeats] = useState<number[]>([]);
+  const [tempReservedSeats, setTempReservedSeats] = useState<number[]>([]);
 
   useEffect(() => {
+    if (!idTicket) return;
+
     const fetchReservedSeats = async () => {
-      if (idTicket) {
-        dispatch(setTicketId(idTicket));
-        const data = await ticket(idTicket);
-        setReservedSeats(data?.reservedSeats || []);
-      }
+      dispatch(setTicketId(idTicket));
+      const data = await ticket(idTicket);
+      setReservedSeats(data?.reservedSeats || []);
     };
 
     if (open) {
       fetchReservedSeats();
     }
+    const handleSeatStatusUpdate = (data: {
+      selections: Record<number, string>;
+    }) => {
+      const allSelections = data.selections;
+
+      const seatsByOthers = Object.entries(allSelections)
+        .filter(([_, user]) => user !== currentUser?._id)
+        .map(([seat]) => Number(seat));
+
+      const seatsByCurrentUser = Object.entries(allSelections)
+        .filter(([_, user]) => user === currentUser?._id)
+        .map(([seat]) => Number(seat));
+
+      setTempReservedSeats(seatsByOthers);
+      setSelectedSeats(seatsByCurrentUser);
+    };
+
+    socket.emit('join-ticket-room', idTicket, currentUser?._id);
+
+    socket.on('seats:update', handleSeatStatusUpdate);
+
+    return () => {
+      socket.off('seats:update', setSelectedSeats);
+      socket.emit('leave-ticket-room', idTicket);
+    };
   }, [open, idTicket]);
 
   const handleReserveSeats = async () => {
     if (!idTicket) return;
 
     try {
-      // const reservationSuccess = await reserveSeats(idTicket, selectedSeats);
-
-      setSelectedSeats([]);
-      dispatch(setSeats(selectedSeats));
-
       if (currentUser) {
         await createReservation(currentUser._id, idTicket, selectedSeats);
       }
+      dispatch(setSeats(selectedSeats));
+      setSelectedSeats([]);
 
       if (!error) {
         navigate('/preview-ticket');
@@ -79,20 +103,27 @@ const SeatModal: React.FC<SeatModalProps> = ({
   const handleSelectSeat = (seat: number) => {
     if (reservedSeats.includes(seat)) return;
 
-    setSelectedSeats((prev) => {
-      if (prev.includes(seat)) {
-        return prev.filter((s) => s !== seat);
-      }
-      if (prev.length < passengers) {
-        return [...prev, seat];
-      }
-      return prev;
+    const isAlreadySelected = selectedSeats.includes(seat);
+    const updated = isAlreadySelected
+      ? selectedSeats.filter((s) => s !== seat)
+      : [...selectedSeats, seat];
+
+    if (!isAlreadySelected && updated.length > passengers) return;
+
+    setSelectedSeats(updated);
+
+    socket.emit('seat:temp-select', {
+      ticketId: idTicket,
+      seat,
+      selected: !isAlreadySelected,
+      userId: currentUser?._id,
     });
   };
 
   const isSelected = (seat: number): boolean => selectedSeats.includes(seat);
 
-  const isReserved = (seat: number): boolean => reservedSeats.includes(seat);
+  const isReserved = (seat: number): boolean =>
+    reservedSeats.includes(seat) || tempReservedSeats.includes(seat);
 
   return (
     <Modal open={open} onClose={onClose}>

@@ -57,7 +57,7 @@ const Header = () => {
         <Typography variant="body1" fontWeight={'bold'}>
           EmbarqueJa
         </Typography>
-        <Container>
+        <Container style={{ display: 'flex', justifyContent: 'flex-end' }}>
           {signed && currentUser && (
             <Box
               style={{
@@ -160,6 +160,14 @@ const Header = () => {
                 />
               )}
             </Box>
+          )}
+          {!signed && (
+            <Button
+              children="Entrar"
+              onClick={() => navigate('/login')}
+              variant="contained"
+              sx={{ width: '150px', marginRight: '10px' }}
+            />
           )}
         </Container>
       </Container>
