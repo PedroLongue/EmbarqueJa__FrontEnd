@@ -119,7 +119,10 @@ const Header = () => {
                 </MenuItem>
                 <Divider />
                 <MenuItem
-                  onClick={handleClose}
+                  onClick={() => {
+                    handleClose();
+                    navigate('/my-profile');
+                  }}
                   sx={{ display: 'flex', justifyContent: 'center' }}
                 >
                   Meu perfil
