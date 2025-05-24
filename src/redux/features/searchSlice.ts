@@ -1,35 +1,9 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import api from '../../services/api';
-
-export interface Ticket {
-  id: string;
-  _id: string;
-  origin: string;
-  destination: string;
-  departureDate: string;
-  price: number;
-  arrivalTime: string;
-  departureTime: string;
-  type: string;
-  amenities: string[];
-  company: string;
-  companyLogo: string;
-}
-
-interface SearchState {
-  origin: string;
-  destination: string;
-  departureDate: string;
-  tickets: Ticket[];
-  passengers: number;
-  seats: number[];
-  loading: boolean;
-  error: string | null;
-  ticketId: string;
-}
+import { ISearchState } from '../../types';
 
 // Estado inicial
-const initialState: SearchState = {
+const initialState: ISearchState = {
   origin: '',
   destination: '',
   departureDate: '',
@@ -45,7 +19,7 @@ const initialState: SearchState = {
 export const fetchTickets = createAsyncThunk(
   'search/fetchTickets',
   async (_, { getState, rejectWithValue }) => {
-    const state = getState() as { search: SearchState };
+    const state = getState() as { search: ISearchState };
     const { origin, destination, departureDate } = state.search;
 
     try {

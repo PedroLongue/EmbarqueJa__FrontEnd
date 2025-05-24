@@ -13,27 +13,14 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { formatDateToDDMMYYYY } from '../../utils/formatDate';
 import { useNavigate } from 'react-router';
-interface ITicket {
-  ticket: {
-    _id: string;
-    origin: string;
-    destination: string;
-    departureDate: string;
-    departureTime: string;
-    arrivalTime: string;
-    type: string;
-    amenities: string[];
-    company: string;
-    companyLogo: string;
-    price: number;
-    __v: number;
-    reservedSeats: number[];
-  };
+import { ITicket } from '../../types';
+interface IBoardingPass {
+  ticket: ITicket;
   onCancel: () => void;
   isFormValid: boolean;
 }
 
-const BoardingPass = ({ ticket, onCancel, isFormValid }: ITicket) => {
+const BoardingPass = ({ ticket, onCancel, isFormValid }: IBoardingPass) => {
   const passengerSeats = useSelector((state: RootState) => state.search.seats);
   const passengers = useSelector((state: RootState) => state.search.passengers);
 

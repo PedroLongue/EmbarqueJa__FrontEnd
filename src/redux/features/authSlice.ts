@@ -1,30 +1,8 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import api from '../../services/api';
+import { IAuthState } from '../../types';
 
-interface userTrips {
-  ticketId: string;
-  paymentMethod: string;
-  _id: string;
-}
-interface CurrentUser {
-  _id: string;
-  name: string;
-  email: string;
-  isAdmin: boolean;
-  cpf: string;
-  birthDate: string;
-  userTickets: userTrips[];
-  __v: number;
-}
-
-interface AuthState {
-  user: string | null;
-  currentUser: CurrentUser | null;
-  signed: boolean;
-  authError: string;
-}
-
-const initialState: AuthState = {
+const initialState: IAuthState = {
   user: localStorage.getItem('@Auth:token') || null,
   currentUser: null,
   signed: !!localStorage.getItem('@Auth:token'),

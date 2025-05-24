@@ -8,7 +8,7 @@ import {
   Tab,
   Typography,
 } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
@@ -22,15 +22,23 @@ import { RootState } from '../../redux/store';
 import { useNavigate } from 'react-router';
 import { getCurrentUser } from '../../redux/features/authSlice';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
+import useGetTicket from '../../hooks/useGetTicket';
+import Timer from '../../components/Timer';
+import useCancelReservation from '../../hooks/useCancelReservation';
+import { ITicket } from '../../types';
 
 const Checkout = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { currentUser } = useSelector((state: RootState) => state.auth);
-  const { getPendingReservation, confirmReservation } = useReservations();
   const [value, setValue] = useState('1');
   const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const [reservationId, setReservationId] = useState<string | null>(null);
+  const [userTicket, setUserTicket] = useState<ITicket | null>(null);
 
+  const { getPendingReservation, confirmReservation } = useReservations();
+  const { handleCancelReservation } = useCancelReservation();
+  const { ticket } = useGetTicket();
   const { createUserTicket, success } = useUserTickets();
 
   const methods = useForm({
@@ -45,8 +53,6 @@ const Checkout = () => {
   const handleChangeTab = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
   };
-
-  console.log(currentUser?._id);
 
   const onSubmit = async (data: any) => {
     if (!currentUser?._id) return;
@@ -79,9 +85,37 @@ const Checkout = () => {
     console.log(fullData);
   };
 
+  useEffect(() => {
+    const fetchReservation = async () => {
+      if (!currentUser?._id) return;
+
+      try {
+        const reservation = await getPendingReservation(currentUser._id);
+        if (reservation) {
+          setReservationId(reservation._id);
+          const ticketData = await ticket(reservation.ticketId);
+          setUserTicket(ticketData);
+        }
+      } catch (error) {
+        console.error('Erro ao buscar reserva:', error);
+      }
+    };
+
+    fetchReservation();
+  }, [currentUser]);
+
   return (
     <FormProvider {...methods}>
       <Container maxWidth="lg" sx={{ flex: 1, mt: 4 }}>
+        <Timer
+          onCancel={() =>
+            handleCancelReservation({
+              reservationId,
+              setReservationId,
+              setUserTicket,
+            })
+          }
+        />
         <form onSubmit={handleSubmit(onSubmit)}>
           <Card sx={{ p: 4, borderRadius: 2 }}>
             <TabContext value={value}>

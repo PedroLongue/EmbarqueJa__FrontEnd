@@ -11,7 +11,6 @@ const PixPayment = () => {
       justifyContent="center"
       alignItems="center"
     >
-      {/* Aqui pode ir o ícone ou imagem do PIX */}
       <img src={QrCode} alt="PIX" style={{ width: 300 }} />
     </Grid>
   );

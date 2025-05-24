@@ -16,28 +16,13 @@ import useGetTicket from '../../hooks/useGetTicket';
 import Icon from '../../assets/Icons';
 import { formatDateToDDMMYYYY } from '../../utils/formatDate';
 import { EmptyStatePurchases } from '../../assets/imgs/emptyStatePurchases';
-
-type Ticket = {
-  _id: string;
-  origin: string;
-  destination: string;
-  departureDate: string;
-  departureTime: string;
-  arrivalTime: string;
-  type: string;
-  amenities: string[];
-  company: string;
-  companyLogo: string;
-  price: number;
-  reservedSeats: number[];
-  userSeats: number[];
-};
+import { ITicket } from '../../types';
 
 const MyPurchases = () => {
   const { currentUser } = useSelector((state: RootState) => state.auth);
   const { ticket } = useGetTicket();
 
-  const [ticketsData, setTicketsData] = useState<Ticket[]>([]);
+  const [ticketsData, setTicketsData] = useState<ITicket[]>([]);
   const [loading, setLoading] = useState(true);
 
   const [page, setPage] = useState(1);
@@ -55,7 +40,7 @@ const MyPurchases = () => {
   useEffect(() => {
     const fetchTickets = async () => {
       try {
-        const results: Ticket[] = await Promise.all(
+        const results: ITicket[] = await Promise.all(
           currentUser?.userTickets?.map(async (userTicket: any) => {
             const fullTicket = await ticket(userTicket.ticketId);
             return {
