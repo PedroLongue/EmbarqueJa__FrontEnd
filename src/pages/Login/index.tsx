@@ -8,6 +8,7 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import CustomSnackbar from '../../components/CustomSnackbar';
 import { useEffect, useState } from 'react';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
+import FaceIdPopup from '../../components/FaceIdPopup';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -16,6 +17,7 @@ const Login = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState<any>('error');
+  const [popupOpen, setPopupOpen] = useState(false);
 
   const { signed, authError } = useSelector((state: RootState) => state.auth);
   const dispatch = useAppDispatch();
@@ -115,8 +117,15 @@ const Login = () => {
               <Button
                 children="Entrar com FaceId"
                 variant="contained"
+                onClick={() => setPopupOpen(true)}
                 sx={{ textTransform: 'none', fontWeight: 'bold' }}
               />
+              <FaceIdPopup
+                open={popupOpen}
+                onClose={() => setPopupOpen(false)}
+                mode="login"
+              />
+
               <Link href="#" variant="body2" align="center" underline="none">
                 {'Ainda não tem uma conta?'}
               </Link>

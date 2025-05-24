@@ -8,7 +8,7 @@ import {
   CardContent,
 } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { Add, Delete } from '@mui/icons-material';
+import { Add, Delete, FlashOffRounded } from '@mui/icons-material';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import Button from '../../components/Button';
@@ -16,6 +16,7 @@ import Input from '../../components/Input';
 import useUpdateProfile from '../../hooks/useUpdateProfile';
 import CustomSnackbar from '../../components/CustomSnackbar';
 import { formatDateToDDMMYYYY } from '../../utils/formatDate';
+import FaceIdPopup from '../../components/FaceIdPopup';
 
 const UserProfile = () => {
   const { currentUser } = useSelector((state: RootState) => state.auth);
@@ -28,6 +29,8 @@ const UserProfile = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState<any>('success');
+
+  const [popupOpen, setPopupOpen] = useState(false);
 
   useEffect(() => {
     if (currentUser) {
@@ -116,8 +119,17 @@ const UserProfile = () => {
                   variant="contained"
                   color="primary"
                   fullWidth
-                  children="Configurar FACEID"
+                  disabled={currentUser?.faceIdDescriptor}
+                  onClick={() => setPopupOpen(true)}
+                >
+                  Configurar FACEID
+                </Button>
+                <FaceIdPopup
+                  open={popupOpen}
+                  onClose={() => setPopupOpen(false)}
+                  mode="register"
                 />
+
                 <Input
                   label="Data de nascimento"
                   value={birthDate}
@@ -145,7 +157,6 @@ const UserProfile = () => {
             </Stack>
           </CardContent>
         </Card>
-
         <Card
           sx={{ flex: 1, minWidth: 320, p: 2, borderRadius: 2, boxShadow: 3 }}
         >
@@ -203,6 +214,7 @@ const UserProfile = () => {
             </Box>
           </CardContent>
         </Card>
+
         <CustomSnackbar
           open={snackbarOpen}
           onClose={handleSnackbarClose}
