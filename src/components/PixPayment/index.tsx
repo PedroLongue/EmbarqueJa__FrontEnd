@@ -1,4 +1,4 @@
-import QrCode from '../../assets/imgs/qrCode.png';
+import QrCode from '../../assets/imgs/QrCode.png';
 import { Grid } from '@mui/material';
 
 const PixPayment = () => {
