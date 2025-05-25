@@ -1,6 +1,17 @@
+// Refatorado para: melhor controle de snackbar, remoção de warnings, legibilidade e manutenção
+
 import React, { useEffect, useRef, useState } from 'react';
 import * as faceapi from 'face-api.js';
-import { Box, IconButton, Modal, Typography } from '@mui/material';
+import {
+  Box,
+  IconButton,
+  Modal,
+  Typography,
+  CircularProgress,
+  Stepper,
+  Step,
+  StepLabel,
+} from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import api from '../../services/api';
 import { useNavigate } from 'react-router';
@@ -19,6 +30,12 @@ interface FaceIdPopupProps {
   mode: 'register' | 'login';
 }
 
+const steps = [
+  'Detectar rosto',
+  'Aproxime-se da câmera',
+  'Levante as sobrancelhas',
+];
+
 const FaceIdPopup: React.FC<FaceIdPopupProps> = ({
   open,
   onClose,
@@ -27,28 +44,34 @@ const FaceIdPopup: React.FC<FaceIdPopupProps> = ({
 }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [loading, setLoading] = useState(false);
+  const [detecting, setDetecting] = useState(false);
+  const [currentStep, setCurrentStep] = useState(0);
+  const [refDetection, setRefDetection] = useState<faceapi.WithFaceDescriptor<
+    faceapi.WithFaceLandmarks<
+      { detection: faceapi.FaceDetection },
+      faceapi.FaceLandmarks68
+    >
+  > | null>(null);
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: '',
+    severity: 'error',
+  });
+
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [snackbarSeverity, setSnackbarSeverity] = useState<any>('error');
 
   useEffect(() => {
     if (!open) return;
 
     const loadModels = async () => {
       setLoading(true);
-      await faceapi.nets.tinyFaceDetector.loadFromUri(
-        '/models/tiny_face_detector',
-      );
-      await faceapi.nets.faceLandmark68Net.loadFromUri(
-        '/models/face_landmark_68',
-      );
-      await faceapi.nets.faceRecognitionNet.loadFromUri(
-        '/models/face_recognition',
-      );
-
+      await Promise.all([
+        faceapi.nets.tinyFaceDetector.loadFromUri('/models/tiny_face_detector'),
+        faceapi.nets.faceLandmark68Net.loadFromUri('/models/face_landmark_68'),
+        faceapi.nets.faceRecognitionNet.loadFromUri('/models/face_recognition'),
+        faceapi.nets.faceExpressionNet.loadFromUri('/models/face_expression'),
+      ]);
       setLoading(false);
     };
 
@@ -68,61 +91,112 @@ const FaceIdPopup: React.FC<FaceIdPopupProps> = ({
     };
   }, [open]);
 
+  const showError = (message: string) => {
+    setSnackbar({ open: true, message, severity: 'error' });
+  };
+
   const handleDetect = async () => {
     if (!videoRef.current) return;
-
-    const detection = await faceapi
-      .detectSingleFace(videoRef.current, new faceapi.TinyFaceDetectorOptions())
-      .withFaceLandmarks()
-      .withFaceDescriptor();
-
-    if (!detection) {
-      setSnackbarMessage('Rosto não detectado!');
-      setSnackbarSeverity('error');
-      setSnackbarOpen(true);
-      return;
-    }
-
-    const descriptor = Array.from(detection.descriptor);
+    setDetecting(true);
+    const options = new faceapi.TinyFaceDetectorOptions();
 
     try {
-      if (mode === 'register') {
-        const token = localStorage.getItem('@Auth:token');
-        await api.post(
-          '/users/faceid',
-          { descriptor },
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          },
-        );
-        await dispatch(getCurrentUser());
-        setSnackbarMessage('FaceID cadastrado com sucesso!');
-        setSnackbarSeverity('success');
-        setSnackbarOpen(true);
-      } else {
-        const res = await api.post('/users/login-faceid', { descriptor });
-        localStorage.setItem('@Auth:token', res.data.token);
-        api.defaults.headers.common['Authorization'] =
-          `Bearer ${res.data.token}`;
-        await dispatch(getCurrentUser());
-        dispatch(loadCurrentUser());
-        setSnackbarMessage('Login realizado com sucesso!');
-        setSnackbarSeverity('success');
-        setSnackbarOpen(true);
-        navigate('/');
-      }
+      switch (currentStep) {
+        case 0: {
+          const detection = await faceapi
+            .detectSingleFace(videoRef.current, options)
+            .withFaceLandmarks()
+            .withFaceDescriptor();
 
-      onSuccess?.();
-      onClose();
-    } catch (err: any) {
-      setSnackbarMessage(
-        err.response?.data?.errors?.[0] ||
-          (mode === 'register'
-            ? 'Erro ao cadastrar FaceID'
-            : 'Erro ao logar com FaceID'),
-      );
-      setSnackbarSeverity('error');
-      setSnackbarOpen(true);
+          if (!detection)
+            return showError(
+              'Rosto não detectado. Centralize seu rosto na câmera.',
+            );
+
+          setRefDetection(detection);
+          setCurrentStep(1);
+          break;
+        }
+
+        case 1: {
+          await new Promise((r) => setTimeout(r, 2000));
+
+          const detection = await faceapi
+            .detectSingleFace(videoRef.current, options)
+            .withFaceLandmarks()
+            .withFaceExpressions();
+
+          if (!detection)
+            return showError('Rosto não detectado. Tente novamente.');
+
+          const area1 = refDetection!.detection.box.area;
+          const area2 = detection.detection.box.area;
+          const growth = area2 / area1;
+
+          if (growth < 1.15)
+            return showError('Aproxime um pouco mais o rosto da câmera.');
+
+          setCurrentStep(2);
+          break;
+        }
+
+        case 2: {
+          await new Promise((r) => setTimeout(r, 2000));
+
+          const detection = await faceapi
+            .detectSingleFace(videoRef.current, options)
+            .withFaceLandmarks()
+            .withFaceExpressions();
+
+          if (!detection?.expressions)
+            return showError('Rosto não detectado. Tente novamente.');
+
+          const surprised = detection.expressions.surprised ?? 0;
+
+          if (surprised < 0.7)
+            return showError(
+              'Expressão de surpresa não detectada. Levante as sobrancelhas e arregale os olhos.',
+            );
+
+          const descriptor = Array.from(refDetection!.descriptor);
+
+          if (mode === 'register') {
+            const token = localStorage.getItem('@Auth:token');
+            await api.post(
+              '/users/faceid',
+              { descriptor },
+              { headers: { Authorization: `Bearer ${token}` } },
+            );
+            await dispatch(getCurrentUser());
+            setSnackbar({
+              open: true,
+              message: 'FaceID cadastrado com sucesso!',
+              severity: 'success',
+            });
+          } else {
+            const res = await api.post('/users/login-faceid', { descriptor });
+            localStorage.setItem('@Auth:token', res.data.token);
+            api.defaults.headers.common['Authorization'] =
+              `Bearer ${res.data.token}`;
+            await dispatch(getCurrentUser());
+            dispatch(loadCurrentUser());
+            setSnackbar({
+              open: true,
+              message: 'Login realizado com sucesso!',
+              severity: 'success',
+            });
+            navigate('/');
+          }
+
+          onSuccess?.();
+          onClose();
+          break;
+        }
+      }
+    } catch {
+      showError('Erro inesperado na verificação facial.');
+    } finally {
+      setDetecting(false);
     }
   };
 
@@ -158,6 +232,18 @@ const FaceIdPopup: React.FC<FaceIdPopupProps> = ({
             </IconButton>
           </Box>
 
+          <Stepper activeStep={currentStep} alternativeLabel sx={{ mb: 2 }}>
+            {steps.map((label) => (
+              <Step key={label}>
+                <StepLabel>{label}</StepLabel>
+              </Step>
+            ))}
+          </Stepper>
+
+          <Typography variant="subtitle1" fontWeight={500} mb={1}>
+            Siga a instrução: <strong>{steps[currentStep]}</strong>
+          </Typography>
+
           <video
             ref={videoRef}
             width="100%"
@@ -167,25 +253,34 @@ const FaceIdPopup: React.FC<FaceIdPopupProps> = ({
 
           <Box mt={2}>
             <Button
-              onClick={() => handleDetect()}
-              disabled={loading}
-              children={
-                loading
-                  ? 'Carregando modelos...'
-                  : mode === 'register'
-                    ? 'Detectar e Cadastrar'
-                    : 'Detectar e Entrar'
-              }
+              onClick={() => {
+                handleDetect();
+              }}
+              disabled={loading || detecting}
               variant="contained"
-            />
+            >
+              {loading ? (
+                'Carregando modelos...'
+              ) : detecting ? (
+                <>
+                  <CircularProgress size={20} sx={{ mr: 1 }} />
+                  Detectando...
+                </>
+              ) : mode === 'register' ? (
+                'Detectar e Cadastrar'
+              ) : (
+                'Detectar e Entrar'
+              )}
+            </Button>
           </Box>
         </Box>
       </Modal>
+
       <CustomSnackbar
-        open={snackbarOpen}
-        onClose={() => setSnackbarOpen(false)}
-        message={snackbarMessage}
-        severity={snackbarSeverity}
+        open={snackbar.open}
+        onClose={() => setSnackbar((s) => ({ ...s, open: false }))}
+        message={snackbar.message}
+        severity={snackbar.severity as any}
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
       />
     </>
