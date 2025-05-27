@@ -21,8 +21,8 @@ interface SeatModalProps {
   idTicket: string | null;
 }
 
-const rows: number = 10;
-const seatsPerRow: number = 4;
+const rows = 12; // Total: 12 linhas × 4 assentos = 48 lugares
+const seatsPerRow = 4;
 
 const SeatModal: React.FC<SeatModalProps> = ({
   open,
@@ -51,18 +51,15 @@ const SeatModal: React.FC<SeatModalProps> = ({
       setReservedSeats(data?.reservedSeats || []);
     };
 
-    if (open) {
-      fetchReservedSeats();
-    }
+    if (open) fetchReservedSeats();
+
     const handleSeatStatusUpdate = (data: {
       selections: Record<number, string>;
     }) => {
       const allSelections = data.selections;
-
       const seatsByOthers = Object.entries(allSelections)
         .filter(([_, user]) => user !== currentUser?._id)
         .map(([seat]) => Number(seat));
-
       const seatsByCurrentUser = Object.entries(allSelections)
         .filter(([_, user]) => user === currentUser?._id)
         .map(([seat]) => Number(seat));
@@ -72,7 +69,6 @@ const SeatModal: React.FC<SeatModalProps> = ({
     };
 
     socket.emit('join-ticket-room', idTicket, currentUser?._id);
-
     socket.on('seats:update', handleSeatStatusUpdate);
 
     return () => {
@@ -82,21 +78,17 @@ const SeatModal: React.FC<SeatModalProps> = ({
   }, [open, idTicket]);
 
   const handleReserveSeats = async () => {
-    if (!idTicket) return;
-
+    if (!idTicket || !currentUser) return;
     try {
-      if (currentUser) {
-        await createReservation(currentUser._id, idTicket, selectedSeats);
-      }
+      await createReservation(currentUser._id, idTicket, selectedSeats);
       dispatch(setSeats(selectedSeats));
       setSelectedSeats([]);
-
       if (!error) {
         navigate('/preview-ticket');
         onClose();
       }
     } catch (err) {
-      console.error('Error during reservation:', err);
+      console.error('Erro ao reservar:', err);
     }
   };
 
@@ -120,9 +112,8 @@ const SeatModal: React.FC<SeatModalProps> = ({
     });
   };
 
-  const isSelected = (seat: number): boolean => selectedSeats.includes(seat);
-
-  const isReserved = (seat: number): boolean =>
+  const isSelected = (seat: number) => selectedSeats.includes(seat);
+  const isReserved = (seat: number) =>
     reservedSeats.includes(seat) || tempReservedSeats.includes(seat);
 
   return (
@@ -135,97 +126,111 @@ const SeatModal: React.FC<SeatModalProps> = ({
           transform: 'translate(-50%, -50%)',
           bgcolor: 'background.paper',
           boxShadow: 24,
-          p: 4,
+          p: { xs: 2, sm: 4 },
           borderRadius: 2,
           maxWidth: 600,
-          width: '100%',
+          width: '90vw',
           maxHeight: '90vh',
           overflowY: 'auto',
         }}
       >
-        <Typography variant="h4" align="center">
+        <Typography variant="h4" align="center" gutterBottom>
           Mapa de assentos:
         </Typography>
+
         <Typography
           variant="body1"
           align="center"
-          marginBottom={2}
-          display={'flex'}
-          justifyContent={'center'}
+          mb={2}
+          display="flex"
+          justifyContent="center"
         >
           <Icon name="location" /> {origin} <Icon name="arrow" /> {destination}
         </Typography>
 
-        <Grid
-          container
-          spacing={2}
-          justifyContent="center"
-          width="380px"
+        <Box
           sx={{
             border: '1px solid #000',
-            margin: '0 auto',
             borderRadius: 2,
-            padding: '10px 0px',
+            padding: 2,
+            maxWidth: { xs: '100%', sm: 400 },
+            width: '100%',
+            margin: '0 auto',
           }}
         >
-          <Box sx={{ textAlign: 'center', mt: 2, mb: 2 }}>
-            <img src={steeringwheel} />
+          <Box sx={{ textAlign: 'center', mb: 2 }}>
+            <img src={steeringwheel} style={{ width: 40 }} />
           </Box>
 
-          {[...Array(rows)].map((_, rowIndex) => (
-            <Grid
-              key={rowIndex}
-              container
-              item
-              spacing={1}
-              justifyContent="center"
-            >
-              {[...Array(seatsPerRow)].map((_, seatIndex) => {
-                const seatNumber = rowIndex * seatsPerRow + seatIndex + 1;
-                const disabled = isReserved(seatNumber);
+          <Stack spacing={2}>
+            {[...Array(rows)].map((_, rowIndex) => {
+              const seatStart = rowIndex * seatsPerRow + 1;
 
-                return (
-                  <>
-                    <Grid
-                      item
-                      key={seatNumber}
-                      sx={{
-                        paddingLeft: '0px !important',
-                        paddingTop: '30px !important',
-                      }}
-                    >
-                      <Button
-                        variant={
-                          isSelected(seatNumber) ? 'contained' : 'outlined'
-                        }
-                        color={
-                          isReserved(seatNumber)
-                            ? 'error'
-                            : isSelected(seatNumber)
-                              ? 'primary'
-                              : 'default'
-                        }
-                        onClick={() => handleSelectSeat(seatNumber)}
-                        disabled={disabled}
-                      >
-                        <Icon name="seat" /> <small>{seatNumber}</small>
-                      </Button>
-                    </Grid>
-                    {seatIndex === 1 && (
-                      <Grid
-                        item
-                        key={`corridor-${rowIndex}`}
-                        sx={{ width: '50px' }}
-                      ></Grid>
-                    )}
-                  </>
-                );
-              })}
-            </Grid>
-          ))}
-        </Grid>
+              return (
+                <Box
+                  key={rowIndex}
+                  display="flex"
+                  justifyContent="center"
+                  alignItems="center"
+                  gap={3}
+                >
+                  {/* Assentos lado esquerdo */}
+                  <Stack direction="row" spacing={1}>
+                    {[0, 1].map((i) => {
+                      const seat = seatStart + i;
+                      return (
+                        <Button
+                          key={seat}
+                          variant={isSelected(seat) ? 'contained' : 'outlined'}
+                          color={
+                            isReserved(seat)
+                              ? 'error'
+                              : isSelected(seat)
+                                ? 'primary'
+                                : 'default'
+                          }
+                          onClick={() => handleSelectSeat(seat)}
+                          disabled={isReserved(seat)}
+                        >
+                          <Icon name="seat" /> <small>{seat}</small>
+                        </Button>
+                      );
+                    })}
+                  </Stack>
 
-        <Typography variant="body1" marginTop={2} align="center">
+                  {/* Espaço do corredor */}
+                  <Box sx={{ width: { xs: 16, sm: 40 } }} />
+
+                  {/* Assentos lado direito */}
+                  <Stack direction="row" spacing={1}>
+                    {[2, 3].map((i) => {
+                      const seat = seatStart + i;
+                      return (
+                        <Button
+                          key={seat}
+                          variant={isSelected(seat) ? 'contained' : 'outlined'}
+                          color={
+                            isReserved(seat)
+                              ? 'error'
+                              : isSelected(seat)
+                                ? 'primary'
+                                : 'default'
+                          }
+                          onClick={() => handleSelectSeat(seat)}
+                          disabled={isReserved(seat)}
+                        >
+                          <Icon name="seat" /> <small>{seat}</small>
+                        </Button>
+                      );
+                    })}
+                  </Stack>
+                </Box>
+              );
+            })}
+          </Stack>
+        </Box>
+
+        <Typography variant="body1" mt={2} align="center">
           Assentos Selecionados: {selectedSeats.join(', ') || 'Nenhum'}
         </Typography>
 

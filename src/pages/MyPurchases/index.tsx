@@ -121,11 +121,13 @@ const MyPurchases = () => {
                       }}
                     />
                     <Box
-                      display={'flex'}
-                      justifyContent={'space-between'}
-                      alignItems={'center'}
+                      display="flex"
+                      flexDirection={{ xs: 'column', sm: 'row' }}
+                      justifyContent="space-between"
+                      alignItems={{ xs: 'center', sm: 'flex-start' }}
+                      gap={2}
                     >
-                      <Stack>
+                      <Stack alignItems={{ sm: 'flex-start', xs: 'center' }}>
                         <Box display="flex" alignItems="center" mb={1}>
                           <Icon name="location" />
                           <Typography fontWeight="bold" ml={1} display={'flex'}>
@@ -151,8 +153,9 @@ const MyPurchases = () => {
                       </Stack>
                       <Stack
                         display="flex"
-                        justifyContent="space-between"
-                        alignItems="center"
+                        justifyContent="center"
+                        alignItems={'center'}
+                        spacing={1}
                       >
                         <img
                           src={ticket?.companyLogo}

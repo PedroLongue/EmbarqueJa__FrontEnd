@@ -53,25 +53,23 @@ const SeachForm = () => {
   return (
     <>
       <Box
-        sx={{ background: '#EDEDED' }}
-        position={'absolute'}
-        bottom={'-100px'}
-        padding={2}
-        borderRadius={2}
+        sx={{
+          background: '#EDEDED',
+          position: 'absolute',
+          bottom: '-100px',
+          padding: 2,
+          borderRadius: 2,
+          width: '90%',
+          maxWidth: '520px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+        }}
       >
         <form
           onSubmit={handleSubmit}
           style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}
         >
-          <Stack
-            direction="row"
-            spacing={2}
-            width={500}
-            alignItems={'center'}
-            sx={{
-              margin: '0 auto',
-            }}
-          >
+          <Stack direction={'row'} spacing={2} width="100%" alignItems="center">
             <Autocomplete
               disablePortal
               options={filteredOriginCities}
@@ -82,7 +80,9 @@ const SeachForm = () => {
               )}
               sx={{ width: '100%' }}
             />
-            <SyncAltIcon />
+            <Box display={'flex'}>
+              <SyncAltIcon />
+            </Box>
             <Autocomplete
               disablePortal
               options={filteredDestinationCities}
@@ -94,7 +94,8 @@ const SeachForm = () => {
               sx={{ width: '100%' }}
             />
           </Stack>
-          <Stack direction="row" spacing={2}>
+
+          <Stack direction={'row'} spacing={2} width="100%">
             <Input
               id="date"
               label="Data ida"
@@ -102,9 +103,7 @@ const SeachForm = () => {
               type="date"
               value={departureDate}
               onChange={(e) => dispatch(setDepartureDate(e.target.value))}
-              InputLabelProps={{
-                shrink: true,
-              }}
+              InputLabelProps={{ shrink: true }}
               fullWidth
             />
             <FormControl variant="standard" fullWidth>
@@ -112,18 +111,9 @@ const SeachForm = () => {
               <Select
                 labelId="passengers-label"
                 id="passengers"
-                label="Passageiros"
                 onChange={(e) =>
                   dispatch(setPassengers(Number(e.target.value)))
                 }
-                MenuProps={{
-                  PaperProps: {
-                    style: {
-                      width: '100%',
-                      maxWidth: '0',
-                    },
-                  },
-                }}
                 fullWidth
               >
                 {MAX_PASSENGERS.map((element) => (
@@ -134,7 +124,9 @@ const SeachForm = () => {
               </Select>
             </FormControl>
           </Stack>
-          <Stack width={'100%'} alignItems={'flex-end'}>
+
+          {/* Botão */}
+          <Stack width="100%" alignItems="flex-end">
             <Button
               type="submit"
               children={loading ? 'Buscando...' : 'Buscar'}
@@ -144,6 +136,7 @@ const SeachForm = () => {
             />
           </Stack>
         </form>
+
         <CustomSnackbar
           open={snackbarOpen}
           onClose={() => setSnackbarOpen(false)}

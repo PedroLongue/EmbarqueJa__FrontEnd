@@ -10,9 +10,10 @@ import { RootState } from '../../redux/store';
 import Icon from '../../assets/Icons';
 import TicketTime from '../TicketTime';
 import Button from '../Button';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import SeatModal from './components/SeatModal';
 import { useNavigate } from 'react-router';
+import CustomSnackbar from '../CustomSnackbar';
 
 export const amenityToIcon: Record<
   string,
@@ -38,6 +39,20 @@ const RenderTickets = () => {
 
   const [openSeatModal, setOpenSeatModal] = useState(false);
   const [selectedTicketId, setSelectedTicketId] = useState<string | null>(null);
+
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState<any>('error');
+
+  const wait = true;
+
+  useEffect(() => {
+    if (error) {
+      setSnackbarMessage(error);
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
+    }
+  }, [error]);
 
   const handleOpenSeatModal = (id: string) => {
     if (!signed) {
@@ -65,20 +80,22 @@ const RenderTickets = () => {
   return (
     <Container sx={{ marginTop: '152px' }} maxWidth="md">
       {loading && (
-        <Typography variant="h5">
-          Buscando passagens <CircularProgress />
-        </Typography>
-      )}
-      {error && (
-        <Typography variant="h5" color="error">
-          {error}
+        <Typography
+          variant="body1"
+          display={'flex'}
+          alignItems={'center'}
+          justifyContent={'center'}
+          gap={2}
+          fontWeight={'bold'}
+        >
+          Buscando passagens <CircularProgress size={24} />
         </Typography>
       )}
 
       {!loading && !error && validTickets.length > 0 && (
         <>
           <Typography
-            variant="h5"
+            variant="body1"
             gutterBottom
             sx={{ display: 'flex', alignItems: 'center' }}
           >
@@ -87,18 +104,21 @@ const RenderTickets = () => {
           </Typography>
           {validTickets.map((ticket) => (
             <Box
-              key={ticket.id}
+              key={ticket._id}
               sx={{
+                boxShadow: 3,
                 background: '#fff',
+                padding: 3,
+                borderRadius: 2,
+                marginBottom: 5,
+                display: 'flex',
+                flexDirection: { xs: 'column', md: 'row' },
+                gap: 3,
+                alignItems: 'center',
+                justifyContent: 'space-between',
               }}
-              display={'flex'}
-              justifyContent={'space-between'}
-              alignItems={'center'}
-              padding={2}
-              borderRadius={2}
-              marginBottom={5}
             >
-              <Stack spacing={2}>
+              <Stack spacing={2} alignItems={'center'}>
                 {' '}
                 <Typography
                   variant="body1"
@@ -132,29 +152,43 @@ const RenderTickets = () => {
                   ))}
                 </div>
               </Stack>
-              <Stack>
-                <img src={ticket.companyLogo} alt={ticket.origin} width={250} />
-              </Stack>
-              <Stack
-                display={'flex'}
-                flexDirection={'column'}
-                alignItems={'center'}
+              <Box
+                sx={{
+                  flexShrink: 0,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
               >
-                <Typography
-                  variant="h5"
-                  sx={{ display: 'flex', alignItems: 'center' }}
-                  fontWeight={'bold'}
-                >
+                <Box
+                  component="img"
+                  src={ticket.companyLogo}
+                  alt={ticket.origin}
+                  sx={{
+                    width: { xs: 150, md: 200 },
+                    height: 'auto',
+                    objectFit: 'contain',
+                  }}
+                />
+              </Box>
+
+              <Stack
+                spacing={1}
+                alignItems={'center'}
+                sx={{ minWidth: '120px' }}
+              >
+                <Typography variant="h6" fontWeight="bold">
                   R$ {String(ticket.price).replace('.', ',')}
                 </Typography>
                 <Button
-                  type="submit"
-                  children={'Selecionar'}
+                  type="button"
+                  children="Selecionar"
                   variant="contained"
                   onClick={() => handleOpenSeatModal(ticket._id)}
-                  sx={{ textTransform: 'none', width: '150px' }}
+                  sx={{ textTransform: 'none', width: '100%' }}
                 />
               </Stack>
+
               <SeatModal
                 open={openSeatModal}
                 onClose={handleCloseSeatModal}
@@ -167,6 +201,13 @@ const RenderTickets = () => {
           ))}
         </>
       )}
+      <CustomSnackbar
+        open={snackbarOpen}
+        onClose={() => setSnackbarOpen(false)}
+        message={snackbarMessage}
+        severity={snackbarSeverity}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      />
     </Container>
   );
 };
