@@ -1,10 +1,10 @@
 name: Build and Publish Docker Image
+run-name: Build and publish Docker image
 
 on:
   push:
     branches:
       - main
-    run-name: Build and publish Docker image
 
 jobs:
   build:
