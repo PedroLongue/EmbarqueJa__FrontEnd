@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+    run-name: Build and publish Docker image
 
 jobs:
   build:
