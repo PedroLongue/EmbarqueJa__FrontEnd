@@ -1,11 +1,11 @@
-// CheckoutForm.tsx
 import { Box, Checkbox, FormControlLabel, Grid } from '@mui/material';
 import Input from '../Input';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { useEffect, useState } from 'react';
 import { formatDateToDDMMYYYY } from '../../utils/formatDate';
-import { useForm, Controller, useFormContext } from 'react-hook-form';
+import { formatCPF, formatDate } from '../../utils/inputMark';
+import { useForm, Controller } from 'react-hook-form';
 
 type PassengerInfo = {
   name: string;
@@ -20,13 +20,11 @@ interface CheckoutFormProps {
 const CheckoutForm = ({ onFormChange }: CheckoutFormProps) => {
   const passengers = useSelector((state: RootState) => state.search.passengers);
   const { currentUser } = useSelector((state: RootState) => state.auth);
-
   const [useBuyerInfo, setUseBuyerInfo] = useState(false);
 
   const {
     control,
     setValue,
-    getValues,
     trigger,
     formState: { isValid },
   } = useForm<{ passengers: PassengerInfo[] }>({
@@ -105,34 +103,40 @@ const CheckoutForm = ({ onFormChange }: CheckoutFormProps) => {
                 )}
               />
             </Grid>
+
             <Grid item xs={6}>
               <Controller
                 name={`passengers.${index}.cpf`}
                 control={control}
                 rules={{ required: true }}
-                render={({ field }) => (
+                render={({ field: { onChange, value, ...rest } }) => (
                   <Input
                     shrink={useBuyerInfo}
                     fullWidth
                     label="CPF"
                     variant="outlined"
-                    {...field}
+                    value={value}
+                    onChange={(e) => onChange(formatCPF(e.target.value))}
+                    {...rest}
                   />
                 )}
               />
             </Grid>
+
             <Grid item xs={6}>
               <Controller
                 name={`passengers.${index}.birthDate`}
                 control={control}
                 rules={{ required: true }}
-                render={({ field }) => (
+                render={({ field: { onChange, value, ...rest } }) => (
                   <Input
                     shrink={useBuyerInfo}
                     fullWidth
                     label="Data de nascimento"
                     variant="outlined"
-                    {...field}
+                    value={value}
+                    onChange={(e) => onChange(formatDate(e.target.value))}
+                    {...rest}
                   />
                 )}
               />

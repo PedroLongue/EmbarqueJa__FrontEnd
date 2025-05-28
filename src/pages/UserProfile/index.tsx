@@ -17,6 +17,7 @@ import useUpdateProfile from '../../hooks/useUpdateProfile';
 import CustomSnackbar from '../../components/CustomSnackbar';
 import { formatDateToDDMMYYYY } from '../../utils/formatDate';
 import FaceIdPopup from '../../components/FaceIdPopup';
+import { formatCPF, formatDate } from '../../utils/inputMark';
 
 const UserProfile = () => {
   const { currentUser } = useSelector((state: RootState) => state.auth);
@@ -121,9 +122,8 @@ const UserProfile = () => {
                   fullWidth
                   disabled={currentUser?.faceIdDescriptor}
                   onClick={() => setPopupOpen(true)}
-                >
-                  Configurar FACEID
-                </Button>
+                  children="Configurar faceId"
+                />
                 <FaceIdPopup
                   open={popupOpen}
                   onClose={() => setPopupOpen(false)}
@@ -134,18 +134,19 @@ const UserProfile = () => {
                   label="Data de nascimento"
                   value={birthDate}
                   fullWidth
-                  onChange={(e) => setBirthDate(e.target.value)}
+                  onChange={(e) => setBirthDate(formatDate(e.target.value))}
                   shrink={birthDate ? true : false}
-                  disabled={birthDate ? true : false}
+                  disabled={!!currentUser?.birthDate}
                 />
                 <Input
                   label="CPF"
                   value={cpf}
                   fullWidth
-                  onChange={(e) => setCpf(e.target.value)}
+                  onChange={(e) => setCpf(formatCPF(e.target.value))}
                   shrink={cpf ? true : false}
-                  disabled={cpf ? true : false}
+                  disabled={!!currentUser?.cpf}
                 />
+
                 <Button
                   children="Salvar"
                   variant="contained"
@@ -155,63 +156,6 @@ const UserProfile = () => {
                 />
               </form>
             </Stack>
-          </CardContent>
-        </Card>
-        <Card
-          sx={{ flex: 1, minWidth: 320, p: 2, borderRadius: 2, boxShadow: 3 }}
-        >
-          <CardContent>
-            <Typography variant="h6" gutterBottom>
-              Cartões salvos:
-            </Typography>
-
-            <Box
-              display="flex"
-              alignItems="center"
-              justifyContent="space-between"
-              bgcolor="#f5f5f5"
-              p={2}
-              borderRadius={1}
-              mb={2}
-            >
-              <Box>
-                <Typography variant="caption" color="textSecondary">
-                  Crédito Nubank
-                </Typography>
-                <Typography fontWeight="bold">PEDRO LONGUE CORREA</Typography>
-                <Typography>•••••••1234</Typography>
-              </Box>
-              <IconButton>
-                <Delete />
-              </IconButton>
-            </Box>
-
-            <Box
-              display="flex"
-              alignItems="center"
-              justifyContent="space-between"
-              bgcolor="#f5f5f5"
-              p={2}
-              borderRadius={1}
-              mb={2}
-            >
-              <Box>
-                <Typography variant="caption" color="textSecondary">
-                  Crédito Bradesco
-                </Typography>
-                <Typography fontWeight="bold">PEDRO LONGUE CORREA</Typography>
-                <Typography>•••••••1234</Typography>
-              </Box>
-              <IconButton>
-                <Delete />
-              </IconButton>
-            </Box>
-
-            <Box display="flex" justifyContent="flex-end">
-              <Button variant="contained" color="primary" startIcon={<Add />}>
-                Adicionar
-              </Button>
-            </Box>
           </CardContent>
         </Card>
 

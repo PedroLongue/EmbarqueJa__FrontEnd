@@ -5,6 +5,7 @@ import {
   Checkbox,
   Container,
   FormControlLabel,
+  Grid,
   Tab,
   Typography,
 } from '@mui/material';
@@ -31,6 +32,7 @@ const Checkout = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { currentUser } = useSelector((state: RootState) => state.auth);
+
   const [value, setValue] = useState('1');
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [reservationId, setReservationId] = useState<string | null>(null);
@@ -41,16 +43,13 @@ const Checkout = () => {
   const { ticket } = useGetTicket();
   const { createUserTicket, success } = useUserTickets();
 
-  const methods = useForm({
-    mode: 'onBlur',
-  });
-
+  const methods = useForm({ mode: 'onBlur' });
   const {
     handleSubmit,
     formState: { isValid },
   } = methods;
 
-  const handleChangeTab = (event: React.SyntheticEvent, newValue: string) => {
+  const handleChangeTab = (_: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
   };
 
@@ -58,35 +57,28 @@ const Checkout = () => {
     if (!currentUser?._id) return;
 
     const paymentMethod = value === '1' ? 'credit-card' : 'pix';
-    const fullData = {
-      ...data,
-      paymentMethod,
-    };
 
     try {
       const reservation = await getPendingReservation(currentUser._id);
       if (reservation) {
-        const confirmedReservation = await confirmReservation(reservation._id);
-        console.log(confirmedReservation.seats);
+        const confirmed = await confirmReservation(reservation._id);
         await createUserTicket(
           reservation.ticketId,
           paymentMethod,
-          confirmedReservation.seats,
+          confirmed.seats,
           currentUser._id,
         );
       }
+
       await dispatch(getCurrentUser());
       navigate('/my-purchases');
-    } catch (error) {
-      console.log(error);
+    } catch (err) {
+      console.error('Erro ao finalizar compra:', err);
     }
-    console.log({ success });
-
-    console.log(fullData);
   };
 
   useEffect(() => {
-    const fetchReservation = async () => {
+    const loadReservation = async () => {
       if (!currentUser?._id) return;
 
       try {
@@ -96,17 +88,17 @@ const Checkout = () => {
           const ticketData = await ticket(reservation.ticketId);
           setUserTicket(ticketData);
         }
-      } catch (error) {
-        console.error('Erro ao buscar reserva:', error);
+      } catch (err) {
+        console.error('Erro ao carregar reserva:', err);
       }
     };
 
-    fetchReservation();
+    loadReservation();
   }, [currentUser]);
 
   return (
     <FormProvider {...methods}>
-      <Container maxWidth="lg" sx={{ flex: 1, mt: 4 }}>
+      <Container maxWidth="md" sx={{ py: 4 }}>
         <Timer
           onCancel={() =>
             handleCancelReservation({
@@ -117,54 +109,44 @@ const Checkout = () => {
           }
         />
         <form onSubmit={handleSubmit(onSubmit)}>
-          <Card sx={{ p: 4, borderRadius: 2 }}>
+          <Card sx={{ p: 3, borderRadius: 2 }}>
             <TabContext value={value}>
               <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                <TabList
-                  onChange={handleChangeTab}
-                  aria-label="Métodos de pagamento"
-                  variant="fullWidth"
-                  sx={{ width: '100%' }}
-                >
-                  <Tab
-                    sx={{ flex: 1, fontWeight: 'bold' }}
-                    label="Cartão de Crédito"
-                    value="1"
-                  />
-                  <Tab
-                    sx={{ flex: 1, fontWeight: 'bold' }}
-                    label="Pix"
-                    value="2"
-                  />
+                <TabList onChange={handleChangeTab} variant="fullWidth">
+                  <Tab label="Cartão de Crédito" value="1" />
+                  <Tab label="Pix" value="2" />
                 </TabList>
               </Box>
+              <Grid container spacing={2} mt={2}>
+                <Grid item xs={12}>
+                  <TabPanel value="1">
+                    <CreditCardPayment />
+                  </TabPanel>
+                  <TabPanel value="2">
+                    <PixPayment />
+                  </TabPanel>
+                </Grid>
+              </Grid>
 
-              <TabPanel value="1">
-                <CreditCardPayment />
-              </TabPanel>
-              <TabPanel value="2">
-                <PixPayment />
-              </TabPanel>
+              <FormControlLabel
+                sx={{ mt: 2 }}
+                control={
+                  <Checkbox
+                    checked={acceptedTerms}
+                    onChange={(e) => setAcceptedTerms(e.target.checked)}
+                  />
+                }
+                label={
+                  <Typography variant="body2" fontWeight="bold">
+                    Concordo com a política de privacidade e os contratos de
+                    transporte.
+                  </Typography>
+                }
+              />
             </TabContext>
-
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={acceptedTerms}
-                  onChange={(e) => setAcceptedTerms(e.target.checked)}
-                />
-              }
-              sx={{ mt: 2 }}
-              label={
-                <Typography fontWeight="bold">
-                  Ao realizar a compra, você concorda com a política de
-                  privacidade e os contratos de transporte rodoviário.
-                </Typography>
-              }
-            />
           </Card>
 
-          <Box mt={4} textAlign="right">
+          <Box mt={3} textAlign="right">
             <Button
               variant="contained"
               color="primary"
