@@ -1,4 +1,11 @@
-import { Container, Typography, Box, Link } from '@mui/material';
+import {
+  Container,
+  Typography,
+  Box,
+  Link,
+  Alert,
+  CircularProgress,
+} from '@mui/material';
 import Button from '../../components/Button';
 import Input from '../../components/Input';
 import { useSelector } from 'react-redux';
@@ -9,6 +16,7 @@ import CustomSnackbar from '../../components/CustomSnackbar';
 import { useEffect, useState } from 'react';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
 import FaceIdPopup from '../../components/FaceIdPopup';
+import useForgotPassword from '../../hooks/useForgotPassword';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -18,10 +26,13 @@ const Login = () => {
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState<any>('error');
   const [popupOpen, setPopupOpen] = useState(false);
+  const [showResetAlert, setShowResetAlert] = useState(false);
 
   const { signed, authError } = useSelector((state: RootState) => state.auth);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+
+  const { forgotPassword, error, loading } = useForgotPassword();
 
   useEffect(() => {
     if (authError) {
@@ -43,9 +54,30 @@ const Login = () => {
       setSnackbarMessage(authError);
       setSnackbarSeverity('error');
       setSnackbarOpen(true);
-      ('');
     }
   };
+
+  const resetPassword = async (email: string) => {
+    if (!email) {
+      setSnackbarMessage('Preencha o campo de e-mail.');
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
+      return;
+    }
+
+    try {
+      const forgotPasswordRes = await forgotPassword(email);
+      setSnackbarOpen(true);
+      setSnackbarMessage(forgotPasswordRes.message);
+      setSnackbarSeverity('success');
+      setShowResetAlert(true);
+    } catch (err) {
+      setSnackbarOpen(true);
+      setSnackbarMessage(error || 'Erro ao enviar e-mail.');
+      setSnackbarSeverity('error');
+    }
+  };
+
   if (!signed) {
     return (
       <Container
@@ -105,9 +137,39 @@ const Login = () => {
                 type="password"
                 onChange={(e) => setPassword(e.target.value)}
               />
-              <Link href="#" variant="body2" align="center" underline="none">
-                {'Esqueceu a senha?'}
-              </Link>
+              {showResetAlert && (
+                <Alert
+                  severity="info"
+                  sx={{ width: '100%', alignItems: 'center' }}
+                >
+                  <Typography variant="body2" fontWeight="500">
+                    Uma nova senha foi enviada ao seu e-mail. Use-a para entrar
+                    e altere-a em "alterar senha".
+                  </Typography>
+                </Alert>
+              )}
+
+              <Button
+                children={
+                  loading ? (
+                    <CircularProgress
+                      sx={{
+                        width: '20px !important',
+                        height: '20px !important',
+                      }}
+                    />
+                  ) : (
+                    'Esqueci minha senha?'
+                  )
+                }
+                variant="text"
+                disabled={loading}
+                onClick={() => {
+                  resetPassword(email);
+                }}
+                sx={{ textTransform: 'none' }}
+              />
+
               <Button
                 children="Entrar"
                 variant="contained"
@@ -130,7 +192,9 @@ const Login = () => {
                 {'Ainda não tem uma conta?'}
               </Link>
               <Button
-                onClick={() => navigate('/register')}
+                onClick={() => {
+                  navigate('/register');
+                }}
                 children="Cadastre-se"
                 variant="outlined"
                 sx={{ textTransform: 'none' }}
