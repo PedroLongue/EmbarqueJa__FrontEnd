@@ -9,6 +9,7 @@ import CheckoutForm from '../../components/CheckoutForm';
 import Timer from '../../components/Timer';
 import useCancelReservation from '../../hooks/useCancelReservation';
 import { ITicket } from '../../types';
+import { useNavigate } from 'react-router';
 
 const PreviewTicket = () => {
   const { ticket } = useGetTicket();
@@ -17,6 +18,8 @@ const PreviewTicket = () => {
   const [userTicket, setUserTicket] = useState<ITicket | null>(null);
   const [reservationId, setReservationId] = useState<string | null>(null);
   const [formValid, setFormValid] = useState(false);
+
+  const navigate = useNavigate();
 
   const { handleCancelReservation } = useCancelReservation();
 
@@ -30,6 +33,8 @@ const PreviewTicket = () => {
           setReservationId(reservation._id);
           const ticketData = await ticket(reservation.ticketId);
           setUserTicket(ticketData);
+        } else {
+          navigate('/');
         }
       } catch (error) {
         console.error('Erro ao buscar reserva:', error);
@@ -51,19 +56,21 @@ const PreviewTicket = () => {
         }
       />
       <Grid container spacing={4}>
-        <CheckoutForm onFormChange={setFormValid} />
         {userTicket && (
-          <BoardingPass
-            ticket={userTicket}
-            onCancel={() =>
-              handleCancelReservation({
-                reservationId,
-                setReservationId,
-                setUserTicket,
-              })
-            }
-            isFormValid={formValid}
-          />
+          <>
+            <CheckoutForm onFormChange={setFormValid} />
+            <BoardingPass
+              ticket={userTicket}
+              onCancel={() =>
+                handleCancelReservation({
+                  reservationId,
+                  setReservationId,
+                  setUserTicket,
+                })
+              }
+              isFormValid={formValid}
+            />
+          </>
         )}
       </Grid>
     </Container>

@@ -161,7 +161,7 @@ const MyPurchases = () => {
                       <Stack
                         display="flex"
                         justifyContent="center"
-                        alignItems={'center'}
+                        alignItems={'flex-end'}
                         spacing={1}
                       >
                         <img

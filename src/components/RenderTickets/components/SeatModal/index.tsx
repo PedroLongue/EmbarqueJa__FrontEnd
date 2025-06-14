@@ -77,6 +77,20 @@ const SeatModal: React.FC<SeatModalProps> = ({
     };
   }, [open, idTicket]);
 
+  const clearSelection = () => {
+    if (selectedSeats.length > 0 && currentUser && idTicket) {
+      selectedSeats.forEach((seat) => {
+        socket.emit('seat:temp-select', {
+          ticketId: idTicket,
+          seat,
+          selected: false,
+          userId: currentUser._id,
+        });
+      });
+    }
+    setSelectedSeats([]);
+  };
+
   const handleReserveSeats = async () => {
     if (!idTicket || !currentUser) return;
     try {
@@ -117,7 +131,13 @@ const SeatModal: React.FC<SeatModalProps> = ({
     reservedSeats.includes(seat) || tempReservedSeats.includes(seat);
 
   return (
-    <Modal open={open} onClose={onClose}>
+    <Modal
+      open={open}
+      onClose={() => {
+        onClose();
+        clearSelection();
+      }}
+    >
       <Box
         sx={{
           position: 'absolute',
@@ -240,7 +260,9 @@ const SeatModal: React.FC<SeatModalProps> = ({
             variant="contained"
             sx={{ margin: '10px auto 0px' }}
             disabled={selectedSeats.length === 0}
-            onClick={handleReserveSeats}
+            onClick={() => {
+              handleReserveSeats;
+            }}
           />
         </Stack>
       </Box>

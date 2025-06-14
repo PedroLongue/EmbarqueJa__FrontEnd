@@ -1,8 +1,8 @@
 import {
   Box,
-  Button,
   Card,
   Checkbox,
+  CircularProgress,
   Container,
   FormControlLabel,
   Grid,
@@ -27,6 +27,8 @@ import useGetTicket from '../../hooks/useGetTicket';
 import Timer from '../../components/Timer';
 import useCancelReservation from '../../hooks/useCancelReservation';
 import { ITicket } from '../../types';
+import useSendTicket from '../../hooks/useSendTicket';
+import Button from '../../components/Button';
 
 const Checkout = () => {
   const dispatch = useAppDispatch();
@@ -37,11 +39,13 @@ const Checkout = () => {
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [reservationId, setReservationId] = useState<string | null>(null);
   const [userTicket, setUserTicket] = useState<ITicket | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const { getPendingReservation, confirmReservation } = useReservations();
   const { handleCancelReservation } = useCancelReservation();
   const { ticket } = useGetTicket();
-  const { createUserTicket, success } = useUserTickets();
+  const { createUserTicket } = useUserTickets();
+  const { sendUserTicket } = useSendTicket();
 
   const methods = useForm({ mode: 'onBlur' });
   const {
@@ -59,6 +63,7 @@ const Checkout = () => {
     const paymentMethod = value === '1' ? 'credit-card' : 'pix';
 
     try {
+      setLoading(true);
       const reservation = await getPendingReservation(currentUser._id);
       if (reservation) {
         const confirmed = await confirmReservation(reservation._id);
@@ -68,10 +73,21 @@ const Checkout = () => {
           confirmed.seats,
           currentUser._id,
         );
-      }
 
-      await dispatch(getCurrentUser());
-      navigate('/my-purchases');
+        await sendUserTicket({
+          email: currentUser.email,
+          origin: userTicket?.origin ?? '',
+          destination: userTicket?.destination ?? '',
+          departureDate: userTicket?.departureDate ?? '',
+          departureTime: userTicket?.departureTime ?? '',
+          seats: confirmed.seats ?? [],
+        });
+
+        await dispatch(getCurrentUser());
+        navigate('/my-purchases');
+      } else {
+        navigate('/');
+      }
     } catch (err) {
       console.error('Erro ao finalizar compra:', err);
     }
@@ -83,10 +99,13 @@ const Checkout = () => {
 
       try {
         const reservation = await getPendingReservation(currentUser._id);
+        console.log('Reservation:', reservation);
         if (reservation) {
           setReservationId(reservation._id);
           const ticketData = await ticket(reservation.ticketId);
           setUserTicket(ticketData);
+        } else {
+          navigate('/');
         }
       } catch (err) {
         console.error('Erro ao carregar reserva:', err);
@@ -95,6 +114,17 @@ const Checkout = () => {
 
     loadReservation();
   }, [currentUser]);
+
+  const [pixStatus, setPixStatus] = useState<'inicial' | 'pending' | 'success'>(
+    'inicial',
+  );
+
+  const handlePixPayment = () => {
+    setPixStatus('pending');
+    setTimeout(() => {
+      setPixStatus('success');
+    }, 2000);
+  };
 
   return (
     <FormProvider {...methods}>
@@ -123,7 +153,10 @@ const Checkout = () => {
                     <CreditCardPayment />
                   </TabPanel>
                   <TabPanel value="2">
-                    <PixPayment />
+                    <PixPayment
+                      handlePayment={handlePixPayment}
+                      status={pixStatus}
+                    />
                   </TabPanel>
                 </Grid>
               </Grid>
@@ -146,15 +179,49 @@ const Checkout = () => {
             </TabContext>
           </Card>
 
-          <Box mt={3} textAlign="right">
+          <Box
+            mt={3}
+            display={'flex'}
+            justifyContent={'flex-end'}
+            gap={2}
+            textAlign="right"
+          >
+            <Button
+              variant="contained"
+              onClick={() => {
+                handleCancelReservation({
+                  reservationId,
+                  setReservationId,
+                  setUserTicket,
+                });
+              }}
+              color="error"
+              children="Cancelar reserva"
+            />
             <Button
               variant="contained"
               color="primary"
               type="submit"
-              disabled={!acceptedTerms || (value === '1' && !isValid)}
-            >
-              Finalizar compra
-            </Button>
+              children={
+                loading ? (
+                  <CircularProgress
+                    sx={{
+                      width: '20px !important',
+                      height: '20px !important',
+                    }}
+                  />
+                ) : (
+                  'Finalizar compra'
+                )
+              }
+              disabled={
+                !acceptedTerms ||
+                (value === '1' && !isValid) ||
+                pixStatus === 'pending' ||
+                pixStatus === 'inicial' ||
+                loading
+              }
+            />
           </Box>
         </form>
       </Container>

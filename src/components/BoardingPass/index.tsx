@@ -101,11 +101,12 @@ const BoardingPass = ({ ticket, onCancel, isFormValid }: IBoardingPass) => {
           variant="contained"
           fullWidth
           sx={{ mt: 3 }}
-          onClick={() => navigate('/checkout')}
+          onClick={() => {
+            navigate('/checkout');
+          }}
           disabled={!isFormValid}
-        >
-          Ir para o pagamento
-        </Button>
+          children="Ir para o pagamento"
+        />
         <Button
           variant="contained"
           onClick={onCancel}

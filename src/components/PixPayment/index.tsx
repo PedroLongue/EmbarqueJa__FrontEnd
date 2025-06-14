@@ -1,23 +1,15 @@
 import { Box, CircularProgress, Grid, Typography, Alert } from '@mui/material';
-import { useState } from 'react';
 import QRCode from 'react-qr-code';
 
 import Button from '../Button';
+interface PixPaymentProps {
+  handlePayment: () => void;
+  status: 'inicial' | 'pending' | 'success';
+}
 
-const PixPayment = () => {
-  const [status, setStatus] = useState<'inicial' | 'pending' | 'success'>(
-    'inicial',
-  );
-
+const PixPayment: React.FC<PixPaymentProps> = ({ handlePayment, status }) => {
   const payloadPixFake =
     '00020126580014BR.GOV.BCB.PIX0123teste@pix.com.br5204000053039865405100.005802BR5913Empresa XYZ6009Sao Paulo62110515PixExemplo1234567896304ABCD';
-
-  const handlePayment = () => {
-    setStatus('pending');
-    setTimeout(() => {
-      setStatus('success');
-    }, 4000);
-  };
 
   return (
     <Box
