@@ -49,7 +49,14 @@ const MyPurchases = () => {
             };
           }) || [],
         );
-        setTicketsData(results);
+
+        const sortedResults = results.sort(
+          (a, b) =>
+            new Date(b.departureDate).getTime() -
+            new Date(a.departureDate).getTime(),
+        );
+
+        setTicketsData(sortedResults);
       } catch (err) {
         console.error('Erro ao buscar passagens:', err);
       } finally {

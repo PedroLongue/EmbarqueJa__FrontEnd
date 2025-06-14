@@ -13,6 +13,8 @@ import PersonIcon from '@mui/icons-material/Person';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import WifiIcon from '@mui/icons-material/Wifi';
 import MicIcon from '@mui/icons-material/Mic';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 type IconName =
   | 'location'
@@ -29,7 +31,9 @@ type IconName =
   | 'person'
   | 'calendar'
   | 'wifi'
-  | 'mic';
+  | 'mic'
+  | 'visibilityPassword'
+  | 'visibilityOffPassword';
 
 interface IconProps {
   name: IconName;
@@ -52,6 +56,8 @@ const Icon = ({ name }: IconProps) => {
     calendar: <CalendarTodayIcon />,
     wifi: <WifiIcon />,
     mic: <MicIcon />,
+    visibilityPassword: <Visibility />,
+    visibilityOffPassword: <VisibilityOff />,
   };
 
   return icons[name] || null;
