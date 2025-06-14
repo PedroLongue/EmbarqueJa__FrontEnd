@@ -2,6 +2,7 @@ import {
   Box,
   CircularProgress,
   Container,
+  Pagination,
   Stack,
   Typography,
 } from '@mui/material';
@@ -71,11 +72,36 @@ const RenderTickets = () => {
 
   const now = new Date();
 
-  const validTickets = tickets.filter((ticket) => {
-    const ticketDate = new Date(ticket.departureDate);
-    ticketDate.setHours(ticketDate.getHours() + 3);
-    return ticketDate >= now;
-  });
+  const validTickets = tickets
+    .filter((ticket) => {
+      const ticketDate = new Date(ticket.departureDate);
+      ticketDate.setHours(ticketDate.getHours() + 3);
+      return ticketDate >= now;
+    })
+    .sort((a, b) => {
+      const [hoursA, minutesA] = a.departureTime.split(':').map(Number);
+      const [hoursB, minutesB] = b.departureTime.split(':').map(Number);
+
+      const dateA = new Date(a.departureDate);
+      dateA.setHours(hoursA, minutesA, 0, 0);
+
+      const dateB = new Date(b.departureDate);
+      dateB.setHours(hoursB, minutesB, 0, 0);
+
+      return dateA.getTime() - dateB.getTime();
+    });
+
+  const [page, setPage] = useState(1);
+  const ticketsPerPage = 4;
+
+  const startIndex = (page - 1) * ticketsPerPage;
+  const endIndex = startIndex + ticketsPerPage;
+  const currentTickets = validTickets.slice(startIndex, endIndex);
+  const totalPages = Math.ceil(validTickets.length / ticketsPerPage);
+
+  const handlePageChange = (_: React.ChangeEvent<unknown>, value: number) => {
+    setPage(value);
+  };
 
   return (
     <Container sx={{ marginTop: '152px' }} maxWidth="md">
@@ -102,7 +128,7 @@ const RenderTickets = () => {
             {validTickets.length} resultados para {origin} <Icon name="arrow" />{' '}
             {destination}
           </Typography>
-          {validTickets.map((ticket) => (
+          {currentTickets.map((ticket) => (
             <Box
               key={ticket._id}
               sx={{
@@ -118,7 +144,12 @@ const RenderTickets = () => {
                 justifyContent: 'space-between',
               }}
             >
-              <Stack spacing={2} alignItems={'center'}>
+              <Stack
+                spacing={2}
+                sx={{
+                  alignItems: { md: 'flex-start', xs: 'center' },
+                }}
+              >
                 {' '}
                 <Typography
                   variant="body1"
@@ -127,17 +158,27 @@ const RenderTickets = () => {
                   <Icon name="location" /> {ticket.origin} <Icon name="arrow" />{' '}
                   {ticket.destination}
                 </Typography>
+                <Typography
+                  variant="body1"
+                  sx={{ display: 'flex', alignItems: 'center' }}
+                >
+                  <Icon name="seat" /> {ticket.type}
+                </Typography>
                 <TicketTime
                   ticket={{
                     departureTime: `${ticket.departureTime}`,
                     arrivalTime: `${ticket.arrivalTime}`,
                   }}
                 />
-                <div
-                  style={{
+                <Box
+                  sx={{
                     display: 'flex',
+                    justifyContent: { md: 'flex-start', xs: 'center' },
                     alignItems: 'center',
                     gap: '10px',
+                    width: '100%',
+                    maxWidth: { md: 350 },
+                    flexWrap: 'wrap',
                   }}
                 >
                   {ticket?.amenities?.map((amenity, idx) => (
@@ -150,7 +191,7 @@ const RenderTickets = () => {
                       {amenity}
                     </Typography>
                   ))}
-                </div>
+                </Box>
               </Stack>
               <Box
                 sx={{
@@ -165,7 +206,7 @@ const RenderTickets = () => {
                   src={ticket.companyLogo}
                   alt={ticket.origin}
                   sx={{
-                    width: { xs: 150, md: 200 },
+                    width: { xs: 100, md: 150 },
                     height: 'auto',
                     objectFit: 'contain',
                   }}
@@ -199,6 +240,15 @@ const RenderTickets = () => {
               />
             </Box>
           ))}
+          <Box display="flex" justifyContent="center" mt={4}>
+            <Pagination
+              count={totalPages}
+              page={page}
+              onChange={handlePageChange}
+              color="primary"
+              shape="rounded"
+            />
+          </Box>
         </>
       )}
       <CustomSnackbar
