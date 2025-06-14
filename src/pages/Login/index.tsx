@@ -17,6 +17,7 @@ import { useEffect, useState } from 'react';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
 import FaceIdPopup from '../../components/FaceIdPopup';
 import useForgotPassword from '../../hooks/useForgotPassword';
+import { SnackbarSeverity } from '../../types';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -24,7 +25,8 @@ const Login = () => {
 
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [snackbarSeverity, setSnackbarSeverity] = useState<any>('error');
+  const [snackbarSeverity, setSnackbarSeverity] =
+    useState<SnackbarSeverity>('error');
   const [popupOpen, setPopupOpen] = useState(false);
   const [showResetAlert, setShowResetAlert] = useState(false);
 

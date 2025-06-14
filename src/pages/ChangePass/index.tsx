@@ -4,6 +4,7 @@ import Input from '../../components/Input';
 import Button from '../../components/Button';
 import useChangePass from '../../hooks/useChangePass';
 import CustomSnackbar from '../../components/CustomSnackbar';
+import { SnackbarSeverity } from '../../types';
 
 const ChangePass = () => {
   const { changePassword, loading, error } = useChangePass();
@@ -14,7 +15,8 @@ const ChangePass = () => {
 
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [snackbarSeverity, setSnackbarSeverity] = useState<any>('success');
+  const [snackbarSeverity, setSnackbarSeverity] =
+    useState<SnackbarSeverity>('success');
 
   useEffect(() => {
     if (error) {

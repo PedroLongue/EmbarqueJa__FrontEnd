@@ -18,6 +18,7 @@ import CustomSnackbar from '../../components/CustomSnackbar';
 import { formatDateToDDMMYYYY } from '../../utils/formatDate';
 import FaceIdPopup from '../../components/FaceIdPopup';
 import { formatCPF, formatDate } from '../../utils/inputMark';
+import { SnackbarSeverity } from '../../types';
 
 const UserProfile = () => {
   const { currentUser } = useSelector((state: RootState) => state.auth);
@@ -29,7 +30,8 @@ const UserProfile = () => {
 
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [snackbarSeverity, setSnackbarSeverity] = useState<any>('success');
+  const [snackbarSeverity, setSnackbarSeverity] =
+    useState<SnackbarSeverity>('success');
 
   const [popupOpen, setPopupOpen] = useState(false);
 

@@ -14,6 +14,7 @@ import { useEffect, useState } from 'react';
 import SeatModal from './components/SeatModal';
 import { useNavigate } from 'react-router';
 import CustomSnackbar from '../CustomSnackbar';
+import { SnackbarSeverity } from '../../types';
 
 export const amenityToIcon: Record<
   string,
@@ -42,9 +43,8 @@ const RenderTickets = () => {
 
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [snackbarSeverity, setSnackbarSeverity] = useState<any>('error');
-
-  const wait = true;
+  const [snackbarSeverity, setSnackbarSeverity] =
+    useState<SnackbarSeverity>('error');
 
   useEffect(() => {
     if (error) {

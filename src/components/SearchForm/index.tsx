@@ -6,8 +6,10 @@ import {
   MenuItem,
   Select,
   Stack,
+  IconButton,
+  Tooltip,
 } from '@mui/material';
-import SyncAltIcon from '@mui/icons-material/SyncAlt';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import Button from '../Button';
 import useCities from '../../hooks/useCities';
 import { useDispatch, useSelector } from 'react-redux';
@@ -22,13 +24,41 @@ import {
 import Input from '../Input';
 import { useState } from 'react';
 import CustomSnackbar from '../CustomSnackbar';
+import Icon from '../../assets/Icons';
+import { SnackbarSeverity } from '../../types';
+interface SpeechRecognitionEvent extends Event {
+  readonly resultIndex: number;
+  readonly results: SpeechRecognitionResultList;
+}
+
+interface SpeechRecognitionErrorEvent extends Event {
+  error:
+    | 'no-speech'
+    | 'aborted'
+    | 'audio-capture'
+    | 'network'
+    | 'not-allowed'
+    | 'service-not-allowed'
+    | 'bad-grammar'
+    | 'language-not-supported';
+  message: string;
+}
+
+declare global {
+  interface Window {
+    SpeechRecognition: any;
+    webkitSpeechRecognition: any;
+  }
+}
 
 const MAX_PASSENGERS = [1, 2, 3, 4, 5];
 
 const SeachForm = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [snackbarSeverity, setSnackbarSeverity] = useState<any>('error');
+  const [snackbarSeverity, setSnackbarSeverity] =
+    useState<SnackbarSeverity>('error');
+  const [isListening, setIsListening] = useState(false);
 
   const dispatch = useDispatch<AppDispatch>();
   const { origin, destination, departureDate, loading } = useSelector(
@@ -39,6 +69,14 @@ const SeachForm = () => {
   const filteredOriginCities = cities.filter((city) => city !== destination);
   const filteredDestinationCities = cities.filter((city) => city !== origin);
 
+  const findCityMatch = (input: string) => {
+    const inputNormalized = input.toLowerCase().trim();
+    return (
+      cities.find((city) => city.toLowerCase() === inputNormalized) ||
+      capitalize(input)
+    );
+  };
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!origin || !destination || !departureDate) {
@@ -48,6 +86,56 @@ const SeachForm = () => {
       return;
     }
     dispatch(fetchTickets());
+  };
+
+  const capitalize = (str: string) => {
+    return str.replace(/\b\w/g, (c) => c.toUpperCase());
+  };
+
+  const startVoiceRecognition = () => {
+    const SpeechRecognition =
+      window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+      setSnackbarMessage('Navegador não suporta reconhecimento de voz');
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'pt-BR';
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.onstart = () => setIsListening(true);
+    recognition.onend = () => setIsListening(false);
+
+    recognition.onresult = (event: SpeechRecognitionEvent) => {
+      const transcript = event.results[0][0].transcript.toLowerCase();
+
+      if (transcript.includes('origem')) {
+        const voiceValue = transcript.replace('origem', '').trim();
+        const cidadeMatch = findCityMatch(voiceValue);
+        dispatch(setOrigin(cidadeMatch));
+      }
+
+      if (transcript.includes('destino')) {
+        const voiceValue = transcript.replace('destino', '').trim();
+        const cidadeMatch = findCityMatch(voiceValue);
+        dispatch(setDestination(cidadeMatch));
+      }
+    };
+
+    recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
+      console.error('Erro no reconhecimento de voz:', event.error);
+      setSnackbarMessage('Erro no reconhecimento de voz');
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
+      setIsListening(false);
+    };
+
+    recognition.start();
   };
 
   return (
@@ -80,9 +168,23 @@ const SeachForm = () => {
               )}
               sx={{ width: '100%' }}
             />
-            <Box display={'flex'}>
-              <SyncAltIcon />
+            <Box display="flex" flexDirection="column" alignItems="center">
+              <Stack direction="row" alignItems="center" spacing={0.5}>
+                <IconButton
+                  onClick={startVoiceRecognition}
+                  size="small"
+                  sx={{
+                    color: isListening ? 'primary.main' : 'action.active',
+                  }}
+                >
+                  <Icon name="mic" />
+                </IconButton>
+                <Tooltip title="Clique no microfone e diga 'origem' ou 'destino' seguido da cidade">
+                  <InfoOutlinedIcon fontSize="small" color="action" />
+                </Tooltip>
+              </Stack>
             </Box>
+
             <Autocomplete
               disablePortal
               options={filteredDestinationCities}
@@ -125,7 +227,6 @@ const SeachForm = () => {
             </FormControl>
           </Stack>
 
-          {/* Botão */}
           <Stack width="100%" alignItems="flex-end">
             <Button
               type="submit"

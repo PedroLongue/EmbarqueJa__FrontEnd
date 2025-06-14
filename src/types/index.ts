@@ -51,3 +51,5 @@ export interface IAuthState {
   signed: boolean;
   authError: string;
 }
+
+export type SnackbarSeverity = 'success' | 'info' | 'warning' | 'error';

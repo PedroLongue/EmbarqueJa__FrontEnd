@@ -14,6 +14,7 @@ import { useEffect, useState } from 'react';
 import Input from '../../components/Input';
 import useTickets from '../../hooks/useTickets';
 import CustomSnackbar from '../../components/CustomSnackbar';
+import { SnackbarSeverity } from '../../types';
 
 const amenitiesOptions = [
   'Wi-Fi',
@@ -39,7 +40,8 @@ const Admin = () => {
   const [price, setPrice] = useState('');
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [snackbarSeverity, setSnackbarSeverity] = useState<any>('success');
+  const [snackbarSeverity, setSnackbarSeverity] =
+    useState<SnackbarSeverity>('success');
 
   const { createTicket, loading, error } = useTickets();
 

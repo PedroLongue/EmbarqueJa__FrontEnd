@@ -12,6 +12,7 @@ import BedIcon from '@mui/icons-material/Bed';
 import PersonIcon from '@mui/icons-material/Person';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import WifiIcon from '@mui/icons-material/Wifi';
+import MicIcon from '@mui/icons-material/Mic';
 
 type IconName =
   | 'location'
@@ -27,7 +28,8 @@ type IconName =
   | 'bed'
   | 'person'
   | 'calendar'
-  | 'wifi';
+  | 'wifi'
+  | 'mic';
 
 interface IconProps {
   name: IconName;
@@ -49,6 +51,7 @@ const Icon = ({ name }: IconProps) => {
     person: <PersonIcon />,
     calendar: <CalendarTodayIcon />,
     wifi: <WifiIcon />,
+    mic: <MicIcon />,
   };
 
   return icons[name] || null;

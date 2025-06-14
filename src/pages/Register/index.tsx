@@ -8,6 +8,7 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import CustomSnackbar from '../../components/CustomSnackbar';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { register } from '../../redux/features/authSlice';
+import { SnackbarSeverity } from '../../types';
 
 const Login = () => {
   const [name, setName] = useState('');
@@ -17,7 +18,8 @@ const Login = () => {
 
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [snackbarSeverity, setSnackbarSeverity] = useState<any>('error');
+  const [snackbarSeverity, setSnackbarSeverity] =
+    useState<SnackbarSeverity>('error');
 
   const { signed, authError } = useSelector((state: RootState) => state.auth);
   const dispatch = useAppDispatch();
