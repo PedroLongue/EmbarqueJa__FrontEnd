@@ -260,9 +260,7 @@ const SeatModal: React.FC<SeatModalProps> = ({
             variant="contained"
             sx={{ margin: '10px auto 0px' }}
             disabled={selectedSeats.length === 0}
-            onClick={() => {
-              handleReserveSeats;
-            }}
+            onClick={handleReserveSeats}
           />
         </Stack>
       </Box>
