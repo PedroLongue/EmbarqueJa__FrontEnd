@@ -30,6 +30,8 @@ import CustomSnackbar from '../CustomSnackbar';
 import Icon from '../../assets/Icons';
 import { SnackbarSeverity } from '../../types';
 import theme from '../../theme';
+import { isIOS } from 'react-device-detect';
+import { formatDate } from '../../utils/inputMark';
 interface SpeechRecognitionEvent extends Event {
   readonly resultIndex: number;
   readonly results: SpeechRecognitionResultList;
@@ -81,6 +83,12 @@ const SeachForm = () => {
     );
   };
 
+  const toISODate = (brDate: string) => {
+    const [day, month, year] = brDate.split('/');
+    if (!day || !month || !year) return '';
+    return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+  };
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!origin || !destination || !departureDate) {
@@ -89,6 +97,9 @@ const SeachForm = () => {
       setSnackbarOpen(true);
       return;
     }
+
+    const formattedDate = isIOS ? toISODate(departureDate) : departureDate;
+    dispatch(setDepartureDate(formattedDate));
     dispatch(fetchTickets());
   };
 
@@ -248,9 +259,21 @@ const SeachForm = () => {
               id="date"
               label="Data ida"
               variant="standard"
-              type="date"
+              type={isIOS ? 'text' : 'date'}
+              inputProps={
+                isIOS
+                  ? {
+                      inputMode: 'numeric',
+                      pattern: '[0-9]*',
+                    }
+                  : undefined
+              }
               value={departureDate}
-              onChange={(e) => dispatch(setDepartureDate(e.target.value))}
+              onChange={(e) => {
+                isIOS
+                  ? dispatch(setDepartureDate(formatDate(e.target.value)))
+                  : dispatch(setDepartureDate(e.target.value));
+              }}
               InputLabelProps={{ shrink: true }}
               fullWidth
             />

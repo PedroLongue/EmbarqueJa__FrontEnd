@@ -21,7 +21,9 @@ import { formatCPF, formatDate } from '../../utils/inputMark';
 import { SnackbarSeverity } from '../../types';
 
 const UserProfile = () => {
-  const { currentUser } = useSelector((state: RootState) => state.auth);
+  const { currentUser } = useSelector(
+    (state: RootState) => state.auth as RootState['auth'],
+  );
 
   const { updateProfile, loading, error } = useUpdateProfile();
 
