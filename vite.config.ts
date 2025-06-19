@@ -6,7 +6,7 @@ export default defineConfig({
   envDir: './',
   server: {
     host: '0.0.0.0',
-    port: 5173
+    port: 5173,
+    allowedHosts: ['embarqueja.xyz', 'www.embarqueja.xyz'],
   },
-
 });
