@@ -213,8 +213,10 @@ const FaceIdPopup: React.FC<FaceIdPopupProps> = ({
             borderRadius: 2,
             boxShadow: 24,
             p: 3,
-            width: '100%',
+            width: '90%',
             maxWidth: 500,
+            maxHeight: '90vh',
+            overflowY: 'auto',
             textAlign: 'center',
           }}
         >
@@ -246,9 +248,14 @@ const FaceIdPopup: React.FC<FaceIdPopupProps> = ({
 
           <video
             ref={videoRef}
+            playsInline
             width="100%"
             height="auto"
-            style={{ borderRadius: 8 }}
+            style={{
+              borderRadius: 8,
+              maxHeight: '40vh',
+              objectFit: 'cover',
+            }}
           />
 
           <Box mt={2}>
