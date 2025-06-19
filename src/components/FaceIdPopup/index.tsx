@@ -215,7 +215,7 @@ const FaceIdPopup: React.FC<FaceIdPopupProps> = ({
             p: 3,
             width: '90%',
             maxWidth: 500,
-            maxHeight: '90vh',
+            maxHeight: '80vh',
             overflowY: 'auto',
             textAlign: 'center',
           }}
@@ -253,7 +253,7 @@ const FaceIdPopup: React.FC<FaceIdPopupProps> = ({
             height="auto"
             style={{
               borderRadius: 8,
-              maxHeight: '60vh',
+              height: 'auto',
               objectFit: 'cover',
             }}
           />
