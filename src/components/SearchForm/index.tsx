@@ -264,7 +264,6 @@ const SeachForm = () => {
                 isIOS
                   ? {
                       inputMode: 'numeric',
-                      pattern: '[0-9]*',
                     }
                   : undefined
               }
@@ -277,6 +276,7 @@ const SeachForm = () => {
               InputLabelProps={{ shrink: true }}
               fullWidth
             />
+
             <FormControl variant="standard" fullWidth>
               <InputLabel id="passengers-label">Passageiros</InputLabel>
               <Select
