@@ -11,6 +11,7 @@ import {
   Stepper,
   Step,
   StepLabel,
+  useMediaQuery,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import api from '../../services/api';
@@ -22,6 +23,7 @@ import {
 } from '../../redux/features/authSlice';
 import CustomSnackbar from '../CustomSnackbar';
 import Button from '../Button';
+import theme from '../../theme';
 
 interface FaceIdPopupProps {
   open: boolean;
@@ -200,6 +202,8 @@ const FaceIdPopup: React.FC<FaceIdPopupProps> = ({
     }
   };
 
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
   return (
     <>
       <Modal open={open} onClose={onClose}>
@@ -253,7 +257,7 @@ const FaceIdPopup: React.FC<FaceIdPopupProps> = ({
             height="auto"
             style={{
               borderRadius: 8,
-              height: 'auto',
+              height: isMobile ? '30vh' : 'auto',
               objectFit: 'cover',
             }}
           />
