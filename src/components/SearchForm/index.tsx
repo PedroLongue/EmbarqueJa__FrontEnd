@@ -8,6 +8,9 @@ import {
   Stack,
   IconButton,
   Tooltip,
+  useMediaQuery,
+  Popover,
+  Typography,
 } from '@mui/material';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import Button from '../Button';
@@ -26,6 +29,7 @@ import { useState } from 'react';
 import CustomSnackbar from '../CustomSnackbar';
 import Icon from '../../assets/Icons';
 import { SnackbarSeverity } from '../../types';
+import theme from '../../theme';
 interface SpeechRecognitionEvent extends Event {
   readonly resultIndex: number;
   readonly results: SpeechRecognitionResultList;
@@ -138,6 +142,18 @@ const SeachForm = () => {
     recognition.start();
   };
 
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const [anchorTooltipModal, setAnchorTooltipModal] =
+    useState<null | HTMLElement>(null);
+
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorTooltipModal(event.currentTarget);
+  };
+
+  const handleClose = () => setAnchorTooltipModal(null);
+
+  const openTooltipModal = Boolean(anchorTooltipModal);
+
   return (
     <>
       <Box
@@ -179,9 +195,39 @@ const SeachForm = () => {
                 >
                   <Icon name="mic" />
                 </IconButton>
-                <Tooltip title="Clique no microfone e diga 'origem' ou 'destino' seguido da cidade">
-                  <InfoOutlinedIcon fontSize="small" color="action" />
-                </Tooltip>
+                {isMobile ? (
+                  <>
+                    <IconButton onClick={handleClick}>
+                      <InfoOutlinedIcon fontSize="small" color="action" />
+                    </IconButton>
+                    <Popover
+                      open={openTooltipModal}
+                      anchorEl={anchorTooltipModal}
+                      onClose={handleClose}
+                      anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'center',
+                      }}
+                    >
+                      <Typography
+                        sx={{
+                          p: 2,
+                          maxWidth: 200,
+                          fontSize: '12px',
+                          fontWeight: 'bold',
+                        }}
+                        variant="body2"
+                      >
+                        Clique no microfone e diga 'origem' ou 'destino' seguido
+                        da cidade
+                      </Typography>
+                    </Popover>
+                  </>
+                ) : (
+                  <Tooltip title="Clique no microfone e diga 'origem' ou 'destino' seguido da cidade">
+                    <InfoOutlinedIcon fontSize="small" color="action" />
+                  </Tooltip>
+                )}
               </Stack>
             </Box>
 
