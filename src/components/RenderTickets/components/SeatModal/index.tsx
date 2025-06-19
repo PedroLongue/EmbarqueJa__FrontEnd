@@ -192,7 +192,9 @@ const SeatModal: React.FC<SeatModalProps> = ({
                   display="flex"
                   justifyContent="center"
                   alignItems="center"
-                  gap={3}
+                  sx={{
+                    gap: { xs: '1px', sm: '24px' },
+                  }}
                 >
                   {/* Assentos lado esquerdo */}
                   <Stack direction="row" spacing={1}>
