@@ -25,7 +25,7 @@ import CustomSnackbar from '../CustomSnackbar';
 import Button from '../Button';
 import theme from '../../theme';
 
-interface FaceIdPopupProps {
+interface FaceRecognitionPopupProps {
   open: boolean;
   onClose: () => void;
   onSuccess?: () => void;
@@ -38,7 +38,7 @@ const steps = [
   'Levante as sobrancelhas',
 ];
 
-const FaceIdPopup: React.FC<FaceIdPopupProps> = ({
+const FaceRecognitionPopup: React.FC<FaceRecognitionPopupProps> = ({
   open,
   onClose,
   onSuccess,
@@ -165,18 +165,18 @@ const FaceIdPopup: React.FC<FaceIdPopupProps> = ({
           if (mode === 'register') {
             const token = localStorage.getItem('@Auth:token');
             await api.post(
-              '/users/faceid',
+              '/users/register-face',
               { descriptor },
               { headers: { Authorization: `Bearer ${token}` } },
             );
             await dispatch(getCurrentUser());
             setSnackbar({
               open: true,
-              message: 'FaceID cadastrado com sucesso!',
+              message: 'Rosto cadastrado com sucesso!',
               severity: 'success',
             });
           } else {
-            const res = await api.post('/users/login-faceid', { descriptor });
+            const res = await api.post('/users/login-face', { descriptor });
             localStorage.setItem('@Auth:token', res.data.token);
             api.defaults.headers.common['Authorization'] =
               `Bearer ${res.data.token}`;
@@ -231,7 +231,9 @@ const FaceIdPopup: React.FC<FaceIdPopupProps> = ({
             mb={2}
           >
             <Typography variant="h6">
-              {mode === 'register' ? 'Cadastro de FaceID' : 'Login com FaceID'}
+              {mode === 'register'
+                ? 'Cadastro de FaceRecognition'
+                : 'Login com FaceRecognition'}
             </Typography>
             <IconButton onClick={onClose}>
               <CloseIcon />
@@ -298,4 +300,4 @@ const FaceIdPopup: React.FC<FaceIdPopupProps> = ({
   );
 };
 
-export default FaceIdPopup;
+export default FaceRecognitionPopup;

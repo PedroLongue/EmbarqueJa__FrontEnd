@@ -15,7 +15,7 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import CustomSnackbar from '../../components/CustomSnackbar';
 import { useEffect, useState } from 'react';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
-import FaceIdPopup from '../../components/FaceIdPopup';
+import FaceRecognitionPopup from '../../components/FaceRecognitionPopup';
 import useForgotPassword from '../../hooks/useForgotPassword';
 import { SnackbarSeverity } from '../../types';
 
@@ -179,12 +179,12 @@ const Login = () => {
                 type="submit"
               />
               <Button
-                children="Entrar com FaceId"
+                children="Entrar com FaceRecognition"
                 variant="contained"
                 onClick={() => setPopupOpen(true)}
                 sx={{ textTransform: 'none', fontWeight: 'bold' }}
               />
-              <FaceIdPopup
+              <FaceRecognitionPopup
                 open={popupOpen}
                 onClose={() => setPopupOpen(false)}
                 mode="login"

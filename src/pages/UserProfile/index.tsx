@@ -16,7 +16,7 @@ import Input from '../../components/Input';
 import useUpdateProfile from '../../hooks/useUpdateProfile';
 import CustomSnackbar from '../../components/CustomSnackbar';
 import { formatDateToDDMMYYYY } from '../../utils/formatDate';
-import FaceIdPopup from '../../components/FaceIdPopup';
+import FaceRecognitionPopup from '../../components/FaceRecognitionPopup';
 import { formatCPF, formatDate } from '../../utils/inputMark';
 import { SnackbarSeverity } from '../../types';
 
@@ -124,11 +124,11 @@ const UserProfile = () => {
                   variant="contained"
                   color="primary"
                   fullWidth
-                  disabled={currentUser?.faceIdDescriptor}
+                  disabled={currentUser?.faceAuthDescriptor}
                   onClick={() => setPopupOpen(true)}
-                  children="Configurar faceId"
+                  children="Configurar FaceRecognition"
                 />
-                <FaceIdPopup
+                <FaceRecognitionPopup
                   open={popupOpen}
                   onClose={() => setPopupOpen(false)}
                   mode="register"

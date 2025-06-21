@@ -41,7 +41,7 @@ interface ICurrentUser {
   cpf: string;
   birthDate: string;
   userTickets: IuserTrips[];
-  faceIdDescriptor: boolean;
+  faceAuthDescriptor: boolean;
   __v: number;
 }
 
