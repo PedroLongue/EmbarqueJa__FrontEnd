@@ -29,6 +29,7 @@ import useCancelReservation from '../../hooks/useCancelReservation';
 import { ITicket } from '../../types';
 import useSendTicket from '../../hooks/useSendTicket';
 import Button from '../../components/Button';
+import useUploadFaceImages from '../../hooks/useUploadFaceImages';
 
 const Checkout = () => {
   const dispatch = useAppDispatch();
@@ -40,6 +41,15 @@ const Checkout = () => {
   const [reservationId, setReservationId] = useState<string | null>(null);
   const [userTicket, setUserTicket] = useState<ITicket | null>(null);
   const [loading, setLoading] = useState(false);
+
+  const { uploadFaceImages } = useUploadFaceImages();
+  const faceImages = useSelector((state: RootState) => state.faceUpload.images);
+  const passengerInfos = useSelector(
+    (state: RootState) => state.search.passengerInfos,
+  );
+
+  console.log('faceImages:', faceImages);
+  console.log('passengerInfos:', passengerInfos);
 
   const { getPendingReservation, confirmReservation } = useReservations();
   const { handleCancelReservation } = useCancelReservation();
@@ -67,6 +77,15 @@ const Checkout = () => {
       const reservation = await getPendingReservation(currentUser._id);
       if (reservation) {
         const confirmed = await confirmReservation(reservation._id);
+
+        if (
+          passengerInfos.some(
+            (p) => Array.isArray(p.descriptor) && p.descriptor.length > 0,
+          )
+        ) {
+          await uploadFaceImages(reservation.ticketId, passengerInfos);
+        }
+
         await createUserTicket(
           reservation.ticketId,
           paymentMethod,

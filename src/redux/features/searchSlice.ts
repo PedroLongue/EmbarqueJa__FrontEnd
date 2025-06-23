@@ -13,6 +13,7 @@ const initialState: ISearchState = {
   loading: false,
   error: null,
   seats: [],
+  passengerInfos: [],
 };
 
 // Thunk para buscar as passagens
@@ -52,11 +53,44 @@ const searchSlice = createSlice({
       state.passengers = action.payload;
     },
     setTicketId: (state, action: PayloadAction<string>) => {
-      console.log(action.payload);
       state.ticketId = action.payload;
     },
     setSeats: (state, action: PayloadAction<number[]>) => {
       state.seats = action.payload;
+    },
+    setPassengerInfos: (
+      state,
+      action: PayloadAction<{
+        index: number;
+        info: { name: string; cpf: string; birthDate: string };
+      }>,
+    ) => {
+      const { index, info } = action.payload;
+      const existing = state.passengerInfos[index];
+      state.passengerInfos[index] = {
+        ...info,
+        descriptor: existing?.descriptor || [],
+      };
+    },
+    setAllPassengerInfos: (
+      state,
+      action: PayloadAction<
+        {
+          name: string;
+          cpf: string;
+          birthDate: string;
+          descriptor?: number[];
+        }[]
+      >,
+    ) => {
+      state.passengerInfos = action.payload.map((info) => ({
+        ...info,
+        descriptor: info.descriptor ?? [],
+      }));
+    },
+
+    resetPassengerInfos: (state) => {
+      state.passengerInfos = [];
     },
   },
   extraReducers: (builder) => {
@@ -83,5 +117,8 @@ export const {
   setPassengers,
   setTicketId,
   setSeats,
+  setPassengerInfos,
+  setAllPassengerInfos,
+  resetPassengerInfos,
 } = searchSlice.actions;
 export default searchSlice.reducer;

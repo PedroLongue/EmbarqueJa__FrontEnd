@@ -10,6 +10,8 @@ import Timer from '../../components/Timer';
 import useCancelReservation from '../../hooks/useCancelReservation';
 import { ITicket } from '../../types';
 import { useNavigate } from 'react-router';
+import { useAppDispatch } from '../../hooks/useAppDispatch';
+import { resetFaceImages } from '../../redux/features/faceUploadSlice';
 
 const PreviewTicket = () => {
   const { ticket } = useGetTicket();
@@ -18,6 +20,8 @@ const PreviewTicket = () => {
   const [userTicket, setUserTicket] = useState<ITicket | null>(null);
   const [reservationId, setReservationId] = useState<string | null>(null);
   const [formValid, setFormValid] = useState(false);
+
+  const dispatch = useAppDispatch();
 
   const navigate = useNavigate();
 
@@ -47,13 +51,14 @@ const PreviewTicket = () => {
   return (
     <Container maxWidth="lg" sx={{ mt: 4, flex: 1 }}>
       <Timer
-        onCancel={() =>
+        onCancel={() => {
           handleCancelReservation({
             reservationId,
             setReservationId,
             setUserTicket,
-          })
-        }
+          });
+          dispatch(resetFaceImages());
+        }}
       />
       <Grid container spacing={4}>
         {userTicket && (
@@ -61,13 +66,14 @@ const PreviewTicket = () => {
             <CheckoutForm onFormChange={setFormValid} />
             <BoardingPass
               ticket={userTicket}
-              onCancel={() =>
+              onCancel={() => {
                 handleCancelReservation({
                   reservationId,
                   setReservationId,
                   setUserTicket,
-                })
-              }
+                });
+                dispatch(resetFaceImages());
+              }}
               isFormValid={formValid}
             />
           </>

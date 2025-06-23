@@ -25,6 +25,7 @@ export interface ISearchState {
   loading: boolean;
   error: string | null;
   ticketId: string;
+  passengerInfos: IPassengerInfos[];
 }
 
 interface IuserTrips {
@@ -50,6 +51,13 @@ export interface IAuthState {
   currentUser: ICurrentUser | null;
   signed: boolean;
   authError: string;
+}
+
+export interface IPassengerInfos {
+  name: string;
+  cpf: string;
+  birthDate: string;
+  descriptor: number[];
 }
 
 export type SnackbarSeverity = 'success' | 'info' | 'warning' | 'error';

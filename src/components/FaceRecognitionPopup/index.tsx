@@ -1,5 +1,3 @@
-// Refatorado para: melhor controle de snackbar, remoção de warnings, legibilidade e manutenção
-
 import React, { useEffect, useRef, useState } from 'react';
 import * as faceapi from 'face-api.js';
 import {

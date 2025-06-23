@@ -16,6 +16,7 @@ import PreviewTicket from '../pages/PreviewTicket';
 import Checkout from '../pages/Checkout';
 import MyPurchases from '../pages/MyPurchases';
 import UserProfile from '../pages/UserProfile';
+import ValidatePassengers from '../pages/ValidatePassengers';
 
 const AppRouter = () => {
   const { signed, currentUser } = useSelector((state: RootState) => state.auth);
@@ -48,6 +49,16 @@ const AppRouter = () => {
         <Route
           path="/admin"
           element={currentUser?.isAdmin ? <Admin /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/validate-passengers"
+          element={
+            currentUser?.isAdmin ? (
+              <ValidatePassengers />
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
         />
         <Route
           path="/preview-ticket"
