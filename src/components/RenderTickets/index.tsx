@@ -74,19 +74,32 @@ const RenderTickets = () => {
 
   const validTickets = tickets
     .filter((ticket) => {
-      const ticketDate = new Date(ticket.departureDate);
-      ticketDate.setHours(ticketDate.getHours() + 3);
-      return ticketDate >= now;
+      const [hours, minutes] = ticket.departureTime.split(':').map(Number);
+
+      const [year, month, day] = ticket.departureDate
+        .substring(0, 10)
+        .split('-')
+        .map(Number);
+
+      const localTicketDate = new Date(year, month - 1, day, hours, minutes);
+
+      return localTicketDate >= now;
     })
     .sort((a, b) => {
       const [hoursA, minutesA] = a.departureTime.split(':').map(Number);
       const [hoursB, minutesB] = b.departureTime.split(':').map(Number);
 
-      const dateA = new Date(a.departureDate);
-      dateA.setHours(hoursA, minutesA, 0, 0);
+      const [yearA, monthA, dayA] = a.departureDate
+        .substring(0, 10)
+        .split('-')
+        .map(Number);
+      const [yearB, monthB, dayB] = b.departureDate
+        .substring(0, 10)
+        .split('-')
+        .map(Number);
 
-      const dateB = new Date(b.departureDate);
-      dateB.setHours(hoursB, minutesB, 0, 0);
+      const dateA = new Date(yearA, monthA - 1, dayA, hoursA, minutesA);
+      const dateB = new Date(yearB, monthB - 1, dayB, hoursB, minutesB);
 
       return dateA.getTime() - dateB.getTime();
     });

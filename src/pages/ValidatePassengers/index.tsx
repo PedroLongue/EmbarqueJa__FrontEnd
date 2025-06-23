@@ -19,7 +19,7 @@ const ValidatePassengers = () => {
           backgroundColor: '#fff',
           maxWidth: 'sm',
         }}
-        maxWidth="sm"
+        maxWidth="md"
       >
         <Typography variant="h4" align="center" fontWeight={'bold'}>
           Valide os passageiros da sua viagem

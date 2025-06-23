@@ -94,14 +94,24 @@ const Header = () => {
             Minhas compras
           </MenuItem>
           {currentUser?.isAdmin && (
-            <MenuItem
-              onClick={() => {
-                navigate('/admin');
-              }}
-              sx={{ justifyContent: 'center' }}
-            >
-              Criar viagens
-            </MenuItem>
+            <>
+              <MenuItem
+                onClick={() => {
+                  navigate('/admin');
+                }}
+                sx={{ justifyContent: 'center' }}
+              >
+                Criar viagens
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  navigate('/validate-passengers');
+                }}
+                sx={{ justifyContent: 'center' }}
+              >
+                Validar passageiros
+              </MenuItem>
+            </>
           )}
           <Button
             onClick={handleLogout}
@@ -221,6 +231,17 @@ const Header = () => {
                   >
                     Minhas compras
                   </MenuItem>
+                  {currentUser.isAdmin && (
+                    <MenuItem
+                      onClick={() => {
+                        handleClose();
+                        navigate('/validate-passengers');
+                      }}
+                      sx={{ justifyContent: 'center' }}
+                    >
+                      Validar passageiros
+                    </MenuItem>
+                  )}
                   <Button
                     children="Sair"
                     variant="contained"
