@@ -145,15 +145,25 @@ const Header = () => {
         }}
         maxWidth="xl"
       >
-        <img
-          src={Logo}
-          alt="Logo"
-          style={{ height: '100%', width: 'auto', cursor: 'pointer' }}
+        <Box
+          display={'flex'}
+          alignItems={'center'}
+          height={'100%'}
+          gap={2}
+          sx={{
+            cursor: 'pointer',
+          }}
           onClick={() => navigate('/')}
-        />
-        <Typography variant="body1" fontWeight="bold">
-          EmbarqueJa
-        </Typography>
+        >
+          <img
+            src={Logo}
+            alt="Logo"
+            style={{ height: '100%', width: 'auto' }}
+          />
+          <Typography variant="body1" fontWeight="bold">
+            EmbarqueJa
+          </Typography>
+        </Box>
 
         {isMobile ? (
           <>

@@ -18,9 +18,15 @@ interface IBoardingPass {
   ticket: ITicket;
   onCancel: () => void;
   isFormValid: boolean;
+  loadingImage: boolean;
 }
 
-const BoardingPass = ({ ticket, onCancel, isFormValid }: IBoardingPass) => {
+const BoardingPass = ({
+  ticket,
+  onCancel,
+  isFormValid,
+  loadingImage,
+}: IBoardingPass) => {
   const passengerSeats = useSelector((state: RootState) => state.search.seats);
   const passengers = useSelector((state: RootState) => state.search.passengers);
 
@@ -104,12 +110,13 @@ const BoardingPass = ({ ticket, onCancel, isFormValid }: IBoardingPass) => {
           onClick={() => {
             navigate('/checkout');
           }}
-          disabled={!isFormValid}
+          disabled={!isFormValid || loadingImage}
           children="Ir para o pagamento"
         />
         <Button
           variant="contained"
           onClick={onCancel}
+          disabled={loadingImage}
           color="error"
           children="Cancelar reserva"
         />

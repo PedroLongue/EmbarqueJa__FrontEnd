@@ -92,11 +92,6 @@ const ValidatePassengerPopup: React.FC<Props> = ({ open, onClose }) => {
     }
   };
 
-  const handleRetry = () => {
-    setResult(null);
-    setError('');
-  };
-
   return (
     <Modal open={open} onClose={onClose}>
       <Box

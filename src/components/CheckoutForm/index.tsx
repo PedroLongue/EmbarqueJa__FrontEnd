@@ -1,4 +1,13 @@
-import { Box, Checkbox, FormControlLabel, Grid } from '@mui/material';
+import {
+  Box,
+  Checkbox,
+  CircularProgress,
+  FormControlLabel,
+  Grid,
+  Typography,
+} from '@mui/material';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+
 import Input from '../Input';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
@@ -22,13 +31,19 @@ type PassengerInfo = {
 };
 
 interface CheckoutFormProps {
+  loadingImage: boolean;
+  setLoadingImage: (loading: boolean) => void;
   onFormChange: (isValid: boolean) => void;
 }
 
-const CheckoutForm = ({ onFormChange }: CheckoutFormProps) => {
+const CheckoutForm = ({
+  onFormChange,
+  setLoadingImage,
+  loadingImage,
+}: CheckoutFormProps) => {
+  const [useBuyerInfo, setUseBuyerInfo] = useState(false);
   const passengers = useSelector((state: RootState) => state.search.passengers);
   const { currentUser } = useSelector((state: RootState) => state.auth);
-  const [useBuyerInfo, setUseBuyerInfo] = useState(false);
   const faceImages = useSelector((state: RootState) => state.faceUpload.images);
   const dispatch = useAppDispatch();
 
@@ -36,7 +51,6 @@ const CheckoutForm = ({ onFormChange }: CheckoutFormProps) => {
     control,
     setValue,
     trigger,
-    watch,
     formState: { isValid },
   } = useForm<{ passengers: PassengerInfo[] }>({
     mode: 'onChange',
@@ -51,8 +65,6 @@ const CheckoutForm = ({ onFormChange }: CheckoutFormProps) => {
   });
 
   const values = useWatch({ control, name: 'passengers' });
-
-  console.log({ values });
 
   useEffect(() => {
     dispatch(
@@ -94,6 +106,7 @@ const CheckoutForm = ({ onFormChange }: CheckoutFormProps) => {
 
   const handleImageChange = async (file: File | null, index: number) => {
     if (!file) return;
+    setLoadingImage(true);
 
     dispatch(setFaceImage({ index, file }));
 
@@ -120,6 +133,8 @@ const CheckoutForm = ({ onFormChange }: CheckoutFormProps) => {
     });
 
     trigger();
+
+    setLoadingImage(false);
   };
 
   return (
@@ -220,18 +235,70 @@ const CheckoutForm = ({ onFormChange }: CheckoutFormProps) => {
                 />
                 <Box
                   sx={{
-                    border: '1px dashed #ccc',
-                    borderRadius: 2,
-                    p: 2,
-                    textAlign: 'center',
-                    cursor: 'pointer',
-                    backgroundColor: '#fff',
+                    'border': '2px dashed #90caf9',
+                    'borderRadius': 2,
+                    'p': { xs: 2, sm: 3 },
+                    'textAlign': 'center',
+                    'cursor': 'pointer',
+                    'backgroundColor': '#f0f7ff',
+                    'transition': 'all 0.2s ease-in-out',
+                    '&:hover': {
+                      backgroundColor: '#e3f2fd',
+                    },
                   }}
                 >
-                  {faceImages[index] ? (
-                    <strong>{faceImages[index]?.name}</strong>
+                  {loadingImage ? (
+                    <CircularProgress size={28} />
                   ) : (
-                    'Clique para enviar uma imagem facial (opcional)'
+                    <>
+                      <Box
+                        display={'flex'}
+                        alignItems={'center'}
+                        justifyContent={'center'}
+                        mb={1}
+                      >
+                        <Typography
+                          variant="subtitle2"
+                          color="text.primary"
+                          fontWeight={600}
+                          fontSize={{ xs: '0.95rem', sm: '1rem' }}
+                        >
+                          {faceImages[index]
+                            ? faceImages[index]?.name
+                            : 'Clique aqui para enviar uma foto do rosto'}
+                        </Typography>
+
+                        {faceImages[index] && (
+                          <CheckCircleIcon fontSize="small" color="success" />
+                        )}
+                      </Box>
+
+                      {!faceImages[index] && (
+                        <>
+                          <Typography
+                            variant="body2"
+                            color="text.secondary"
+                            fontSize={{ xs: '0.75rem', sm: '0.875rem' }}
+                            mx="auto"
+                          >
+                            Essa imagem será usada na hora do embarque para
+                            validar sua identidade. Assim, você não precisará
+                            apresentar o QR Code.
+                          </Typography>
+
+                          <Typography
+                            variant="body2"
+                            color="text.secondary"
+                            fontSize={{ xs: '0.75rem', sm: '0.875rem' }}
+                            mt={1}
+                            mx="auto"
+                          >
+                            Envie uma foto clara, em um ambiente bem iluminado e
+                            de frente para a câmera.
+                          </Typography>
+                        </>
+                      )}
+                    </>
                   )}
                 </Box>
               </label>

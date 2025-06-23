@@ -20,6 +20,7 @@ const PreviewTicket = () => {
   const [userTicket, setUserTicket] = useState<ITicket | null>(null);
   const [reservationId, setReservationId] = useState<string | null>(null);
   const [formValid, setFormValid] = useState(false);
+  const [loadingImage, setLoadingImage] = useState(false);
 
   const dispatch = useAppDispatch();
 
@@ -63,9 +64,14 @@ const PreviewTicket = () => {
       <Grid container spacing={4}>
         {userTicket && (
           <>
-            <CheckoutForm onFormChange={setFormValid} />
+            <CheckoutForm
+              onFormChange={setFormValid}
+              loadingImage={loadingImage}
+              setLoadingImage={setLoadingImage}
+            />
             <BoardingPass
               ticket={userTicket}
+              loadingImage={loadingImage}
               onCancel={() => {
                 handleCancelReservation({
                   reservationId,
