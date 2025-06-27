@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Grid, Typography, Modal, Box, Stack } from '@mui/material';
+import { Typography, Modal, Box, Stack } from '@mui/material';
 import Icon from '../../../../assets/Icons';
 import steeringwheel from '../../../../assets/Icons/steeringwheel.png';
 import Button from '../../../Button';
@@ -209,7 +209,7 @@ const SeatModal: React.FC<SeatModalProps> = ({
                               ? 'error'
                               : isSelected(seat)
                                 ? 'primary'
-                                : 'default'
+                                : 'inherit'
                           }
                           onClick={() => handleSelectSeat(seat)}
                           disabled={isReserved(seat)}
@@ -220,10 +220,8 @@ const SeatModal: React.FC<SeatModalProps> = ({
                     })}
                   </Stack>
 
-                  {/* Espaço do corredor */}
                   <Box sx={{ width: { xs: 16, sm: 40 } }} />
 
-                  {/* Assentos lado direito */}
                   <Stack direction="row" spacing={1}>
                     {[2, 3].map((i) => {
                       const seat = seatStart + i;
@@ -236,7 +234,7 @@ const SeatModal: React.FC<SeatModalProps> = ({
                               ? 'error'
                               : isSelected(seat)
                                 ? 'primary'
-                                : 'default'
+                                : 'inherit'
                           }
                           onClick={() => handleSelectSeat(seat)}
                           disabled={isReserved(seat)}
@@ -262,7 +260,9 @@ const SeatModal: React.FC<SeatModalProps> = ({
             variant="contained"
             sx={{ margin: '10px auto 0px' }}
             disabled={selectedSeats.length === 0}
-            onClick={handleReserveSeats}
+            onClick={() => {
+              handleReserveSeats();
+            }}
           />
         </Stack>
       </Box>

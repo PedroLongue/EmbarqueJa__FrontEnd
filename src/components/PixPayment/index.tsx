@@ -1,4 +1,4 @@
-import { Box, CircularProgress, Grid, Typography, Alert } from '@mui/material';
+import { Box, CircularProgress, Typography, Alert } from '@mui/material';
 import QRCode from 'react-qr-code';
 
 import Button from '../Button';

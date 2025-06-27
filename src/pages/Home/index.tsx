@@ -1,10 +1,11 @@
+import { Container } from '@mui/material';
 import Banner from '../../assets/imgs/banner.jpg';
 import RenderTickets from '../../components/RenderTickets';
 import SeachForm from '../../components/SearchForm';
 
 const Home = () => {
   return (
-    <>
+    <Container sx={{ flex: 1, padding: '0px !important' }} maxWidth={false}>
       <div
         style={{
           position: 'relative',
@@ -22,7 +23,7 @@ const Home = () => {
         <SeachForm />
       </div>
       <RenderTickets />
-    </>
+    </Container>
   );
 };
 

@@ -191,7 +191,9 @@ const Header = () => {
                   id="user-menu-button"
                   aria-controls={open ? 'user-menu' : undefined}
                   aria-haspopup="true"
-                  onClick={handleClick}
+                  onClick={() => {
+                    handleClick;
+                  }}
                 >
                   {renderUserMenu()}
                 </Button>

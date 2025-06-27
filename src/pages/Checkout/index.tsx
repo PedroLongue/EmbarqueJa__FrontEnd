@@ -67,7 +67,7 @@ const Checkout = () => {
     setValue(newValue);
   };
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async () => {
     if (!currentUser?._id) return;
 
     const paymentMethod = value === '1' ? 'credit-card' : 'pix';

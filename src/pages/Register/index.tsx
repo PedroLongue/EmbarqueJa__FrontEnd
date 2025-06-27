@@ -134,7 +134,9 @@ const Login = () => {
                 {'Já tem uma conta?'}
               </Link>
               <Button
-                onClick={() => navigate('/login')}
+                onClick={() => {
+                  navigate('/login');
+                }}
                 children="Acesse sua conta"
                 variant="outlined"
                 sx={{ textTransform: 'none' }}

@@ -143,7 +143,9 @@ const ValidatePassengerPopup: React.FC<Props> = ({ open, onClose }) => {
             />
 
             <Button
-              onClick={handleValidate}
+              onClick={() => {
+                handleValidate();
+              }}
               variant="contained"
               fullWidth
               disabled={loading || validating}

@@ -206,7 +206,7 @@ const Admin = () => {
           id="amenities"
           options={amenitiesOptions}
           value={selectedAmenities}
-          onChange={(event, newValue) => {
+          onChange={(_event, newValue) => {
             setSelectedAmenities(newValue);
           }}
           renderTags={(value, getTagProps) =>

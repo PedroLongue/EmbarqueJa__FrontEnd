@@ -18,7 +18,8 @@ const CreditCardPayment = () => {
     watch,
   } = useFormContext();
 
-  const [focused, setFocused] = useState('');
+  type Focused = 'number' | 'name' | 'expiry' | 'cvc' | undefined;
+  const [focused, setFocused] = useState<Focused>(undefined);
 
   const cardNumber = watch('cardNumber') || '';
   const cardHolder = watch('cardHolder') || '';

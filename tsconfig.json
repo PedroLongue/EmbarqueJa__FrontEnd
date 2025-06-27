@@ -1,4 +1,17 @@
 {
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/": ["src/"]
+    },
+    "types": ["vitest/globals", "cypress"],
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "esModuleInterop": true,
+    "skipLibCheck": true
+  },
+  "include": ["cypress//*.ts", "cypress.config.ts"],
   "files": [],
   "references": [
     { "path": "./tsconfig.app.json" },
