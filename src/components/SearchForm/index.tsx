@@ -191,7 +191,7 @@ const SeachForm = () => {
               value={origin}
               onInputChange={(_, value) => dispatch(setOrigin(value))}
               renderInput={(params) => (
-                <Input {...params} label="Origem" variant="standard" />
+                <Input {...params} label="Origem" variant="standard" datatestId="input-origin" />
               )}
               sx={{ width: '100%' }}
             />
@@ -248,7 +248,7 @@ const SeachForm = () => {
               value={destination}
               onInputChange={(_, value) => dispatch(setDestination(value))}
               renderInput={(params) => (
-                <Input {...params} label="Destino" variant="standard" />
+                <Input {...params} label="Destino" variant="standard" datatestId="input-destination" />
               )}
               sx={{ width: '100%' }}
             />
@@ -274,6 +274,7 @@ const SeachForm = () => {
                   : dispatch(setDepartureDate(e.target.value));
               }}
               InputLabelProps={{ shrink: true }}
+              datatestId="input-trip-date"
               fullWidth
             />
 
@@ -281,6 +282,7 @@ const SeachForm = () => {
               <InputLabel id="passengers-label">Passageiros</InputLabel>
               <Select
                 labelId="passengers-label"
+                data-testid="input-select-passengers"
                 id="passengers"
                 onChange={(e) =>
                   dispatch(setPassengers(Number(e.target.value)))
@@ -303,6 +305,7 @@ const SeachForm = () => {
               variant="contained"
               sx={{ textTransform: 'none', width: '100px' }}
               disabled={loading}
+              dataTestId="button-trip-search"
             />
           </Stack>
         </form>

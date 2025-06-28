@@ -1,0 +1,17 @@
+[
+  {
+    "_id": "67ef2496323d627f80ec239e",
+    "origin": "Nova Friburgo",
+    "destination": "Rio de Janeiro",
+    "departureDate": "2030-12-31T00:00:00.000Z",
+    "departureTime": "06:00",
+    "arrivalTime": "08:13",
+    "type": "Convencional",
+    "amenities": ["Ar condicionado", "Wi-Fi"],
+    "company": "1001",
+    "companyLogo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTc2pwBFsF2Chiq_LmhGsrbB-xlqCsSnRjs6A&s",
+    "price": 63.5,
+    "reservedSeats": [],
+    "__v": 4
+  }
+]

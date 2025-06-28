@@ -19,6 +19,7 @@ interface IButtonProps {
     | 'success'
     | 'info'
     | 'warning';
+  dataTestId?: string;
 }
 
 const CustomButton = ({
@@ -30,6 +31,7 @@ const CustomButton = ({
   id,
   fullWidth,
   color,
+  dataTestId,
   ...props
 }: IButtonProps) => {
   return (
@@ -40,6 +42,7 @@ const CustomButton = ({
       type={type}
       disabled={disabled}
       color={color}
+      data-testid={dataTestId}
     >
       {children}
     </Button>

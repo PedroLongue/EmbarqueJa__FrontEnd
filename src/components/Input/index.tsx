@@ -7,6 +7,7 @@ interface IInputProps extends ComponentProps<typeof TextField> {
   type?: 'text' | 'password' | 'email' | 'number' | 'date' | 'time';
   shrink?: boolean;
   helperText?: string;
+  datatestId?:string | null | undefined;
 }
 
 const Input = ({
@@ -14,6 +15,7 @@ const Input = ({
   type = 'text',
   shrink,
   helperText,
+  datatestId,
   ...props
 }: IInputProps) => {
   const [showPassword, setShowPassword] = useState(false);
@@ -27,6 +29,7 @@ const Input = ({
       variant="outlined"
       type={inputType}
       fullWidth
+      data-testid={datatestId}
       helperText={helperText}
       {...(shrink && {
         InputLabelProps: { shrink },

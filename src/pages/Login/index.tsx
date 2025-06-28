@@ -131,6 +131,7 @@ const Login = () => {
                 label="E-mail"
                 variant="outlined"
                 onChange={(e) => setEmail(e.target.value)}
+                datatestId="login-input-email"
               />
               <Input
                 id="outlined-basic"
@@ -138,6 +139,7 @@ const Login = () => {
                 variant="outlined"
                 type="password"
                 onChange={(e) => setPassword(e.target.value)}
+                datatestId="login-input-password"
               />
               {showResetAlert && (
                 <Alert
@@ -177,6 +179,7 @@ const Login = () => {
                 variant="contained"
                 sx={{ textTransform: 'none', fontWeight: 'bold' }}
                 type="submit"
+                dataTestId='button-login'
               />
               <Button
                 children="Entrar com FaceRecognition"

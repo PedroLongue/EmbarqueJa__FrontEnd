@@ -11,7 +11,7 @@
     "esModuleInterop": true,
     "skipLibCheck": true
   },
-  "include": ["cypress//*.ts", "cypress.config.ts"],
+  "include": ["cypress/**.ts", "cypress.config.ts"],
   "files": [],
   "references": [
     { "path": "./tsconfig.app.json" },

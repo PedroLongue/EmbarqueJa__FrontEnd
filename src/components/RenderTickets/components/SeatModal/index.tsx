@@ -203,6 +203,7 @@ const SeatModal: React.FC<SeatModalProps> = ({
                       return (
                         <Button
                           key={seat}
+                          dataTestId={`seat-${seat}`}
                           variant={isSelected(seat) ? 'contained' : 'outlined'}
                           color={
                             isReserved(seat)
@@ -238,6 +239,7 @@ const SeatModal: React.FC<SeatModalProps> = ({
                           }
                           onClick={() => handleSelectSeat(seat)}
                           disabled={isReserved(seat)}
+                          dataTestId={`seat-${seat}`}
                         >
                           <Icon name="seat" /> <small>{seat}</small>
                         </Button>

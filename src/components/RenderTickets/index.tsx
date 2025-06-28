@@ -137,6 +137,7 @@ const RenderTickets = () => {
             variant="body1"
             gutterBottom
             sx={{ display: 'flex', alignItems: 'center' }}
+            data-testid="tickets-found"
           >
             {validTickets.length} resultados para {origin} <Icon name="arrow" />{' '}
             {destination}
@@ -235,6 +236,7 @@ const RenderTickets = () => {
                   R$ {String(ticket.price).replace('.', ',')}
                 </Typography>
                 <Button
+                  dataTestId='select-ticket-button'
                   type="button"
                   children="Selecionar"
                   variant="contained"
