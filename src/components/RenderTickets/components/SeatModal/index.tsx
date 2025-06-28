@@ -153,6 +153,7 @@ const SeatModal: React.FC<SeatModalProps> = ({
           maxHeight: '90vh',
           overflowY: 'auto',
         }}
+        data-testid='modal-seat'
       >
         <Typography variant="h4" align="center" gutterBottom>
           Mapa de assentos:
@@ -252,7 +253,7 @@ const SeatModal: React.FC<SeatModalProps> = ({
           </Stack>
         </Box>
 
-        <Typography variant="body1" mt={2} align="center">
+        <Typography variant="body1" mt={2} align="center" data-testid='selected-seats'>
           Assentos Selecionados: {selectedSeats.join(', ') || 'Nenhum'}
         </Typography>
 
@@ -265,6 +266,7 @@ const SeatModal: React.FC<SeatModalProps> = ({
             onClick={() => {
               handleReserveSeats();
             }}
+            dataTestId='confirm-seats-button'
           />
         </Stack>
       </Box>

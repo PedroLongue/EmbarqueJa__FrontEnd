@@ -112,6 +112,7 @@ const BoardingPass = ({
           }}
           disabled={!isFormValid || loadingImage}
           children="Ir para o pagamento"
+          dataTestId='boarding-pass-go-to-payment-button'
         />
         <Button
           variant="contained"
@@ -119,6 +120,7 @@ const BoardingPass = ({
           disabled={loadingImage}
           color="error"
           children="Cancelar reserva"
+          dataTestId='boarding-pass-cancel-reservation-button'
         />
       </Stack>
     </Grid>

@@ -174,6 +174,7 @@ const CheckoutForm = ({
                     label="Nome do passageiro"
                     variant="outlined"
                     {...field}
+                    datatestId='passanger-input-name'
                   />
                 )}
               />
@@ -193,6 +194,7 @@ const CheckoutForm = ({
                     value={value}
                     onChange={(e) => onChange(formatCPF(e.target.value))}
                     {...rest}
+                    datatestId='passanger-input-cpf'
                   />
                 )}
               />
@@ -212,6 +214,7 @@ const CheckoutForm = ({
                     value={value}
                     onChange={(e) => onChange(formatDate(e.target.value))}
                     {...rest}
+                    datatestId='passanger-input-birthdate'
                   />
                 )}
               />

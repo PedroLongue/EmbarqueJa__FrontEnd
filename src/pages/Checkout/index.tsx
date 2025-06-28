@@ -43,13 +43,9 @@ const Checkout = () => {
   const [loading, setLoading] = useState(false);
 
   const { uploadFaceImages } = useUploadFaceImages();
-  const faceImages = useSelector((state: RootState) => state.faceUpload.images);
   const passengerInfos = useSelector(
     (state: RootState) => state.search.passengerInfos,
   );
-
-  console.log('faceImages:', faceImages);
-  console.log('passengerInfos:', passengerInfos);
 
   const { getPendingReservation, confirmReservation } = useReservations();
   const { handleCancelReservation } = useCancelReservation();
@@ -162,8 +158,12 @@ const Checkout = () => {
             <TabContext value={value}>
               <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <TabList onChange={handleChangeTab} variant="fullWidth">
-                  <Tab label="Cartão de Crédito" value="1" />
-                  <Tab label="Pix" value="2" />
+                  <Tab
+                    label="Cartão de Crédito"
+                    value="1"
+                    data-testid="tab-credit-card"
+                  />
+                  <Tab label="Pix" value="2" data-testid="tab-pix" />
                 </TabList>
               </Box>
               <Grid container spacing={2} mt={2}>
@@ -186,6 +186,7 @@ const Checkout = () => {
                   <Checkbox
                     checked={acceptedTerms}
                     onChange={(e) => setAcceptedTerms(e.target.checked)}
+                    data-testid="checkbox-terms"
                   />
                 }
                 label={
@@ -216,6 +217,7 @@ const Checkout = () => {
               }}
               color="error"
               children="Cancelar reserva"
+              dataTestId="button-cancel-reservation-and-payment"
             />
             <Button
               variant="contained"
@@ -236,10 +238,11 @@ const Checkout = () => {
               disabled={
                 !acceptedTerms ||
                 (value === '1' && !isValid) ||
-                pixStatus === 'pending' ||
-                pixStatus === 'inicial' ||
+                (value === '2' && pixStatus === 'pending') ||
+                (value === '2' && pixStatus === 'inicial') ||
                 loading
               }
+              dataTestId="button-confirm-payment"
             />
           </Box>
         </form>

@@ -37,6 +37,7 @@ const PixPayment: React.FC<PixPaymentProps> = ({ handlePayment, status }) => {
             sx={{ mt: 3 }}
             onClick={handlePayment}
             children="Já paguei"
+            dataTestId="confirm-pix-payment"
           />
         </>
       )}

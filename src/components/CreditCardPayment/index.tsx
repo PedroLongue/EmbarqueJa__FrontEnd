@@ -61,6 +61,7 @@ const CreditCardPayment = () => {
                 onFocus={() => setFocused('number')}
                 error={!!errors.cardNumber}
                 helperText={errors.cardNumber?.message as string}
+                datatestId="input-card-number"
               />
             </Grid>
 
@@ -74,6 +75,7 @@ const CreditCardPayment = () => {
                 onFocus={() => setFocused('name')}
                 error={!!errors.cardHolder}
                 helperText={errors.cardHolder?.message as string}
+                datatestId="input-card-name"
               />
             </Grid>
 
@@ -95,6 +97,7 @@ const CreditCardPayment = () => {
                 onFocus={() => setFocused('expiry')}
                 error={!!errors.expiration}
                 helperText={errors.expiration?.message as string}
+                datatestId="input-card-expiry"
               />
             </Grid>
 
@@ -113,6 +116,7 @@ const CreditCardPayment = () => {
                 onFocus={() => setFocused('cvc')}
                 error={!!errors.cvv}
                 helperText={errors.cvv?.message as string}
+                datatestId="input-card-cvv"
               />
             </Grid>
           </Grid>

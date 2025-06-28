@@ -1,15 +1,15 @@
-import SearchTickets from "../pages/SearchTickets"
-import VisitPage from "../pages/VisitPage"
+import SearchTicketsPage from '../pages/SearchTicketsPage';
+import VisitPage from '../pages/VisitPage';
 
 describe('Search for tickets', () => {
   beforeEach(() => {
-    SearchTickets.interceptTickets()
-    SearchTickets.interceptSearch()
-    VisitPage.visitHomePage()
-  })
+    SearchTicketsPage.interceptTickets();
+    SearchTicketsPage.interceptSearch();
+    VisitPage.visitHomePage();
+  });
 
   it('Should be able to search for a trip', () => {
-    SearchTickets.fillAllInputs()
-    SearchTickets.clickSearchButton()
-  })
-})
+    SearchTicketsPage.fillAllInputs();
+    SearchTicketsPage.clickSearchButton();
+  });
+});

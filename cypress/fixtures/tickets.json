@@ -1,6 +1,6 @@
 [
   {
-    "_id": "67ef2496323d627f80ec239e",
+    "_id": "mocked-ticket-id",
     "origin": "Nova Friburgo",
     "destination": "Rio de Janeiro",
     "departureDate": "2030-12-31T00:00:00.000Z",
