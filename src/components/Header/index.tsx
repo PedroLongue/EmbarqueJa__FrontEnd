@@ -191,9 +191,8 @@ const Header = () => {
                   id="user-menu-button"
                   aria-controls={open ? 'user-menu' : undefined}
                   aria-haspopup="true"
-                  onClick={
-                    handleClick
-                  }
+                  onClick={handleClick}
+                  dataTestId="user-menu-button"
                 >
                   {renderUserMenu()}
                 </Button>
@@ -231,6 +230,7 @@ const Header = () => {
                       navigate('/my-profile');
                     }}
                     sx={{ justifyContent: 'center' }}
+                    data-testid="my-profile-menu-item"
                   >
                     Meu perfil
                   </MenuItem>
@@ -240,6 +240,7 @@ const Header = () => {
                       navigate('/my-purchases');
                     }}
                     sx={{ justifyContent: 'center' }}
+                    data-testid="my-purchases-menu-item"
                   >
                     Minhas compras
                   </MenuItem>

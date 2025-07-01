@@ -77,7 +77,7 @@ const MyPurchases = () => {
       }}
       maxWidth="lg"
     >
-      <Typography variant="h4" gutterBottom>
+      <Typography variant="h4" gutterBottom data-testid="my-purchases-title">
         Minhas Compras:
       </Typography>
 
