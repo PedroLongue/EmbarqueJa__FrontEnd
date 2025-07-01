@@ -3,12 +3,12 @@ import Cards from 'react-credit-cards-2';
 import 'react-credit-cards-2/dist/es/styles-compiled.css';
 import { useFormContext } from 'react-hook-form';
 import { useState } from 'react';
-import Input from '../Input';
+import Input from '../../../components/Input';
 import {
   formatCardNumber,
   formatCvv,
   formatExpiration,
-} from '../../utils/inputMark';
+} from '../../../utils/inputMark';
 
 const CreditCardPayment = () => {
   const {

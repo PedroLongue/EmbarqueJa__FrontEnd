@@ -8,19 +8,19 @@ import {
 } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
-import Input from '../Input';
+import Input from '../../../components/Input';
 import { useSelector } from 'react-redux';
-import { RootState } from '../../redux/store';
+import { RootState } from '../../../redux/store';
 import { useEffect, useState } from 'react';
-import { formatDateToDDMMYYYY } from '../../utils/formatDate';
-import { formatCPF, formatDate } from '../../utils/inputMark';
+import { formatDateToDDMMYYYY } from '../../../utils/formatDate';
+import { formatCPF, formatDate } from '../../../utils/inputMark';
 import { useForm, Controller, useWatch } from 'react-hook-form';
-import { useAppDispatch } from '../../hooks/useAppDispatch';
+import { useAppDispatch } from '../../../hooks/useAppDispatch';
 import {
   setFaceImage,
   setAllFaceImages,
-} from '../../redux/features/faceUploadSlice';
-import { setAllPassengerInfos } from '../../redux/features/searchSlice';
+} from '../../../redux/features/faceUploadSlice';
+import { setAllPassengerInfos } from '../../../redux/features/searchSlice';
 import * as faceapi from 'face-api.js';
 
 type PassengerInfo = {
@@ -174,7 +174,7 @@ const CheckoutForm = ({
                     label="Nome do passageiro"
                     variant="outlined"
                     {...field}
-                    datatestId='passanger-input-name'
+                    datatestId="passanger-input-name"
                   />
                 )}
               />
@@ -194,7 +194,7 @@ const CheckoutForm = ({
                     value={value}
                     onChange={(e) => onChange(formatCPF(e.target.value))}
                     {...rest}
-                    datatestId='passanger-input-cpf'
+                    datatestId="passanger-input-cpf"
                   />
                 )}
               />
@@ -214,7 +214,7 @@ const CheckoutForm = ({
                     value={value}
                     onChange={(e) => onChange(formatDate(e.target.value))}
                     {...rest}
-                    datatestId='passanger-input-birthdate'
+                    datatestId="passanger-input-birthdate"
                   />
                 )}
               />

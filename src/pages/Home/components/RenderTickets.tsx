@@ -7,15 +7,15 @@ import {
   Typography,
 } from '@mui/material';
 import { useSelector } from 'react-redux';
-import { RootState } from '../../redux/store';
-import Icon from '../../assets/Icons';
-import TicketTime from '../TicketTime';
-import Button from '../Button';
+import { RootState } from '../../../redux/store';
+import Icon from '../../../assets/Icons';
+import TravelTime from './TravelTime';
+import Button from '../../../components/Button';
 import { useEffect, useState } from 'react';
-import SeatModal from './components/SeatModal';
+import SeatModal from './SeatModal';
 import { useNavigate } from 'react-router';
-import CustomSnackbar from '../CustomSnackbar';
-import { SnackbarSeverity } from '../../types';
+import CustomSnackbar from '../../../components/CustomSnackbar';
+import { SnackbarSeverity } from '../../../types';
 
 export const amenityToIcon: Record<
   string,
@@ -178,7 +178,7 @@ const RenderTickets = () => {
                 >
                   <Icon name="seat" /> {ticket.type}
                 </Typography>
-                <TicketTime
+                <TravelTime
                   ticket={{
                     departureTime: `${ticket.departureTime}`,
                     arrivalTime: `${ticket.arrivalTime}`,
@@ -236,7 +236,7 @@ const RenderTickets = () => {
                   R$ {String(ticket.price).replace('.', ',')}
                 </Typography>
                 <Button
-                  dataTestId='select-ticket-button'
+                  dataTestId="select-ticket-button"
                   type="button"
                   children="Selecionar"
                   variant="contained"

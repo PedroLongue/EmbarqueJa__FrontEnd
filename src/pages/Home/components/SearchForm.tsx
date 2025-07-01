@@ -13,25 +13,26 @@ import {
   Typography,
 } from '@mui/material';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import Button from '../Button';
-import useCities from '../../hooks/useCities';
+import Button from '../../../components/Button';
+import useCities from '../../../hooks/useCities';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState, AppDispatch } from '../../redux/store';
+import { RootState, AppDispatch } from '../../../redux/store';
 import {
   setOrigin,
   setDestination,
   setDepartureDate,
   fetchTickets,
   setPassengers,
-} from '../../redux/features/searchSlice';
-import Input from '../Input';
+} from '../../../redux/features/searchSlice';
+import Input from '../../../components/Input';
 import { useState } from 'react';
-import CustomSnackbar from '../CustomSnackbar';
-import Icon from '../../assets/Icons';
-import { SnackbarSeverity } from '../../types';
-import theme from '../../theme';
+import CustomSnackbar from '../../../components/CustomSnackbar';
+import Icon from '../../../assets/Icons';
+import { SnackbarSeverity } from '../../../types';
+import theme from '../../../theme';
 import { isIOS } from 'react-device-detect';
-import { formatDate } from '../../utils/inputMark';
+import { formatDate } from '../../../utils/inputMark';
+
 interface SpeechRecognitionEvent extends Event {
   readonly resultIndex: number;
   readonly results: SpeechRecognitionResultList;
@@ -191,7 +192,12 @@ const SeachForm = () => {
               value={origin}
               onInputChange={(_, value) => dispatch(setOrigin(value))}
               renderInput={(params) => (
-                <Input {...params} label="Origem" variant="standard" datatestId="input-origin" />
+                <Input
+                  {...params}
+                  label="Origem"
+                  variant="standard"
+                  datatestId="input-origin"
+                />
               )}
               sx={{ width: '100%' }}
             />
@@ -248,7 +254,12 @@ const SeachForm = () => {
               value={destination}
               onInputChange={(_, value) => dispatch(setDestination(value))}
               renderInput={(params) => (
-                <Input {...params} label="Destino" variant="standard" datatestId="input-destination" />
+                <Input
+                  {...params}
+                  label="Destino"
+                  variant="standard"
+                  datatestId="input-destination"
+                />
               )}
               sx={{ width: '100%' }}
             />

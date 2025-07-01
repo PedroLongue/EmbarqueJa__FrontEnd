@@ -1,7 +1,7 @@
 import { Box, CircularProgress, Typography, Alert } from '@mui/material';
 import QRCode from 'react-qr-code';
 
-import Button from '../Button';
+import Button from '../../../components/Button';
 interface PixPaymentProps {
   handlePayment: () => void;
   status: 'inicial' | 'pending' | 'success';

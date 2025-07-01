@@ -1,16 +1,16 @@
 import { useState, useEffect } from 'react';
 import { Typography, Modal, Box, Stack } from '@mui/material';
-import Icon from '../../../../assets/Icons';
-import steeringwheel from '../../../../assets/Icons/steeringwheel.png';
-import Button from '../../../Button';
-import useGetTicket from '../../../../hooks/useGetTicket';
+import Icon from '../../../assets/Icons';
+import steeringwheel from '../../../assets/Icons/steeringwheel.png';
+import Button from '../../../components/Button';
+import useGetTicket from '../../../hooks/useGetTicket';
 import { useNavigate } from 'react-router';
-import { useAppDispatch } from '../../../../hooks/useAppDispatch';
-import { setSeats, setTicketId } from '../../../../redux/features/searchSlice';
-import useReservations from '../../../../hooks/useReservation';
+import { useAppDispatch } from '../../../hooks/useAppDispatch';
+import { setSeats, setTicketId } from '../../../redux/features/searchSlice';
+import useReservations from '../../../hooks/useReservation';
 import { useSelector } from 'react-redux';
-import { RootState } from '../../../../redux/store';
-import socket from '../../../../services/socket';
+import { RootState } from '../../../redux/store';
+import socket from '../../../services/socket';
 
 interface SeatModalProps {
   open: boolean;
@@ -21,7 +21,7 @@ interface SeatModalProps {
   idTicket: string | null;
 }
 
-const rows = 12; // Total: 12 linhas × 4 assentos = 48 lugares
+const rows = 12;
 const seatsPerRow = 4;
 
 const SeatModal: React.FC<SeatModalProps> = ({
@@ -153,7 +153,7 @@ const SeatModal: React.FC<SeatModalProps> = ({
           maxHeight: '90vh',
           overflowY: 'auto',
         }}
-        data-testid='modal-seat'
+        data-testid="modal-seat"
       >
         <Typography variant="h4" align="center" gutterBottom>
           Mapa de assentos:
@@ -253,7 +253,12 @@ const SeatModal: React.FC<SeatModalProps> = ({
           </Stack>
         </Box>
 
-        <Typography variant="body1" mt={2} align="center" data-testid='selected-seats'>
+        <Typography
+          variant="body1"
+          mt={2}
+          align="center"
+          data-testid="selected-seats"
+        >
           Assentos Selecionados: {selectedSeats.join(', ') || 'Nenhum'}
         </Typography>
 
@@ -266,7 +271,7 @@ const SeatModal: React.FC<SeatModalProps> = ({
             onClick={() => {
               handleReserveSeats();
             }}
-            dataTestId='confirm-seats-button'
+            dataTestId="confirm-seats-button"
           />
         </Stack>
       </Box>

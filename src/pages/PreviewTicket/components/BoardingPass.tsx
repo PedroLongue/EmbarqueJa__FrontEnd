@@ -7,13 +7,13 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import Icon from '../../assets/Icons';
-import Button from '../Button';
+import Icon from '../../../assets/Icons';
+import Button from '../../../components/Button';
 import { useSelector } from 'react-redux';
-import { RootState } from '../../redux/store';
-import { formatDateToDDMMYYYY } from '../../utils/formatDate';
+import { RootState } from '../../../redux/store';
+import { formatDateToDDMMYYYY } from '../../../utils/formatDate';
 import { useNavigate } from 'react-router';
-import { ITicket } from '../../types';
+import { ITicket } from '../../../types';
 interface IBoardingPass {
   ticket: ITicket;
   onCancel: () => void;
@@ -112,7 +112,7 @@ const BoardingPass = ({
           }}
           disabled={!isFormValid || loadingImage}
           children="Ir para o pagamento"
-          dataTestId='boarding-pass-go-to-payment-button'
+          dataTestId="boarding-pass-go-to-payment-button"
         />
         <Button
           variant="contained"
@@ -120,7 +120,7 @@ const BoardingPass = ({
           disabled={loadingImage}
           color="error"
           children="Cancelar reserva"
-          dataTestId='boarding-pass-cancel-reservation-button'
+          dataTestId="boarding-pass-cancel-reservation-button"
         />
       </Stack>
     </Grid>

@@ -1,6 +1,6 @@
-import Icon from '../../assets/Icons';
+import Icon from '../../../assets/Icons';
 import { Typography } from '@mui/material';
-import { formatDuration } from '../../utils/formatDate';
+import { formatDuration } from '../../../utils/formatDate';
 
 const TicketTime = ({
   ticket,

@@ -1,57 +1,39 @@
-import {
-  Box,
-  Card,
-  Checkbox,
-  CircularProgress,
-  Container,
-  FormControlLabel,
-  Grid,
-  Tab,
-  Typography,
-} from '@mui/material';
+import { Card, Container } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import TabContext from '@mui/lab/TabContext';
-import TabList from '@mui/lab/TabList';
-import TabPanel from '@mui/lab/TabPanel';
-import CreditCardPayment from '../../components/CreditCardPayment';
-import PixPayment from '../../components/PixPayment';
 import { useForm, FormProvider } from 'react-hook-form';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router';
+import { RootState } from '../../redux/store';
+import { useAppDispatch } from '../../hooks/useAppDispatch';
+import { getCurrentUser } from '../../redux/features/authSlice';
 import useUserTickets from '../../hooks/useUserTickets';
 import useReservations from '../../hooks/useReservation';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../redux/store';
-import { useNavigate } from 'react-router';
-import { getCurrentUser } from '../../redux/features/authSlice';
-import { useAppDispatch } from '../../hooks/useAppDispatch';
-import useGetTicket from '../../hooks/useGetTicket';
-import Timer from '../../components/Timer';
 import useCancelReservation from '../../hooks/useCancelReservation';
-import { ITicket } from '../../types';
+import useGetTicket from '../../hooks/useGetTicket';
 import useSendTicket from '../../hooks/useSendTicket';
-import Button from '../../components/Button';
 import useUploadFaceImages from '../../hooks/useUploadFaceImages';
+import Timer from '../../components/Timer';
+import PaymentTabs from './components/PaymentTabs';
+import TermsCheckbox from './components/TermsCheckbox';
+import ActionButtons from './components/ActionButtons';
+import { ITicket } from '../../types';
 
 const Checkout = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { currentUser } = useSelector((state: RootState) => state.auth);
+  const passengerInfos = useSelector(
+    (state: RootState) => state.search.passengerInfos,
+  );
 
   const [value, setValue] = useState('1');
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [reservationId, setReservationId] = useState<string | null>(null);
   const [userTicket, setUserTicket] = useState<ITicket | null>(null);
   const [loading, setLoading] = useState(false);
-
-  const { uploadFaceImages } = useUploadFaceImages();
-  const passengerInfos = useSelector(
-    (state: RootState) => state.search.passengerInfos,
+  const [pixStatus, setPixStatus] = useState<'inicial' | 'pending' | 'success'>(
+    'inicial',
   );
-
-  const { getPendingReservation, confirmReservation } = useReservations();
-  const { handleCancelReservation } = useCancelReservation();
-  const { ticket } = useGetTicket();
-  const { createUserTicket } = useUserTickets();
-  const { sendUserTicket } = useSendTicket();
 
   const methods = useForm({ mode: 'onBlur' });
   const {
@@ -59,8 +41,22 @@ const Checkout = () => {
     formState: { isValid },
   } = methods;
 
+  const { getPendingReservation, confirmReservation } = useReservations();
+  const { handleCancelReservation } = useCancelReservation();
+  const { ticket } = useGetTicket();
+  const { createUserTicket } = useUserTickets();
+  const { sendUserTicket } = useSendTicket();
+  const { uploadFaceImages } = useUploadFaceImages();
+
   const handleChangeTab = (_: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
+  };
+
+  const handlePixPayment = () => {
+    setPixStatus('pending');
+    setTimeout(() => {
+      setPixStatus('success');
+    }, 2000);
   };
 
   const onSubmit = async () => {
@@ -71,6 +67,7 @@ const Checkout = () => {
     try {
       setLoading(true);
       const reservation = await getPendingReservation(currentUser._id);
+
       if (reservation) {
         const confirmed = await confirmReservation(reservation._id);
 
@@ -114,7 +111,6 @@ const Checkout = () => {
 
       try {
         const reservation = await getPendingReservation(currentUser._id);
-        console.log('Reservation:', reservation);
         if (reservation) {
           setReservationId(reservation._id);
           const ticketData = await ticket(reservation.ticketId);
@@ -130,17 +126,6 @@ const Checkout = () => {
     loadReservation();
   }, [currentUser]);
 
-  const [pixStatus, setPixStatus] = useState<'inicial' | 'pending' | 'success'>(
-    'inicial',
-  );
-
-  const handlePixPayment = () => {
-    setPixStatus('pending');
-    setTimeout(() => {
-      setPixStatus('success');
-    }, 2000);
-  };
-
   return (
     <FormProvider {...methods}>
       <Container maxWidth="md" sx={{ py: 4 }}>
@@ -155,96 +140,31 @@ const Checkout = () => {
         />
         <form onSubmit={handleSubmit(onSubmit)}>
           <Card sx={{ p: 3, borderRadius: 2 }}>
-            <TabContext value={value}>
-              <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                <TabList onChange={handleChangeTab} variant="fullWidth">
-                  <Tab
-                    label="Cartão de Crédito"
-                    value="1"
-                    data-testid="tab-credit-card"
-                  />
-                  <Tab label="Pix" value="2" data-testid="tab-pix" />
-                </TabList>
-              </Box>
-              <Grid container spacing={2} mt={2}>
-                <Grid item xs={12}>
-                  <TabPanel value="1">
-                    <CreditCardPayment />
-                  </TabPanel>
-                  <TabPanel value="2">
-                    <PixPayment
-                      handlePayment={handlePixPayment}
-                      status={pixStatus}
-                    />
-                  </TabPanel>
-                </Grid>
-              </Grid>
-
-              <FormControlLabel
-                sx={{ mt: 2 }}
-                control={
-                  <Checkbox
-                    checked={acceptedTerms}
-                    onChange={(e) => setAcceptedTerms(e.target.checked)}
-                    data-testid="checkbox-terms"
-                  />
-                }
-                label={
-                  <Typography variant="body2" fontWeight="bold">
-                    Concordo com a política de privacidade e os contratos de
-                    transporte.
-                  </Typography>
-                }
-              />
-            </TabContext>
+            <PaymentTabs
+              value={value}
+              onChange={handleChangeTab}
+              pixStatus={pixStatus}
+              handlePixPayment={handlePixPayment}
+            />
+            <TermsCheckbox
+              accepted={acceptedTerms}
+              onChange={setAcceptedTerms}
+            />
           </Card>
-
-          <Box
-            mt={3}
-            display={'flex'}
-            justifyContent={'flex-end'}
-            gap={2}
-            textAlign="right"
-          >
-            <Button
-              variant="contained"
-              onClick={() => {
-                handleCancelReservation({
-                  reservationId,
-                  setReservationId,
-                  setUserTicket,
-                });
-              }}
-              color="error"
-              children="Cancelar reserva"
-              dataTestId="button-cancel-reservation-and-payment"
-            />
-            <Button
-              variant="contained"
-              color="primary"
-              type="submit"
-              children={
-                loading ? (
-                  <CircularProgress
-                    sx={{
-                      width: '20px !important',
-                      height: '20px !important',
-                    }}
-                  />
-                ) : (
-                  'Finalizar compra'
-                )
-              }
-              disabled={
-                !acceptedTerms ||
-                (value === '1' && !isValid) ||
-                (value === '2' && pixStatus === 'pending') ||
-                (value === '2' && pixStatus === 'inicial') ||
-                loading
-              }
-              dataTestId="button-confirm-payment"
-            />
-          </Box>
+          <ActionButtons
+            loading={loading}
+            acceptedTerms={acceptedTerms}
+            isValid={isValid}
+            paymentMethod={value === '1' ? 'credit-card' : 'pix'}
+            pixStatus={pixStatus}
+            onCancel={() =>
+              handleCancelReservation({
+                reservationId,
+                setReservationId,
+                setUserTicket,
+              })
+            }
+          />
         </form>
       </Container>
     </FormProvider>

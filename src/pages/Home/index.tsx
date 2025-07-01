@@ -1,12 +1,12 @@
-import { Container } from '@mui/material';
+import { Box, Container } from '@mui/material';
 import Banner from '../../assets/imgs/banner.jpg';
-import RenderTickets from '../../components/RenderTickets';
-import SeachForm from '../../components/SearchForm';
+import RenderTickets from './components/RenderTickets';
+import SeachForm from './components/SearchForm';
 
 const Home = () => {
   return (
     <Container sx={{ flex: 1, padding: '0px !important' }} maxWidth={false}>
-      <div
+      <Box
         style={{
           position: 'relative',
           display: 'flex',
@@ -21,7 +21,7 @@ const Home = () => {
           alt="EmbarqueJa"
         />
         <SeachForm />
-      </div>
+      </Box>
       <RenderTickets />
     </Container>
   );
