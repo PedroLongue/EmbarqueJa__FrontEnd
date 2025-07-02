@@ -35,6 +35,8 @@ const Checkout = () => {
     'inicial',
   );
 
+  console.log({ passengerInfos });
+
   const methods = useForm({ mode: 'onBlur' });
   const {
     handleSubmit,
@@ -93,6 +95,10 @@ const Checkout = () => {
           departureDate: userTicket?.departureDate ?? '',
           departureTime: userTicket?.departureTime ?? '',
           seats: confirmed.seats ?? [],
+          passangers: passengerInfos.map((p) => ({
+            name: p.name,
+            cpf: p.cpf,
+          })),
         });
 
         await dispatch(getCurrentUser());

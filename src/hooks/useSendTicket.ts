@@ -9,6 +9,10 @@ interface ISendTicket {
   departureDate: string;
   departureTime: string;
   seats: number[];
+  passangers: {
+    name: string;
+    cpf: string;
+  }[];
 }
 
 const useSendTicket = () => {
@@ -22,6 +26,7 @@ const useSendTicket = () => {
     departureDate,
     departureTime,
     seats,
+    passangers,
   }: ISendTicket) => {
     setLoading(true);
     setError(null);
@@ -34,6 +39,7 @@ const useSendTicket = () => {
         departureDate,
         departureTime,
         seats,
+        passangers,
       });
       setLoading(false);
       return response.data;

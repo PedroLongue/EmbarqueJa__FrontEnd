@@ -17,6 +17,7 @@ import Checkout from '../pages/Checkout';
 import MyPurchases from '../pages/MyPurchases';
 import UserProfile from '../pages/UserProfile';
 import ValidatePassengers from '../pages/ValidatePassengers';
+import ValidateFromQrCode from '../pages/ValidateFromQrCode';
 
 const AppRouter = () => {
   const { signed, currentUser } = useSelector((state: RootState) => state.auth);
@@ -60,6 +61,7 @@ const AppRouter = () => {
             )
           }
         />
+        <Route path="/validate-from-qr-code" element={<ValidateFromQrCode />} />
         <Route
           path="/preview-ticket"
           element={signed ? <PreviewTicket /> : <Navigate to="/login" />}
