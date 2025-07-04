@@ -7,12 +7,8 @@ import {
   Select,
   Stack,
   IconButton,
-  Tooltip,
   useMediaQuery,
-  Popover,
-  Typography,
 } from '@mui/material';
-import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import Button from '../../../components/Button';
 import useCities from '../../../hooks/useCities';
 import { useDispatch, useSelector } from 'react-redux';
@@ -25,13 +21,14 @@ import {
   setPassengers,
 } from '../../../redux/features/searchSlice';
 import Input from '../../../components/Input';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import CustomSnackbar from '../../../components/CustomSnackbar';
 import Icon from '../../../assets/Icons';
 import { SnackbarSeverity } from '../../../types';
 import theme from '../../../theme';
 import { isIOS } from 'react-device-detect';
 import { formatDate } from '../../../utils/inputMark';
+import VoiceTooltip from './VoiceTooltip';
 
 interface SpeechRecognitionEvent extends Event {
   readonly resultIndex: number;
@@ -76,6 +73,8 @@ const SeachForm = () => {
   const filteredOriginCities = cities.filter((city) => city !== destination);
   const filteredDestinationCities = cities.filter((city) => city !== origin);
 
+  const searchButtonRef = useRef<HTMLButtonElement | null>(null);
+
   const findCityMatch = (input: string) => {
     const inputNormalized = input.toLowerCase().trim();
     return (
@@ -108,6 +107,33 @@ const SeachForm = () => {
     return str.replace(/\b\w/g, (c) => c.toUpperCase());
   };
 
+  const voiceToDate = (spoken: string): string | null => {
+    const months: Record<string, string> = {
+      janeiro: '01',
+      fevereiro: '02',
+      março: '03',
+      abril: '04',
+      maio: '05',
+      junho: '06',
+      julho: '07',
+      agosto: '08',
+      setembro: '09',
+      outubro: '10',
+      novembro: '11',
+      dezembro: '12',
+    };
+
+    const match = spoken.match(/(\d{1,2}) de (\w+)/);
+    if (!match) return null;
+
+    const day = match[1].padStart(2, '0');
+    const month = months[match[2]];
+    const year = new Date().getFullYear();
+    if (!month) return null;
+
+    return `${year}-${month}-${day}`;
+  };
+
   const startVoiceRecognition = () => {
     const SpeechRecognition =
       window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -128,18 +154,30 @@ const SeachForm = () => {
     recognition.onend = () => setIsListening(false);
 
     recognition.onresult = (event: SpeechRecognitionEvent) => {
-      const transcript = event.results[0][0].transcript.toLowerCase();
+      const transcript = event.results[0][0].transcript.toLowerCase().trim();
 
       if (transcript.includes('origem')) {
-        const voiceValue = transcript.replace('origem', '').trim();
-        const cidadeMatch = findCityMatch(voiceValue);
+        const value = transcript.replace('origem', '').trim();
+        const cidadeMatch = findCityMatch(value);
         dispatch(setOrigin(cidadeMatch));
       }
 
       if (transcript.includes('destino')) {
-        const voiceValue = transcript.replace('destino', '').trim();
-        const cidadeMatch = findCityMatch(voiceValue);
+        const value = transcript.replace('destino', '').trim();
+        const cidadeMatch = findCityMatch(value);
         dispatch(setDestination(cidadeMatch));
+      }
+
+      if (transcript.includes('data')) {
+        const value = transcript.replace('data', '').trim();
+        const parsedDate = voiceToDate(value);
+        if (parsedDate) dispatch(setDepartureDate(parsedDate));
+      }
+
+      if (transcript.includes('buscar')) {
+        if (searchButtonRef.current) {
+          searchButtonRef.current.click();
+        }
       }
     };
 
@@ -157,14 +195,6 @@ const SeachForm = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [anchorTooltipModal, setAnchorTooltipModal] =
     useState<null | HTMLElement>(null);
-
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorTooltipModal(event.currentTarget);
-  };
-
-  const handleClose = () => setAnchorTooltipModal(null);
-
-  const openTooltipModal = Boolean(anchorTooltipModal);
 
   return (
     <>
@@ -201,52 +231,6 @@ const SeachForm = () => {
               )}
               sx={{ width: '100%' }}
             />
-            <Box display="flex" flexDirection="column" alignItems="center">
-              <Stack direction="row" alignItems="center" spacing={0.5}>
-                <IconButton
-                  onClick={startVoiceRecognition}
-                  size="small"
-                  sx={{
-                    color: isListening ? 'primary.main' : 'action.active',
-                  }}
-                >
-                  <Icon name="mic" />
-                </IconButton>
-                {isMobile ? (
-                  <>
-                    <IconButton onClick={handleClick}>
-                      <InfoOutlinedIcon fontSize="small" color="action" />
-                    </IconButton>
-                    <Popover
-                      open={openTooltipModal}
-                      anchorEl={anchorTooltipModal}
-                      onClose={handleClose}
-                      anchorOrigin={{
-                        vertical: 'bottom',
-                        horizontal: 'center',
-                      }}
-                    >
-                      <Typography
-                        sx={{
-                          p: 2,
-                          maxWidth: 200,
-                          fontSize: '12px',
-                          fontWeight: 'bold',
-                        }}
-                        variant="body2"
-                      >
-                        Clique no microfone e diga 'origem' ou 'destino' seguido
-                        da cidade
-                      </Typography>
-                    </Popover>
-                  </>
-                ) : (
-                  <Tooltip title="Clique no microfone e diga 'origem' ou 'destino' seguido da cidade">
-                    <InfoOutlinedIcon fontSize="small" color="action" />
-                  </Tooltip>
-                )}
-              </Stack>
-            </Box>
 
             <Autocomplete
               disablePortal
@@ -309,7 +293,33 @@ const SeachForm = () => {
             </FormControl>
           </Stack>
 
-          <Stack width="100%" alignItems="flex-end">
+          <Stack
+            width="100%"
+            flexDirection="row"
+            justifyContent="flex-end"
+            alignItems="flex-end"
+            gap={2}
+          >
+            <Box display="flex" flexDirection="column" alignItems="center">
+              <Stack direction="row" alignItems="center" spacing={0.5}>
+                <IconButton
+                  onClick={startVoiceRecognition}
+                  size="small"
+                  sx={{
+                    color: isListening ? 'primary.main' : 'action.active',
+                  }}
+                >
+                  <Icon name="mic" />
+                </IconButton>
+                <VoiceTooltip
+                  isMobile={isMobile}
+                  onIconClick={(e) => setAnchorTooltipModal(e.currentTarget)}
+                  open={Boolean(anchorTooltipModal)}
+                  anchorEl={anchorTooltipModal}
+                  onClose={() => setAnchorTooltipModal(null)}
+                />
+              </Stack>
+            </Box>
             <Button
               type="submit"
               children={loading ? 'Buscando...' : 'Buscar'}
@@ -317,6 +327,7 @@ const SeachForm = () => {
               sx={{ textTransform: 'none', width: '100px' }}
               disabled={loading}
               dataTestId="button-trip-search"
+              ref={searchButtonRef}
             />
           </Stack>
         </form>

@@ -20,6 +20,7 @@ interface IButtonProps {
     | 'info'
     | 'warning';
   dataTestId?: string;
+  ref?: React.Ref<HTMLButtonElement>;
 }
 
 const CustomButton = ({
@@ -32,6 +33,7 @@ const CustomButton = ({
   fullWidth,
   color,
   dataTestId,
+  ref,
   ...props
 }: IButtonProps) => {
   return (
@@ -43,6 +45,7 @@ const CustomButton = ({
       disabled={disabled}
       color={color}
       data-testid={dataTestId}
+      ref={ref}
     >
       {children}
     </Button>
