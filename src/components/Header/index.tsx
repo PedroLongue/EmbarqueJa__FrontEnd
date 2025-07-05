@@ -32,6 +32,8 @@ const Header = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const open = Boolean(anchorEl);
 
+  const isHomePage: boolean = window.location.pathname === '/';
+
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -265,7 +267,11 @@ const Header = () => {
       </Drawer>
 
       <Divider
-        sx={{ backgroundColor: '#4A90E2', height: '2px', marginBottom: '40px' }}
+        sx={{
+          backgroundColor: '#4A90E2',
+          height: '2px',
+          marginBottom: isHomePage ? 0 : '40px',
+        }}
       />
     </>
   );

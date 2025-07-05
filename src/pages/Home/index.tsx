@@ -1,5 +1,5 @@
 import { Box, Container } from '@mui/material';
-import Banner from '../../assets/imgs/banner.jpg';
+import Banner from '../../assets/imgs/banneHome2.png';
 import RenderTickets from './components/RenderTickets';
 import SeachForm from './components/SearchForm';
 

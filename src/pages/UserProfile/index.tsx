@@ -81,7 +81,7 @@ const UserProfile = () => {
   };
 
   return (
-    <Container sx={{ flex: 1, mt: 4 }} maxWidth="lg">
+    <Container sx={{ flex: 1 }} maxWidth="lg">
       <Typography variant="h4" gutterBottom data-testid="my-profile-title">
         Meu perfil:
       </Typography>
