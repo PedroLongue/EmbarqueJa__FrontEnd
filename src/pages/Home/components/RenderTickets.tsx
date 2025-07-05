@@ -16,21 +16,8 @@ import SeatModal from './SeatModal';
 import { useNavigate } from 'react-router';
 import CustomSnackbar from '../../../components/CustomSnackbar';
 import { SnackbarSeverity } from '../../../types';
-
-export const amenityToIcon: Record<
-  string,
-  'wc' | 'air' | 'seat' | 'usb' | 'water' | 'snack' | 'tv' | 'bed' | 'wifi'
-> = {
-  'Banheiro': 'wc',
-  'Ar condicionado': 'air',
-  'Assento reclinável': 'seat',
-  'Tomadas USB': 'usb',
-  'Água gratuita': 'water',
-  'Lanches': 'snack',
-  'TV': 'tv',
-  'Cobertor e travesseiro': 'bed',
-  'Wi-Fi': 'wifi',
-};
+import emptyStateTickets from '../../../assets/imgs/emptyStateTickets.png';
+import { amenityToIcon } from '../../../constants/amenityToIcon';
 
 const RenderTickets = () => {
   const navigate = useNavigate();
@@ -265,6 +252,22 @@ const RenderTickets = () => {
             />
           </Box>
         </>
+      )}
+
+      {!loading && validTickets.length === 0 && (
+        <Box
+          display="flex"
+          flexDirection="column"
+          justifyContent="center"
+          alignItems="center"
+          mt={5}
+          gap={2}
+        >
+          <Typography variant="body1" textAlign="center" color="text.secondary">
+            Busque por uma passagem ativa.
+          </Typography>
+          <img src={emptyStateTickets} width="200px" />
+        </Box>
       )}
       <CustomSnackbar
         open={snackbarOpen}
