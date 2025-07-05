@@ -1,30 +1,18 @@
 import { useState } from 'react';
 import axios from 'axios';
-import api from '../services/api';
-
-interface ITicketData {
-  origin: string;
-  destination: string;
-  departureDate: string;
-  departureTime: string;
-  arrivalTime: string;
-  type: string;
-  amenities: string[];
-  company: string;
-  companyLogo: string;
-  price: string;
-}
+import { ICreateTicketData } from '../types';
+import { createNewTicket } from '../services/tickets';
 
 const useTickets = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const createTicket = async (ticketData: ITicketData) => {
+  const createTicket = async (ticketData: ICreateTicketData) => {
     setLoading(true);
     setError(null);
 
     try {
-      const response = await api.post('/tickets/create', ticketData);
+      const response = await await createNewTicket(ticketData);
 
       setLoading(false);
       return response.data;

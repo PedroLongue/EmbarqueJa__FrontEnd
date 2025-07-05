@@ -81,12 +81,12 @@ const Checkout = () => {
           await uploadFaceImages(reservation.ticketId, passengerInfos);
         }
 
-        await createUserTicket(
-          reservation.ticketId,
+        await createUserTicket({
+          ticketId: reservation.ticketId,
           paymentMethod,
-          confirmed.seats,
-          currentUser._id,
-        );
+          userSeats: confirmed.seats,
+          userId: currentUser._id,
+        });
 
         await sendUserTicket({
           email: currentUser.email,

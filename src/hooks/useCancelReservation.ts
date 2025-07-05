@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router';
-import useReservations from './useReservation';
 import { ITicket } from '../types';
+import { cancelUserReservation } from '../services/tickets';
 
 interface UseCancelReservationProps {
   reservationId: string | null;
@@ -10,7 +10,6 @@ interface UseCancelReservationProps {
 
 const useCancelReservation = () => {
   const navigate = useNavigate();
-  const { cancelReservation } = useReservations();
 
   const handleCancelReservation = async ({
     reservationId,
@@ -20,7 +19,7 @@ const useCancelReservation = () => {
     if (!reservationId) return;
 
     try {
-      await cancelReservation(reservationId);
+      await cancelUserReservation(reservationId);
       setUserTicket(null);
       setReservationId(null);
       navigate('/');

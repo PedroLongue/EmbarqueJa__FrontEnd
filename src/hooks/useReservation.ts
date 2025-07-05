@@ -1,19 +1,14 @@
 import { useState } from 'react';
 import axios from 'axios';
 import api from '../services/api';
-
-interface IReservation {
-  _id: string;
-  userId: string;
-  ticketId: string;
-  status: string;
-}
-
-interface IConfirmReservation {
-  _id: string;
-  status: string;
-  seats: number[];
-}
+import { IConfirmReservation, IReservation } from '../types';
+import { create } from 'domain';
+import {
+  cancelUserReservation,
+  confirmUserReservation,
+  createNewReservation,
+  getReservationByUser,
+} from '../services/tickets';
 
 const useReservations = () => {
   const [loading, setLoading] = useState(false);
@@ -28,11 +23,7 @@ const useReservations = () => {
     setError(null);
 
     try {
-      const response = await api.post<IReservation>('/tickets/reservations', {
-        userId,
-        ticketId,
-        seats,
-      });
+      const response = await createNewReservation(userId, ticketId, seats);
       setLoading(false);
       return response.data;
     } catch (err) {
@@ -51,9 +42,7 @@ const useReservations = () => {
     setError(null);
 
     try {
-      const response = await api.get<IReservation>(
-        `/tickets/reservations/${userId}`,
-      );
+      const response = await getReservationByUser(userId);
       setLoading(false);
       return response.data;
     } catch (err) {
@@ -72,9 +61,7 @@ const useReservations = () => {
     setError(null);
 
     try {
-      const response = await api.patch<IConfirmReservation>(
-        `/tickets/reservations/${reservationId}/confirm`,
-      );
+      const response = await confirmUserReservation(reservationId);
       setLoading(false);
       return response.data;
     } catch (err) {
@@ -93,7 +80,7 @@ const useReservations = () => {
     setError(null);
 
     try {
-      await api.delete(`/tickets/reservations/${reservationId}`);
+      await cancelUserReservation(reservationId);
       setLoading(false);
     } catch (err) {
       setLoading(false);

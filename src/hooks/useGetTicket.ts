@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import axios from 'axios';
-import api from '../services/api';
+import { getTicketById } from '../services/tickets';
 
 const useGetTicket = () => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<boolean | null>(null);
   const ticket = async (ticketId: string) => {
     try {
-      const response = await api.get(`/tickets/${ticketId}`);
+      const response = await getTicketById(ticketId);
       setSuccess(true);
       return response.data;
     } catch (err) {

@@ -61,3 +61,62 @@ export interface IPassengerInfos {
 }
 
 export type SnackbarSeverity = 'success' | 'info' | 'warning' | 'error';
+
+export interface IChangePasswordData {
+  currentPassword: string;
+  newPassword: string;
+  confirmNewPassword: string;
+}
+
+export interface IUserTicketData {
+  ticketId: string;
+  paymentMethod: 'credit-card' | 'pix';
+  userSeats: number[];
+  userId: string;
+}
+
+export interface IReservation {
+  _id: string;
+  userId: string;
+  ticketId: string;
+  status: string;
+}
+
+export interface IConfirmReservation {
+  _id: string;
+  status: string;
+  seats: number[];
+}
+
+export interface ISendTicket {
+  email: string;
+  origin: string;
+  destination: string;
+  departureDate: string;
+  departureTime: string;
+  seats: number[];
+  passangers: {
+    name: string;
+    cpf: string;
+  }[];
+}
+
+export interface ICreateTicketData {
+  origin: string;
+  destination: string;
+  departureDate: string;
+  departureTime: string;
+  arrivalTime: string;
+  type: string;
+  amenities: string[];
+  company: string;
+  companyLogo: string;
+  price: string;
+}
+
+export interface PassengerInfo {
+  name: string;
+  cpf: string;
+  birthDate: string;
+  descriptor: number[];
+}

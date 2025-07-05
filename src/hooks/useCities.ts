@@ -1,10 +1,5 @@
 import { useEffect, useState } from 'react';
-import api from '../services/api';
-
-interface Ticket {
-  origin: string;
-  destination: string;
-}
+import { getTickets } from '../services/tickets';
 
 const useCities = (): string[] => {
   const [cities, setCities] = useState<string[]>([]);
@@ -12,7 +7,7 @@ const useCities = (): string[] => {
   useEffect(() => {
     const fetchCities = async () => {
       try {
-        const response = await api.get<Ticket[]>('/tickets');
+        const response = await getTickets();
         const tickets = response.data;
 
         const uniqueCities = [

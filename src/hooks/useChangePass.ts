@@ -1,12 +1,7 @@
 import { useState } from 'react';
 import axios from 'axios';
-import api from '../services/api';
-
-interface IChangePasswordData {
-  currentPassword: string;
-  newPassword: string;
-  confirmNewPassword: string;
-}
+import { IChangePasswordData } from '../types';
+import { updateUserPassword } from '../services/user';
 
 const useChangePass = () => {
   const [loading, setLoading] = useState(false);
@@ -17,7 +12,7 @@ const useChangePass = () => {
     setError(null);
 
     try {
-      const response = await api.put('users/change-password', passwordData);
+      const response = await updateUserPassword(passwordData);
 
       setLoading(false);
       return response.data;

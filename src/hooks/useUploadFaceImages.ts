@@ -1,15 +1,9 @@
 import { useState } from 'react';
 import axios from 'axios';
-import api from '../services/api';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
-
-interface PassengerInfo {
-  name: string;
-  cpf: string;
-  birthDate: string;
-  descriptor: number[];
-}
+import { PassengerInfo } from '../types';
+import { createFacePassenger } from '../services/facePassengers';
 
 const useUploadFaceImages = () => {
   const [loading, setLoading] = useState(false);
@@ -36,10 +30,11 @@ const useUploadFaceImages = () => {
           ticketId,
           name: passenger.name,
           cpf: passenger.cpf,
+          birthDate: passenger.birthDate,
           descriptor: passenger.descriptor,
         };
 
-        uploadPromises.push(api.post('/face-passengers/upload', formData));
+        uploadPromises.push(createFacePassenger(formData));
       });
 
       await Promise.all(uploadPromises);

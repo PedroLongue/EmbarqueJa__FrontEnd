@@ -43,10 +43,11 @@ const Header = () => {
   const handleLogout = () => {
     dispatch(signOut());
     handleClose();
+    setDrawerOpen(false);
   };
 
   const renderUserMenu = () => (
-    <Box display={'flex'} alignItems={'center'}>
+    <Box display="flex" alignItems="center">
       <Avatar
         alt={currentUser?.name}
         src=""
@@ -57,7 +58,7 @@ const Header = () => {
           .map((n) => n[0]?.toUpperCase())
           .join('')}
       </Avatar>
-      <Typography variant="body2" textTransform={'capitalize'} color="#000">
+      <Typography variant="body2" textTransform="capitalize" color="#000">
         Olá, {currentUser?.name?.split(' ')?.[0]}
       </Typography>
     </Box>
@@ -70,25 +71,19 @@ const Header = () => {
           {renderUserMenu()}
           <Divider sx={{ my: 2 }} />
           <MenuItem
-            onClick={() => {
-              navigate('/change-pass');
-            }}
+            onClick={() => navigate('/change-pass')}
             sx={{ justifyContent: 'center' }}
           >
             Alterar senha
           </MenuItem>
           <MenuItem
-            onClick={() => {
-              navigate('/my-profile');
-            }}
+            onClick={() => navigate('/my-profile')}
             sx={{ justifyContent: 'center' }}
           >
             Meu perfil
           </MenuItem>
           <MenuItem
-            onClick={() => {
-              navigate('/my-purchases');
-            }}
+            onClick={() => navigate('/my-purchases')}
             sx={{ justifyContent: 'center' }}
           >
             Minhas compras
@@ -96,23 +91,20 @@ const Header = () => {
           {currentUser?.isAdmin && (
             <>
               <MenuItem
-                onClick={() => {
-                  navigate('/admin');
-                }}
+                onClick={() => navigate('/admin')}
                 sx={{ justifyContent: 'center' }}
               >
                 Criar viagens
               </MenuItem>
               <MenuItem
-                onClick={() => {
-                  navigate('/validate-passengers');
-                }}
+                onClick={() => navigate('/validate-passengers')}
                 sx={{ justifyContent: 'center' }}
               >
                 Validar passageiros
               </MenuItem>
             </>
           )}
+          <Divider sx={{ my: 2 }} />
           <Button
             onClick={handleLogout}
             children="Sair"
@@ -121,15 +113,9 @@ const Header = () => {
           />
         </>
       ) : (
-        <Button
-          fullWidth
-          onClick={() => {
-            navigate('/login');
-          }}
-          variant="contained"
-        >
-          Entrar
-        </Button>
+        <Typography variant="body2" textAlign="center">
+          Faça login para acessar mais opções
+        </Typography>
       )}
     </Box>
   );
@@ -146,13 +132,11 @@ const Header = () => {
         maxWidth="xl"
       >
         <Box
-          display={'flex'}
-          alignItems={'center'}
-          height={'100%'}
+          display="flex"
+          alignItems="center"
+          height="100%"
           gap={2}
-          sx={{
-            cursor: 'pointer',
-          }}
+          sx={{ cursor: 'pointer' }}
           onClick={() => navigate('/')}
         >
           <img
@@ -165,127 +149,121 @@ const Header = () => {
           </Typography>
         </Box>
 
-        {isMobile ? (
-          <>
-            <IconButton
-              edge="end"
-              color="inherit"
-              onClick={() => setDrawerOpen(true)}
-              aria-label="menu"
-            >
-              <MenuIcon />
-            </IconButton>
-            <Drawer
-              anchor="right"
-              open={drawerOpen}
-              onClose={() => setDrawerOpen(false)}
-            >
-              {drawerContent}
-            </Drawer>
-          </>
-        ) : (
-          <Box display="flex" alignItems="center" gap={2}>
-            {signed && currentUser ? (
-              <>
-                <Button
-                  id="user-menu-button"
-                  aria-controls={open ? 'user-menu' : undefined}
-                  aria-haspopup="true"
-                  onClick={handleClick}
-                  dataTestId="user-menu-button"
+        <Box display="flex" alignItems="center" gap={2}>
+          {!signed || !currentUser ? (
+            <Button
+              children="Entrar"
+              onClick={() => {
+                navigate('/login');
+              }}
+              variant="contained"
+              sx={{ width: '100px' }}
+            />
+          ) : (
+            <>
+              {isMobile && (
+                <IconButton
+                  edge="end"
+                  color="inherit"
+                  onClick={() => setDrawerOpen(true)}
+                  aria-label="menu"
                 >
-                  {renderUserMenu()}
-                </Button>
-                <Menu
-                  id="user-menu"
-                  anchorEl={anchorEl}
-                  open={open}
-                  onClose={handleClose}
-                  anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'center',
-                  }}
-                  transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'center',
-                  }}
-                  PaperProps={{
-                    sx: {
-                      padding: '10px',
-                    },
-                  }}
-                >
-                  <MenuItem
-                    onClick={() => {
-                      handleClose();
-                      navigate('/change-pass');
-                    }}
-                    sx={{ justifyContent: 'center' }}
+                  <MenuIcon />
+                </IconButton>
+              )}
+
+              {!isMobile && (
+                <>
+                  <Button
+                    id="user-menu-button"
+                    aria-controls={open ? 'user-menu' : undefined}
+                    aria-haspopup="true"
+                    onClick={handleClick}
+                    dataTestId="user-menu-button"
                   >
-                    Alterar senha
-                  </MenuItem>
-                  <MenuItem
-                    onClick={() => {
-                      handleClose();
-                      navigate('/my-profile');
-                    }}
-                    sx={{ justifyContent: 'center' }}
-                    data-testid="my-profile-menu-item"
+                    {renderUserMenu()}
+                  </Button>
+                  <Menu
+                    id="user-menu"
+                    anchorEl={anchorEl}
+                    open={open}
+                    onClose={handleClose}
+                    anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+                    transformOrigin={{ vertical: 'top', horizontal: 'center' }}
+                    PaperProps={{ sx: { padding: '10px' } }}
                   >
-                    Meu perfil
-                  </MenuItem>
-                  <MenuItem
-                    onClick={() => {
-                      handleClose();
-                      navigate('/my-purchases');
-                    }}
-                    sx={{ justifyContent: 'center' }}
-                    data-testid="my-purchases-menu-item"
-                  >
-                    Minhas compras
-                  </MenuItem>
-                  {currentUser.isAdmin && (
                     <MenuItem
                       onClick={() => {
                         handleClose();
-                        navigate('/validate-passengers');
+                        navigate('/change-pass');
                       }}
                       sx={{ justifyContent: 'center' }}
                     >
-                      Validar passageiros
+                      Alterar senha
                     </MenuItem>
+                    <MenuItem
+                      onClick={() => {
+                        handleClose();
+                        navigate('/my-profile');
+                      }}
+                      sx={{ justifyContent: 'center' }}
+                    >
+                      Meu perfil
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() => {
+                        handleClose();
+                        navigate('/my-purchases');
+                      }}
+                      sx={{ justifyContent: 'center' }}
+                    >
+                      Minhas compras
+                    </MenuItem>
+                    {currentUser?.isAdmin && (
+                      <MenuItem
+                        onClick={() => {
+                          handleClose();
+                          navigate('/validate-passengers');
+                        }}
+                        sx={{ justifyContent: 'center' }}
+                      >
+                        Validar passageiros
+                      </MenuItem>
+                    )}
+                    <Divider sx={{ my: 1 }} />
+                    <Button
+                      children="Sair"
+                      variant="contained"
+                      onClick={handleLogout}
+                      sx={{ width: '100%' }}
+                    />
+                  </Menu>
+
+                  {currentUser?.isAdmin && (
+                    <Button
+                      children="Criar viagens"
+                      onClick={() => {
+                        navigate('/admin');
+                      }}
+                      variant="contained"
+                      sx={{ width: '150px' }}
+                    />
                   )}
-                  <Button
-                    children="Sair"
-                    variant="contained"
-                    onClick={handleLogout}
-                    sx={{ width: '100%' }}
-                  />
-                </Menu>
-                {currentUser.isAdmin && (
-                  <Button
-                    children="Criar viagens"
-                    onClick={() => {
-                      navigate('/admin');
-                    }}
-                    variant="contained"
-                    sx={{ width: '150px' }}
-                  />
-                )}
-              </>
-            ) : (
-              <Button
-                children="Entrar"
-                onClick={() => {
-                  navigate('/login');
-                }}
-                variant="contained"
-                sx={{ width: '150px' }}
-              />
-            )}
-          </Box>
-        )}
+                </>
+              )}
+            </>
+          )}
+        </Box>
       </Container>
+
+      <Drawer
+        anchor="right"
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+      >
+        {drawerContent}
+      </Drawer>
+
       <Divider
         sx={{ backgroundColor: '#4A90E2', height: '2px', marginBottom: '40px' }}
       />

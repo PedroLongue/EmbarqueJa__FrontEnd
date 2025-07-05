@@ -1,19 +1,8 @@
 import { useState } from 'react';
 import axios from 'axios';
 import api from '../services/api';
-
-interface ISendTicket {
-  email: string;
-  origin: string;
-  destination: string;
-  departureDate: string;
-  departureTime: string;
-  seats: number[];
-  passangers: {
-    name: string;
-    cpf: string;
-  }[];
-}
+import { ISendTicket } from '../types';
+import { sendTicket } from '../services/tickets';
 
 const useSendTicket = () => {
   const [loading, setLoading] = useState(false);
@@ -32,7 +21,7 @@ const useSendTicket = () => {
     setError(null);
 
     try {
-      const response = await api.post('tickets/senderTicket', {
+      const response = await sendTicket({
         email,
         origin,
         destination,

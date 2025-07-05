@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
-import api from '../services/api';
+import { userForgotPassword } from '../services/user';
 
 const useForgotPassword = () => {
   const [loading, setLoading] = useState(false);
@@ -11,7 +11,7 @@ const useForgotPassword = () => {
     setError(null);
 
     try {
-      const response = await api.post('users/forgot-password', { email });
+      const response = await userForgotPassword(email);
       setLoading(false);
       return response.data;
     } catch (err) {

@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import api from '../services/api';
 import axios from 'axios';
+import { userUpdateProfile } from '../services/user';
 
 interface IUpdateDate {
   cpf: string | null | undefined;
@@ -16,7 +16,10 @@ const useUpdateProfile = () => {
     setError(null);
 
     try {
-      const response = await api.put('users/update-info', updateData);
+      const response = await userUpdateProfile({
+        cpf: updateData.cpf ?? '',
+        birthDate: updateData.birthDate ?? '',
+      });
 
       setLoading(false);
       return response.data;
