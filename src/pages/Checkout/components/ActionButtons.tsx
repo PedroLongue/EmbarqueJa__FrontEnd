@@ -31,6 +31,7 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
       onClick={onCancel}
       color="error"
       dataTestId="button-cancel-reservation-and-payment"
+      disabled={loading}
     >
       Cancelar reserva
     </Button>

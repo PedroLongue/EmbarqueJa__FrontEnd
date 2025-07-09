@@ -24,9 +24,7 @@ const VoiceTooltip = ({
       <br />
       • destino [cidade]
       <br />
-      • data [dia] de [mês] — exemplo: \"data 10 de julho\"
-      <br />
-      • passageiros [1 a 5] — exemplo: \"passageiros três\"
+      • data [dia] de [mês] — exemplo: "data 10 de julho"
       <br />• buscar
     </>
   );
