@@ -1,8 +1,5 @@
 import { useState } from 'react';
 import axios from 'axios';
-import api from '../services/api';
-import { IConfirmReservation, IReservation } from '../types';
-import { create } from 'domain';
 import {
   cancelUserReservation,
   confirmUserReservation,

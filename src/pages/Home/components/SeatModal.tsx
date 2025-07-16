@@ -35,7 +35,8 @@ const SeatModal: React.FC<SeatModalProps> = ({
   const navigate = useNavigate();
   const { ticket } = useGetTicket();
   const dispatch = useAppDispatch();
-  const { createReservation, error } = useReservations();
+  const { createReservation, getPendingReservation, cancelReservation, error } =
+    useReservations();
   const { currentUser } = useSelector((state: RootState) => state.auth);
 
   const [selectedSeats, setSelectedSeats] = useState<number[]>([]);
@@ -72,7 +73,7 @@ const SeatModal: React.FC<SeatModalProps> = ({
     socket.on('seats:update', handleSeatStatusUpdate);
 
     return () => {
-      socket.off('seats:update', setSelectedSeats);
+      socket.off('seats:update', handleSeatStatusUpdate);
       socket.emit('leave-ticket-room', idTicket);
     };
   }, [open, idTicket]);
@@ -94,9 +95,28 @@ const SeatModal: React.FC<SeatModalProps> = ({
   const handleReserveSeats = async () => {
     if (!idTicket || !currentUser) return;
     try {
+      const hasReservation = await getPendingReservation(currentUser._id);
+
+      if (hasReservation && hasReservation._id) {
+        await cancelReservation(hasReservation._id);
+
+        hasReservation.seats.forEach((seat: number) => {
+          socket.emit('seat:temp-select', {
+            ticketId: idTicket,
+            seat,
+            selected: false,
+            userId: currentUser._id,
+          });
+        });
+
+        setReservedSeats([]);
+        setTempReservedSeats([]);
+      }
+
       await createReservation(currentUser._id, idTicket, selectedSeats);
       dispatch(setSeats(selectedSeats));
       setSelectedSeats([]);
+
       if (!error) {
         navigate('/preview-ticket');
         onClose();
@@ -124,6 +144,12 @@ const SeatModal: React.FC<SeatModalProps> = ({
       selected: !isAlreadySelected,
       userId: currentUser?._id,
     });
+
+    if (!isAlreadySelected) {
+      setTempReservedSeats((prev) => [...prev, seat]);
+    } else {
+      setTempReservedSeats((prev) => prev.filter((s) => s !== seat));
+    }
   };
 
   const isSelected = (seat: number) => selectedSeats.includes(seat);

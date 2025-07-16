@@ -80,6 +80,7 @@ export interface IReservation {
   userId: string;
   ticketId: string;
   status: string;
+  seats: number[];
 }
 
 export interface IConfirmReservation {
