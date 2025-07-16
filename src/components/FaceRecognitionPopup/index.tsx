@@ -230,8 +230,8 @@ const FaceRecognitionPopup: React.FC<FaceRecognitionPopupProps> = ({
           >
             <Typography variant="h6">
               {mode === 'register'
-                ? 'Cadastro de FaceRecognition'
-                : 'Login com FaceRecognition'}
+                ? 'Cadastro de reconhecimento facial'
+                : 'Login com reconhecimento facial'}
             </Typography>
             <IconButton onClick={onClose}>
               <CloseIcon />

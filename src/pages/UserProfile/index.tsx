@@ -124,7 +124,7 @@ const UserProfile = () => {
                   fullWidth
                   disabled={currentUser?.faceAuthDescriptor}
                   onClick={() => setPopupOpen(true)}
-                  children="Configurar FaceRecognition"
+                  children="Configurar reconhecimento facial"
                 />
                 <FaceRecognitionPopup
                   open={popupOpen}

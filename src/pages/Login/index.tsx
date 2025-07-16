@@ -179,10 +179,10 @@ const Login = () => {
                 variant="contained"
                 sx={{ textTransform: 'none', fontWeight: 'bold' }}
                 type="submit"
-                dataTestId='button-login'
+                dataTestId="button-login"
               />
               <Button
-                children="Entrar com FaceRecognition"
+                children="Entrar com reconhecimento facial"
                 variant="contained"
                 onClick={() => setPopupOpen(true)}
                 sx={{ textTransform: 'none', fontWeight: 'bold' }}
