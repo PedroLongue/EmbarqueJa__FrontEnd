@@ -206,7 +206,7 @@ const SeatModal: React.FC<SeatModalProps> = ({
           }}
         >
           <Box sx={{ textAlign: 'center', mb: 2 }}>
-            <img src={steeringwheel} style={{ width: 40 }} />
+            <img src={steeringwheel} loading="lazy" style={{ width: 40 }} />
           </Box>
 
           <Stack spacing={2}>

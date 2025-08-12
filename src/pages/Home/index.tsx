@@ -1,5 +1,5 @@
 import { Box, Container } from '@mui/material';
-import Banner from '../../assets/imgs/bannerHome.png';
+import Banner from '../../assets/imgs/bannerHome.webp';
 import RenderTickets from './components/RenderTickets';
 import SeachForm from './components/SearchForm';
 
@@ -19,6 +19,7 @@ const Home = () => {
           style={{ width: ' 100%', height: '500px', objectFit: 'cover' }}
           src={Banner}
           alt="EmbarqueJa"
+          loading="lazy"
         />
         <SeachForm />
       </Box>

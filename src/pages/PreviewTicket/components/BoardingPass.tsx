@@ -94,6 +94,7 @@ const BoardingPass = ({
               src={ticket?.companyLogo}
               alt="Logo da empresa"
               style={{ height: 40 }}
+              loading="lazy"
             />
             <Typography variant="h5" fontWeight="bold">
               R$ {ticket.price}

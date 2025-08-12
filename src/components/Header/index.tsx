@@ -145,6 +145,7 @@ const Header = () => {
             src={Logo}
             alt="Logo"
             style={{ height: '100%', width: 'auto' }}
+            loading="lazy"
           />
           <Typography variant="body1" fontWeight="bold">
             EmbarqueJa

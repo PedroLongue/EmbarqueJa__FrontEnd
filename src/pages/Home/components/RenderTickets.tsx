@@ -16,7 +16,7 @@ import SeatModal from './SeatModal';
 import { useNavigate } from 'react-router';
 import CustomSnackbar from '../../../components/CustomSnackbar';
 import { SnackbarSeverity } from '../../../types';
-import emptyStateTickets from '../../../assets/imgs/emptyStateTickets.png';
+import emptyStateTickets from '../../../assets/imgs/emptyStateTickets.webp';
 import { amenityToIcon } from '../../../constants/amenityToIcon';
 
 const RenderTickets = () => {
@@ -266,7 +266,7 @@ const RenderTickets = () => {
           <Typography variant="body1" textAlign="center" color="text.secondary">
             Busque por uma passagem ativa.
           </Typography>
-          <img src={emptyStateTickets} width="200px" />
+          <img src={emptyStateTickets} width="200px" loading="lazy" />
         </Box>
       )}
       <CustomSnackbar
