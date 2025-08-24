@@ -11,6 +11,8 @@ export const getSocket = () => {
       {
         transports: ['websocket'],
         upgrade: false,
+        rememberUpgrade: true,
+        autoConnect: false,
       },
     );
   }

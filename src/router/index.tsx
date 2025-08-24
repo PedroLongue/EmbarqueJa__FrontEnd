@@ -1,27 +1,44 @@
+import { Suspense, lazy } from 'react';
 import { Navigate, Route, Routes } from 'react-router';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
-import Home from '../pages/Home';
-import Login from '../pages/Login';
-import Register from '../pages/Register';
 import Header from '../components/Header';
-import Admin from '../pages/Admin';
 import { useAppDispatch } from '../hooks/useAppDispatch';
 import { useEffect } from 'react';
 import { getCurrentUser } from '../redux/features/authSlice';
 import api from '../services/api';
 import Footer from '../components/Footer';
-import ChangePass from '../pages/ChangePass';
-import PreviewTicket from '../pages/PreviewTicket';
-import Checkout from '../pages/Checkout';
-import MyPurchases from '../pages/MyPurchases';
-import UserProfile from '../pages/UserProfile';
-import ValidatePassengers from '../pages/ValidatePassengers';
-import ValidateFromQrCode from '../pages/ValidateFromQrCode';
+import { Box, CircularProgress } from '@mui/material';
+
+// Lazy load de todas as páginas
+const Home = lazy(() => import('../pages/Home'));
+const Login = lazy(() => import('../pages/Login'));
+const Register = lazy(() => import('../pages/Register'));
+const Admin = lazy(() => import('../pages/Admin'));
+const ChangePass = lazy(() => import('../pages/ChangePass'));
+const PreviewTicket = lazy(() => import('../pages/PreviewTicket'));
+const Checkout = lazy(() => import('../pages/Checkout'));
+const MyPurchases = lazy(() => import('../pages/MyPurchases'));
+const UserProfile = lazy(() => import('../pages/UserProfile'));
+const ValidatePassengers = lazy(() => import('../pages/ValidatePassengers'));
+const ValidateFromQrCode = lazy(() => import('../pages/ValidateFromQrCode'));
+
+// Componente de fallback para loading com MUI
+const PageLoading = () => (
+  <Box
+    sx={{
+      minHeight: '60vh',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+    }}
+  >
+    <CircularProgress size={60} />
+  </Box>
+);
 
 const AppRouter = () => {
   const { signed, currentUser } = useSelector((state: RootState) => state.auth);
-
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -39,46 +56,126 @@ const AppRouter = () => {
   return (
     <>
       <Header />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route
-          path="/change-pass"
-          element={signed ? <ChangePass /> : <Navigate to="/login" />}
-        />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route
-          path="/admin"
-          element={currentUser?.isAdmin ? <Admin /> : <Navigate to="/login" />}
-        />
-        <Route
-          path="/validate-passengers"
-          element={
-            currentUser?.isAdmin ? (
-              <ValidatePassengers />
-            ) : (
-              <Navigate to="/login" />
-            )
-          }
-        />
-        <Route path="/validate-from-qr-code" element={<ValidateFromQrCode />} />
-        <Route
-          path="/preview-ticket"
-          element={signed ? <PreviewTicket /> : <Navigate to="/login" />}
-        />
-        <Route
-          path="/checkout"
-          element={signed ? <Checkout /> : <Navigate to="/login" />}
-        />
-        <Route
-          path="/my-purchases"
-          element={signed ? <MyPurchases /> : <Navigate to="/login" />}
-        />
-        <Route
-          path="/my-profile"
-          element={signed ? <UserProfile /> : <Navigate to="/login" />}
-        />
-      </Routes>
+      <Suspense fallback={<PageLoading />}>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <Suspense fallback={<PageLoading />}>
+                <Home />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/change-pass"
+            element={
+              signed ? (
+                <Suspense fallback={<PageLoading />}>
+                  <ChangePass />
+                </Suspense>
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
+          <Route
+            path="/login"
+            element={
+              <Suspense fallback={<PageLoading />}>
+                <Login />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/register"
+            element={
+              <Suspense fallback={<PageLoading />}>
+                <Register />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/admin"
+            element={
+              currentUser?.isAdmin ? (
+                <Suspense fallback={<PageLoading />}>
+                  <Admin />
+                </Suspense>
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
+          <Route
+            path="/validate-passengers"
+            element={
+              currentUser?.isAdmin ? (
+                <Suspense fallback={<PageLoading />}>
+                  <ValidatePassengers />
+                </Suspense>
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
+          <Route
+            path="/validate-from-qr-code"
+            element={
+              <Suspense fallback={<PageLoading />}>
+                <ValidateFromQrCode />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/preview-ticket"
+            element={
+              signed ? (
+                <Suspense fallback={<PageLoading />}>
+                  <PreviewTicket />
+                </Suspense>
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
+          <Route
+            path="/checkout"
+            element={
+              signed ? (
+                <Suspense fallback={<PageLoading />}>
+                  <Checkout />
+                </Suspense>
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
+          <Route
+            path="/my-purchases"
+            element={
+              signed ? (
+                <Suspense fallback={<PageLoading />}>
+                  <MyPurchases />
+                </Suspense>
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
+          <Route
+            path="/my-profile"
+            element={
+              signed ? (
+                <Suspense fallback={<PageLoading />}>
+                  <UserProfile />
+                </Suspense>
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
+        </Routes>
+      </Suspense>
       <Footer />
     </>
   );

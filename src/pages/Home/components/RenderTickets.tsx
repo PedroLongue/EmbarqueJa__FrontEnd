@@ -11,13 +11,13 @@ import { RootState } from '../../../redux/store';
 import Icon from '../../../assets/Icons';
 import TravelTime from './TravelTime';
 import Button from '../../../components/Button';
-import { useEffect, useState } from 'react';
-import SeatModal from './SeatModal';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import CustomSnackbar from '../../../components/CustomSnackbar';
 import { SnackbarSeverity } from '../../../types';
 import emptyStateTickets from '../../../assets/imgs/emptyStateTickets.webp';
 import { amenityToIcon } from '../../../constants/amenityToIcon';
+const SeatModal = React.lazy(() => import('./SeatModal'));
 
 const RenderTickets = () => {
   const navigate = useNavigate();
