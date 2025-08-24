@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import { getTickets } from '../services/tickets';
 
 const useCities = (): string[] => {

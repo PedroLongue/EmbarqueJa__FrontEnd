@@ -1,9 +1,25 @@
 import { io } from 'socket.io-client';
 
-const socket = io(
-  window.location.hostname.includes('localhost')
-    ? 'http://localhost:3000'
-    : 'https://embarqueja.xyz/',
-);
+let socket: any = null;
 
-export default socket;
+export const getSocket = () => {
+  if (!socket) {
+    socket = io(
+      window.location.hostname.includes('localhost')
+        ? 'http://localhost:3000'
+        : 'https://embarqueja.xyz/',
+      {
+        transports: ['websocket'],
+        upgrade: false,
+      },
+    );
+  }
+  return socket;
+};
+
+export const disconnectSocket = () => {
+  if (socket) {
+    socket.disconnect();
+    socket = null;
+  }
+};

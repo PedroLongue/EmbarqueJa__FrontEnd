@@ -21,7 +21,7 @@ import {
   setPassengers,
 } from '../../../redux/features/searchSlice';
 import Input from '../../../components/Input';
-import { useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import CustomSnackbar from '../../../components/CustomSnackbar';
 import Icon from '../../../assets/Icons';
 import { SnackbarSeverity } from '../../../types';
@@ -70,8 +70,15 @@ const SeachForm = () => {
   );
   const cities = useCities();
 
-  const filteredOriginCities = cities.filter((city) => city !== destination);
-  const filteredDestinationCities = cities.filter((city) => city !== origin);
+  const filteredOriginCities = useMemo(
+    () => cities.filter((city) => city !== destination),
+    [cities, destination],
+  );
+
+  const filteredDestinationCities = useMemo(
+    () => cities.filter((city) => city !== origin),
+    [cities, origin],
+  );
 
   const searchButtonRef = useRef<HTMLButtonElement | null>(null);
 
@@ -89,19 +96,22 @@ const SeachForm = () => {
     return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!origin || !destination || !departureDate) {
-      setSnackbarMessage('Por favor, preencha todos os campos');
-      setSnackbarSeverity('error');
-      setSnackbarOpen(true);
-      return;
-    }
+  const handleSubmit = useCallback(
+    (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      if (!origin || !destination || !departureDate) {
+        setSnackbarMessage('Por favor, preencha todos os campos');
+        setSnackbarSeverity('error');
+        setSnackbarOpen(true);
+        return;
+      }
 
-    const formattedDate = isIOS ? toISODate(departureDate) : departureDate;
-    dispatch(setDepartureDate(formattedDate));
-    dispatch(fetchTickets());
-  };
+      const formattedDate = isIOS ? toISODate(departureDate) : departureDate;
+      dispatch(setDepartureDate(formattedDate));
+      dispatch(fetchTickets());
+    },
+    [origin, destination, departureDate, dispatch, isIOS],
+  );
 
   const capitalize = (str: string) => {
     return str.replace(/\b\w/g, (c) => c.toUpperCase());
