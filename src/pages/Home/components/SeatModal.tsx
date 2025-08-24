@@ -10,7 +10,7 @@ import { setSeats, setTicketId } from '../../../redux/features/searchSlice';
 import useReservations from '../../../hooks/useReservation';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../redux/store';
-import { getSocket, disconnectSocket } from '../../../services/socket';
+import { getSocket } from '../../../services/socket';
 import React from 'react';
 
 interface SeatModalProps {
@@ -61,7 +61,7 @@ const SeatModal: React.FC<SeatModalProps> = ({
   idTicket,
 }) => {
   const navigate = useNavigate();
-  const { ticket } = useGetTicket();
+  const { ticket: getTicket } = useGetTicket();
   const dispatch = useAppDispatch();
   const { createReservation, getPendingReservation, cancelReservation, error } =
     useReservations();
@@ -71,6 +71,13 @@ const SeatModal: React.FC<SeatModalProps> = ({
   const [reservedSeats, setReservedSeats] = useState<number[]>([]);
   const [tempReservedSeats, setTempReservedSeats] = useState<number[]>([]);
   const [socket, setSocket] = useState<any>(null);
+
+  const ticket = useCallback(
+    async (ticketId: string) => {
+      return await getTicket(ticketId);
+    },
+    [getTicket],
+  );
 
   const debounce = useCallback((func: Function, delay: number) => {
     let timeoutId: NodeJS.Timeout;
@@ -93,18 +100,22 @@ const SeatModal: React.FC<SeatModalProps> = ({
     }
   }, [open, idTicket]);
 
-  // Busca assentos reservados
   useEffect(() => {
     if (!idTicket || !open) return;
 
     const fetchReservedSeats = async () => {
-      dispatch(setTicketId(idTicket));
-      const data = await ticket(idTicket);
-      setReservedSeats(data?.reservedSeats || []);
+      try {
+        dispatch(setTicketId(idTicket));
+        const data = await ticket(idTicket);
+        setReservedSeats(data?.reservedSeats || []);
+      } catch (error) {
+        console.error('Erro ao buscar assentos reservados:', error);
+        setReservedSeats([]);
+      }
     };
 
     fetchReservedSeats();
-  }, [open, idTicket, dispatch, ticket]);
+  }, [open, idTicket, dispatch]);
 
   useEffect(() => {
     if (!socket || !idTicket || !currentUser) return;
@@ -197,11 +208,12 @@ const SeatModal: React.FC<SeatModalProps> = ({
       if (reservedSeats.includes(seat)) return;
 
       const isAlreadySelected = selectedSeats.includes(seat);
+
+      if (!isAlreadySelected && selectedSeats.length >= passengers) return;
+
       const updated = isAlreadySelected
         ? selectedSeats.filter((s) => s !== seat)
         : [...selectedSeats, seat];
-
-      if (!isAlreadySelected && updated.length > passengers) return;
 
       setSelectedSeats(updated);
 
@@ -235,6 +247,7 @@ const SeatModal: React.FC<SeatModalProps> = ({
     (seat: number) => selectedSeats.includes(seat),
     [selectedSeats],
   );
+
   const isReserved = useCallback(
     (seat: number) =>
       reservedSeats.includes(seat) || tempReservedSeats.includes(seat),
@@ -255,7 +268,6 @@ const SeatModal: React.FC<SeatModalProps> = ({
             gap: { xs: '1px', sm: '24px' },
           }}
         >
-          {/* Assentos lado esquerdo */}
           <Stack direction="row" spacing={1}>
             {[0, 1].map((i) => {
               const seat = seatStart + i;
