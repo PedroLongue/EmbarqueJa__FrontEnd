@@ -1,29 +1,25 @@
-import type { Socket } from 'socket.io-client';
+import { io } from 'socket.io-client';
 
-let socket: Socket | null = null;
+let socket: any = null;
 
-const BASE_URL = window.location.hostname.includes('localhost')
-  ? 'http://localhost:3000'
-  : 'https://embarqueja.xyz/';
-
-export async function getSocket(): Promise<Socket> {
+export const getSocket = () => {
   if (!socket) {
-    const { io } = await import('socket.io-client');
-    socket = io(BASE_URL, {
-      transports: ['websocket'],
-      autoConnect: false,
-    });
+    socket = io(
+      window.location.hostname.includes('localhost')
+        ? 'http://localhost:3000'
+        : 'https://embarqueja.xyz/',
+      {
+        transports: ['websocket'],
+        upgrade: false,
+      },
+    );
   }
   return socket;
-}
+};
 
-export async function connectSocket(): Promise<Socket> {
-  const s = await getSocket();
-  if (!s.connected) s.connect();
-  return s;
-}
-
-export function disconnectSocket() {
-  socket?.disconnect();
-  socket = null;
-}
+export const disconnectSocket = () => {
+  if (socket) {
+    socket.disconnect();
+    socket = null;
+  }
+};

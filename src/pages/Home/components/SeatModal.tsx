@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  useCallback,
-  useMemo,
-  useRef,
-} from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { Typography, Modal, Box, Stack } from '@mui/material';
 import Icon from '../../../assets/Icons';
 import steeringwheel from '../../../assets/Icons/steeringwheel.png';
@@ -16,7 +10,8 @@ import { setSeats, setTicketId } from '../../../redux/features/searchSlice';
 import useReservations from '../../../hooks/useReservation';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../redux/store';
-import { connectSocket } from '../../../services/socket';
+import { getSocket } from '../../../services/socket';
+import React from 'react';
 
 interface SeatModalProps {
   open: boolean;
@@ -54,6 +49,7 @@ const SeatButton = React.memo(
     </Button>
   ),
 );
+
 SeatButton.displayName = 'SeatButton';
 
 const SeatModal: React.FC<SeatModalProps> = ({
@@ -65,14 +61,8 @@ const SeatModal: React.FC<SeatModalProps> = ({
   idTicket,
 }) => {
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
-
   const { ticket: getTicket } = useGetTicket();
-  const getTicketRef = useRef(getTicket);
-  useEffect(() => {
-    getTicketRef.current = getTicket;
-  }, [getTicket]);
-
+  const dispatch = useAppDispatch();
   const { createReservation, getPendingReservation, cancelReservation, error } =
     useReservations();
   const { currentUser } = useSelector((state: RootState) => state.auth);
@@ -80,97 +70,102 @@ const SeatModal: React.FC<SeatModalProps> = ({
   const [selectedSeats, setSelectedSeats] = useState<number[]>([]);
   const [reservedSeats, setReservedSeats] = useState<number[]>([]);
   const [tempReservedSeats, setTempReservedSeats] = useState<number[]>([]);
+  const [socket, setSocket] = useState<any>(null);
 
-  const socketRef = useRef<any>(null);
-  const debouncedEmitRef = useRef<(data: any) => void>(() => {});
-
-  const makeDebounce = useCallback(
-    (fn: (...a: any[]) => void, delay: number) => {
-      let t: any;
-      return (...args: any[]) => {
-        clearTimeout(t);
-        t = setTimeout(() => fn(...args), delay);
-      };
+  const ticket = useCallback(
+    async (ticketId: string) => {
+      return await getTicket(ticketId);
     },
-    [],
+    [getTicket],
   );
 
-  useEffect(() => {
-    if (!open || !idTicket || !currentUser?._id) return;
-
-    let canceled = false;
-    let offHandler: (() => void) | null = null;
-
-    (async () => {
-      const s = await connectSocket();
-      if (canceled) return;
-      socketRef.current = s;
-
-      s.emit('join-ticket-room', idTicket, currentUser._id);
-
-      const handleSeatStatusUpdate = (data: {
-        selections: Record<number, string>;
-      }) => {
-        const all = data.selections;
-        const seatsByOthers = Object.entries(all)
-          .filter(([, user]) => user !== currentUser._id)
-          .map(([seat]) => Number(seat));
-        const seatsByMe = Object.entries(all)
-          .filter(([, user]) => user === currentUser._id)
-          .map(([seat]) => Number(seat));
-
-        setTempReservedSeats(seatsByOthers);
-        setSelectedSeats(seatsByMe);
-      };
-
-      s.on('seats:update', handleSeatStatusUpdate);
-      offHandler = () => s.off('seats:update', handleSeatStatusUpdate);
-
-      debouncedEmitRef.current = makeDebounce((payload: any) => {
-        socketRef.current?.emit('seat:temp-select', payload);
-      }, 300);
-    })();
-
-    return () => {
-      canceled = true;
-      offHandler?.();
-      socketRef.current?.emit('leave-ticket-room', idTicket);
+  const debounce = useCallback((func: Function, delay: number) => {
+    let timeoutId: NodeJS.Timeout;
+    return (...args: any[]) => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => func.apply(this, args), delay);
     };
-  }, [open, idTicket, currentUser?._id, makeDebounce]);
+  }, []);
 
   useEffect(() => {
-    if (!open || !idTicket) return;
+    if (open && idTicket) {
+      const socketInstance = getSocket();
+      setSocket(socketInstance);
 
-    let canceled = false;
+      return () => {
+        if (socketInstance && idTicket) {
+          socketInstance.emit('leave-ticket-room', idTicket);
+        }
+      };
+    }
+  }, [open, idTicket]);
 
-    (async () => {
+  useEffect(() => {
+    if (!idTicket || !open) return;
+
+    const fetchReservedSeats = async () => {
       try {
         dispatch(setTicketId(idTicket));
-        const data = await getTicketRef.current(idTicket);
-        if (!canceled) setReservedSeats(data?.reservedSeats || []);
-      } catch {
-        if (!canceled) setReservedSeats([]);
+        const data = await ticket(idTicket);
+        setReservedSeats(data?.reservedSeats || []);
+      } catch (error) {
+        console.error('Erro ao buscar assentos reservados:', error);
+        setReservedSeats([]);
       }
-    })();
-
-    return () => {
-      canceled = true;
     };
+
+    fetchReservedSeats();
   }, [open, idTicket, dispatch]);
 
+  useEffect(() => {
+    if (!socket || !idTicket || !currentUser) return;
+
+    const handleSeatStatusUpdate = (data: {
+      selections: Record<number, string>;
+    }) => {
+      const allSelections = data.selections;
+      const seatsByOthers = Object.entries(allSelections)
+        .filter(([_, user]) => user !== currentUser._id)
+        .map(([seat]) => Number(seat));
+      const seatsByCurrentUser = Object.entries(allSelections)
+        .filter(([_, user]) => user === currentUser._id)
+        .map(([seat]) => Number(seat));
+
+      setTempReservedSeats(seatsByOthers);
+      setSelectedSeats(seatsByCurrentUser);
+    };
+
+    socket.emit('join-ticket-room', idTicket, currentUser._id);
+    socket.on('seats:update', handleSeatStatusUpdate);
+
+    return () => {
+      socket.off('seats:update', handleSeatStatusUpdate);
+    };
+  }, [socket, idTicket, currentUser]);
+
+  const debouncedSocketEmit = useMemo(
+    () =>
+      debounce((data: any) => {
+        if (socket) {
+          socket.emit('seat:temp-select', data);
+        }
+      }, 300),
+    [socket, debounce],
+  );
+
   const clearSelection = useCallback(() => {
-    if (selectedSeats.length && currentUser && idTicket) {
-      selectedSeats.forEach((seat) =>
-        debouncedEmitRef.current({
+    if (selectedSeats.length > 0 && currentUser && idTicket && socket) {
+      selectedSeats.forEach((seat) => {
+        debouncedSocketEmit({
           ticketId: idTicket,
           seat,
           selected: false,
           userId: currentUser._id,
-        }),
-      );
+        });
+      });
     }
     setSelectedSeats([]);
-  }, [selectedSeats, currentUser, idTicket]);
+  }, [selectedSeats, currentUser, idTicket, socket, debouncedSocketEmit]);
 
   const handleReserveSeats = async () => {
     if (!idTicket || !currentUser) return;
@@ -180,14 +175,16 @@ const SeatModal: React.FC<SeatModalProps> = ({
       if (hasReservation && hasReservation._id) {
         await cancelReservation(hasReservation._id);
 
-        hasReservation.seats.forEach((seat: number) => {
-          debouncedEmitRef.current({
-            ticketId: idTicket,
-            seat,
-            selected: false,
-            userId: currentUser._id,
+        if (socket) {
+          hasReservation.seats.forEach((seat: number) => {
+            debouncedSocketEmit({
+              ticketId: idTicket,
+              seat,
+              selected: false,
+              userId: currentUser._id,
+            });
           });
-        });
+        }
 
         setReservedSeats([]);
         setTempReservedSeats([]);
@@ -211,6 +208,7 @@ const SeatModal: React.FC<SeatModalProps> = ({
       if (reservedSeats.includes(seat)) return;
 
       const isAlreadySelected = selectedSeats.includes(seat);
+
       if (!isAlreadySelected && selectedSeats.length >= passengers) return;
 
       const updated = isAlreadySelected
@@ -219,8 +217,8 @@ const SeatModal: React.FC<SeatModalProps> = ({
 
       setSelectedSeats(updated);
 
-      if (idTicket && currentUser) {
-        debouncedEmitRef.current({
+      if (socket && idTicket && currentUser) {
+        debouncedSocketEmit({
           ticketId: idTicket,
           seat,
           selected: !isAlreadySelected,
@@ -228,11 +226,21 @@ const SeatModal: React.FC<SeatModalProps> = ({
         });
       }
 
-      setTempReservedSeats((prev) =>
-        !isAlreadySelected ? [...prev, seat] : prev.filter((s) => s !== seat),
-      );
+      if (!isAlreadySelected) {
+        setTempReservedSeats((prev) => [...prev, seat]);
+      } else {
+        setTempReservedSeats((prev) => prev.filter((s) => s !== seat));
+      }
     },
-    [reservedSeats, selectedSeats, passengers, idTicket, currentUser],
+    [
+      reservedSeats,
+      selectedSeats,
+      passengers,
+      socket,
+      idTicket,
+      currentUser,
+      debouncedSocketEmit,
+    ],
   );
 
   const isSelected = useCallback(
@@ -256,7 +264,9 @@ const SeatModal: React.FC<SeatModalProps> = ({
           display="flex"
           justifyContent="center"
           alignItems="center"
-          sx={{ gap: { xs: '1px', sm: '24px' } }}
+          sx={{
+            gap: { xs: '1px', sm: '24px' },
+          }}
         >
           <Stack direction="row" spacing={1}>
             {[0, 1].map((i) => {
@@ -295,8 +305,8 @@ const SeatModal: React.FC<SeatModalProps> = ({
   }, [isSelected, isReserved, handleSelectSeat]);
 
   const handleClose = useCallback(() => {
-    clearSelection();
     onClose();
+    clearSelection();
   }, [onClose, clearSelection]);
 
   return (
