@@ -10,7 +10,6 @@ import api from '../services/api';
 import Footer from '../components/Footer';
 import { Box, CircularProgress } from '@mui/material';
 
-// Lazy load de todas as páginas
 const Home = lazy(() => import('../pages/Home'));
 const Login = lazy(() => import('../pages/Login'));
 const Register = lazy(() => import('../pages/Register'));
@@ -23,7 +22,6 @@ const UserProfile = lazy(() => import('../pages/UserProfile'));
 const ValidatePassengers = lazy(() => import('../pages/ValidatePassengers'));
 const ValidateFromQrCode = lazy(() => import('../pages/ValidateFromQrCode'));
 
-// Componente de fallback para loading com MUI
 const PageLoading = () => (
   <Box
     sx={{
