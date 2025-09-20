@@ -3,9 +3,10 @@ import {
   Container,
   Grid,
   Typography,
-  Link,
+  Link as MuiLink,
   IconButton,
 } from '@mui/material';
+import { Link } from 'react-router-dom';
 import { Facebook, Instagram, Twitter } from '@mui/icons-material';
 
 export default function Footer() {
@@ -30,15 +31,21 @@ export default function Footer() {
             <Typography variant="h6" gutterBottom fontWeight={'bold'}>
               Links Rápidos
             </Typography>
-            <Link href="#" color="inherit" underline="none" display="block">
+            <MuiLink href="#" color="inherit" underline="none" display="block">
               <Typography variant="body2">Sobre nós</Typography>
-            </Link>
-            <Link href="#" color="inherit" underline="none" display="block">
+            </MuiLink>
+            <MuiLink href="#" color="inherit" underline="none" display="block">
               <Typography variant="body2">Contato</Typography>
-            </Link>
-            <Link href="#" color="inherit" underline="none" display="block">
+            </MuiLink>
+            <MuiLink
+              component={Link}
+              to="/politica-privacidade"
+              color="inherit"
+              underline="none"
+              display="block"
+            >
               <Typography variant="body2">Política de Privacidade</Typography>
-            </Link>
+            </MuiLink>
           </Grid>
 
           <Grid item xs={12} sm={4}>

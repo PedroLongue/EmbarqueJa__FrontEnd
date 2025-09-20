@@ -86,6 +86,7 @@ const Header = () => {
           </MenuItem>
           <MenuItem
             onClick={() => navigate('/my-purchases')}
+            data-testid="my-purchases-menu-item"
             sx={{ justifyContent: 'center' }}
           >
             Minhas compras
@@ -209,6 +210,7 @@ const Header = () => {
                         handleClose();
                         navigate('/my-profile');
                       }}
+                      data-testid="my-profile-menu-item"
                       sx={{ justifyContent: 'center' }}
                     >
                       Meu perfil
@@ -218,6 +220,7 @@ const Header = () => {
                         handleClose();
                         navigate('/my-purchases');
                       }}
+                      data-testid="my-purchases-menu-item"
                       sx={{ justifyContent: 'center' }}
                     >
                       Minhas compras

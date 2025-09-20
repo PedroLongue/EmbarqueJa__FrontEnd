@@ -20,6 +20,7 @@ describe('Buy a Ticket', () => {
     SelectSeatPage.interceptReservedSeats();
     SelectSeatPage.interceptPostReservation();
     SelectSeatPage.interceptGetReservations();
+    CheckoutPage.interceptDeleteReservation();
 
     SelectSeatPage.confirmSeat();
 
@@ -27,7 +28,6 @@ describe('Buy a Ticket', () => {
   });
 
   it('should be able to cancel reservation', () => {
-    CheckoutPage.interceptDeleteReservation();
     CheckoutPage.cancelReservation();
   });
 

@@ -9,6 +9,7 @@ import { getCurrentUser } from '../redux/features/authSlice';
 import api from '../services/api';
 import Footer from '../components/Footer';
 import { Box, CircularProgress } from '@mui/material';
+import PrivacyPolicy from '../pages/PrivacyPolicy';
 
 const Home = lazy(() => import('../pages/Home'));
 const Login = lazy(() => import('../pages/Login'));
@@ -170,6 +171,14 @@ const AppRouter = () => {
               ) : (
                 <Navigate to="/login" />
               )
+            }
+          />
+          <Route
+            path="/politica-privacidade"
+            element={
+              <Suspense fallback={<PageLoading />}>
+                <PrivacyPolicy />
+              </Suspense>
             }
           />
         </Routes>

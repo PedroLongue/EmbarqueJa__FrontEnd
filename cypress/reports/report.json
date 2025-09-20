@@ -1,0 +1,438 @@
+{
+  "stats": {
+    "suites": 6,
+    "tests": 8,
+    "passes": 8,
+    "pending": 0,
+    "failures": 0,
+    "testsRegistered": 8,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false,
+    "start": "2025-09-20T19:15:46.462Z",
+    "end": "2025-09-20T19:16:32.110Z",
+    "duration": 45648
+  },
+  "results": [
+    {
+      "uuid": "81f8101e-b790-42be-96b6-5db37db421c9",
+      "title": "",
+      "fullFile": "cypress/e2e/happy-path/checkoutTicket.cy.ts",
+      "file": "cypress/e2e/happy-path/checkoutTicket.cy.ts",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "933034dc-075b-4bf1-aa71-feadb63e6983",
+          "title": "Buy a Ticket",
+          "fullFile": "cypress/e2e/happy-path/checkoutTicket.cy.ts",
+          "file": "cypress/e2e/happy-path/checkoutTicket.cy.ts",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "should be able to cancel reservation",
+              "fullTitle": "Buy a Ticket should be able to cancel reservation",
+              "timedOut": null,
+              "duration": 6460,
+              "state": "passed",
+              "speed": "medium",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "_pages_CheckoutPage__WEBPACK_IMPORTED_MODULE_0__[\"default\"].cancelReservation();",
+              "err": {},
+              "uuid": "af38cbf0-049d-42ef-a747-e41a1d37d69b",
+              "parentUUID": "933034dc-075b-4bf1-aa71-feadb63e6983",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should be able to go to payment page by credit card",
+              "fullTitle": "Buy a Ticket should be able to go to payment page by credit card",
+              "timedOut": null,
+              "duration": 7534,
+              "state": "passed",
+              "speed": "medium",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "_pages_CheckoutPage__WEBPACK_IMPORTED_MODULE_0__[\"default\"].goToPayment();\n_pages_CheckoutPage__WEBPACK_IMPORTED_MODULE_0__[\"default\"].interceptConfirmReservation();\n_pages_CheckoutPage__WEBPACK_IMPORTED_MODULE_0__[\"default\"].buyByCreditCard();\ncy.wait('@confirmReservation').its('response.statusCode').should('eq', 200);",
+              "err": {},
+              "uuid": "4ffe83ee-8692-41f3-8a28-e0355a20417e",
+              "parentUUID": "933034dc-075b-4bf1-aa71-feadb63e6983",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should be able to go to payment page by pix",
+              "fullTitle": "Buy a Ticket should be able to go to payment page by pix",
+              "timedOut": null,
+              "duration": 9253,
+              "state": "passed",
+              "speed": "medium",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "_pages_CheckoutPage__WEBPACK_IMPORTED_MODULE_0__[\"default\"].goToPayment();\n_pages_CheckoutPage__WEBPACK_IMPORTED_MODULE_0__[\"default\"].interceptConfirmReservation();\n_pages_CheckoutPage__WEBPACK_IMPORTED_MODULE_0__[\"default\"].buyByPix();\ncy.wait('@confirmReservation').its('response.statusCode').should('eq', 200);",
+              "err": {},
+              "uuid": "c2544b04-6e33-40f1-868e-a4ef05bbb45c",
+              "parentUUID": "933034dc-075b-4bf1-aa71-feadb63e6983",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "af38cbf0-049d-42ef-a747-e41a1d37d69b",
+            "4ffe83ee-8692-41f3-8a28-e0355a20417e",
+            "c2544b04-6e33-40f1-868e-a4ef05bbb45c"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 23247,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    },
+    {
+      "uuid": "d30564e3-d37a-4ffd-a429-9a35315b6efb",
+      "title": "",
+      "fullFile": "cypress/e2e/happy-path/myProfile.cy.ts",
+      "file": "cypress/e2e/happy-path/myProfile.cy.ts",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "01427fc6-7d3c-42cc-a3fa-9e09dd032a4b",
+          "title": "My Profile",
+          "fullFile": "cypress/e2e/happy-path/myProfile.cy.ts",
+          "file": "cypress/e2e/happy-path/myProfile.cy.ts",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "should display the user's profile page",
+              "fullTitle": "My Profile should display the user's profile page",
+              "timedOut": null,
+              "duration": 3401,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "_pages_MyProfilePage__WEBPACK_IMPORTED_MODULE_1__[\"default\"].myProfile();\n_pages_SelectSeatPage__WEBPACK_IMPORTED_MODULE_2__[\"default\"].interceptReservedSeats();",
+              "err": {},
+              "uuid": "8d6a7b22-2a6d-4044-80c1-e2bef40bd00f",
+              "parentUUID": "01427fc6-7d3c-42cc-a3fa-9e09dd032a4b",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "8d6a7b22-2a6d-4044-80c1-e2bef40bd00f"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 3401,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    },
+    {
+      "uuid": "8ce7514a-ffe4-4601-8000-daec957042bf",
+      "title": "",
+      "fullFile": "cypress/e2e/happy-path/myPurchases.cy.ts",
+      "file": "cypress/e2e/happy-path/myPurchases.cy.ts",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "45c7b147-8dfe-43ba-b476-edb394ae6811",
+          "title": "My Purchases",
+          "fullFile": "cypress/e2e/happy-path/myPurchases.cy.ts",
+          "file": "cypress/e2e/happy-path/myPurchases.cy.ts",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "should display the user's purchases page",
+              "fullTitle": "My Purchases should display the user's purchases page",
+              "timedOut": null,
+              "duration": 3366,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "_pages_MyPurchasesPage__WEBPACK_IMPORTED_MODULE_1__[\"default\"].myPurchase();\n_pages_SelectSeatPage__WEBPACK_IMPORTED_MODULE_2__[\"default\"].interceptReservedSeats();",
+              "err": {},
+              "uuid": "e236072d-c937-410f-8f28-2a30fb2c8d38",
+              "parentUUID": "45c7b147-8dfe-43ba-b476-edb394ae6811",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "e236072d-c937-410f-8f28-2a30fb2c8d38"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 3366,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    },
+    {
+      "uuid": "576e1fe9-472a-497a-acdc-4508849c65da",
+      "title": "",
+      "fullFile": "cypress/e2e/happy-path/searchForTickets.cy.ts",
+      "file": "cypress/e2e/happy-path/searchForTickets.cy.ts",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "d14846c3-54db-4d38-bd4b-d0217c172424",
+          "title": "Search for tickets",
+          "fullFile": "cypress/e2e/happy-path/searchForTickets.cy.ts",
+          "file": "cypress/e2e/happy-path/searchForTickets.cy.ts",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Should be able to search for a trip",
+              "fullTitle": "Search for tickets Should be able to search for a trip",
+              "timedOut": null,
+              "duration": 3966,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "_pages_SearchTicketsPage__WEBPACK_IMPORTED_MODULE_0__[\"default\"].fillAllInputs();\n_pages_SearchTicketsPage__WEBPACK_IMPORTED_MODULE_0__[\"default\"].clickSearchButton();",
+              "err": {},
+              "uuid": "0c3728de-54fb-463e-ad16-2a40cd25faa6",
+              "parentUUID": "d14846c3-54db-4d38-bd4b-d0217c172424",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "0c3728de-54fb-463e-ad16-2a40cd25faa6"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 3966,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    },
+    {
+      "uuid": "5934fdc0-c5e9-44c1-bf42-cecfe2cab3fa",
+      "title": "",
+      "fullFile": "cypress/e2e/happy-path/selectSeat.cy.ts",
+      "file": "cypress/e2e/happy-path/selectSeat.cy.ts",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "0cb7bb4c-5d6a-449f-afd0-c45f11e40e39",
+          "title": "Select Seat",
+          "fullFile": "cypress/e2e/happy-path/selectSeat.cy.ts",
+          "file": "cypress/e2e/happy-path/selectSeat.cy.ts",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Should select seat",
+              "fullTitle": "Select Seat Should select seat",
+              "timedOut": null,
+              "duration": 5266,
+              "state": "passed",
+              "speed": "medium",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "_pages_LoginPage__WEBPACK_IMPORTED_MODULE_0__[\"default\"].login(Cypress.env('EMAIL'), Cypress.env('PASSWORD'));\n_pages_SearchTicketsPage__WEBPACK_IMPORTED_MODULE_1__[\"default\"].selectTicket();\n_pages_SelectSeatPage__WEBPACK_IMPORTED_MODULE_2__[\"default\"].selectSomeSeat('1');",
+              "err": {},
+              "uuid": "31471845-9906-4870-b6d1-96f6a8b9d474",
+              "parentUUID": "0cb7bb4c-5d6a-449f-afd0-c45f11e40e39",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "31471845-9906-4870-b6d1-96f6a8b9d474"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 5266,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    },
+    {
+      "uuid": "731fc25d-b71f-4e38-be14-69c5abe3a492",
+      "title": "",
+      "fullFile": "cypress/e2e/loading.cy.ts",
+      "file": "cypress/e2e/loading.cy.ts",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "625472a4-36f1-440f-bc9b-32722e06ea4d",
+          "title": "Loading",
+          "fullFile": "cypress/e2e/loading.cy.ts",
+          "file": "cypress/e2e/loading.cy.ts",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Should loading home page without problems",
+              "fullTitle": "Loading Should loading home page without problems",
+              "timedOut": null,
+              "duration": 2049,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "_pages_VisitPage__WEBPACK_IMPORTED_MODULE_0__[\"default\"].visitHomePage();",
+              "err": {},
+              "uuid": "d45989e1-cb2f-417e-b043-ad31aa62d714",
+              "parentUUID": "625472a4-36f1-440f-bc9b-32722e06ea4d",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "d45989e1-cb2f-417e-b043-ad31aa62d714"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 2049,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "report",
+        "saveHtml": false,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.4"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "cypress/reports/.jsons",
+        "reportFilename": "report",
+        "overwrite": false,
+        "charts": true,
+        "embeddedScreenshots": true,
+        "inlineAssets": true,
+        "saveJson": true,
+        "html": false,
+        "json": true
+      },
+      "version": "6.3.0"
+    }
+  }
+}
