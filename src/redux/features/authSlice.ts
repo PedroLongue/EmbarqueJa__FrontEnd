@@ -12,14 +12,23 @@ const initialState: IAuthState = {
 // Thunk para obter usuário atual
 export const getCurrentUser = createAsyncThunk(
   'auth/getCurrentUser',
-  async (_, { rejectWithValue }) => {
+  async (_, { rejectWithValue, dispatch }) => {
     try {
       const response = await api.get('users/profile');
       return response.data;
     } catch (error: any) {
-      return rejectWithValue(
-        error.response?.data.errors[0] || 'Erro desconhecido',
-      );
+      const status = error?.response?.status;
+      const msg =
+        error?.response?.data?.errors?.[0] ??
+        error?.response?.data?.erros?.[0] ??
+        'Erro desconhecido';
+
+      if (status === 401) {
+        dispatch(signOut());
+        return rejectWithValue('Sessão expirada. Faça login novamente.');
+      }
+
+      return rejectWithValue(msg);
     }
   },
 );
