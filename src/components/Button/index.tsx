@@ -1,13 +1,16 @@
 import { SxProps, Theme } from '@mui/material';
 import Button from '@mui/material/Button';
-import { ReactNode } from 'react';
+import { ReactNode, MouseEventHandler } from 'react';
 
 interface IButtonProps {
   children: ReactNode;
   variant?: 'contained' | 'outlined' | 'text';
   sx?: SxProps<Theme>;
   type?: 'button' | 'reset' | 'submit';
-  onClick?: (() => void | undefined) | undefined;
+  onClick?:
+    | (() => void | undefined)
+    | undefined
+    | MouseEventHandler<HTMLButtonElement>;
   disabled?: boolean;
   id?: string;
   fullWidth?: boolean;
