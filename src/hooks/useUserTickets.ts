@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import axios from 'axios';
-import api from '../services/api';
 import { IUserTicketData } from '../types';
 import { userAddTicket } from '../services/user';
 
